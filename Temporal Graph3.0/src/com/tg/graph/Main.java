@@ -37,7 +37,7 @@ public class Main {
 //		System.out.println("ÔËĞĞºÄÊ±= "+time+" ºÁÃë");
 //		System.out.println(TGraph.graph[0].getPath());
 //		new TemGraph();
-		System.out.println(GetNumOfVertex.getNumOfVertex(7));
+//		System.out.println(GetNumOfVertex.getNumOfVertex(7));
 		
 	}
 }

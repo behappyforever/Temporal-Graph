@@ -27,14 +27,11 @@ public class LoadTG {
 			br = new BufferedReader(fr);
 			String str;
 			StringTokenizer token;
-			int p, q;
 			while ((str = br.readLine()) != null) {// 按行读入Datasets
 				token = new StringTokenizer(str);// 以空格作为分隔符得到两个顶点from->to
-				p = Integer.parseInt(token.nextToken());
-				q = Integer.parseInt(token.nextToken());
 //				TGraph.graphSnapshot.addVertex(p);
 //				TGraph.graphSnapshot.addVertex(q);
-				TGraph.graphSnapshot.addEdge(p, q);
+				TGraph.snapshot.addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -54,7 +51,7 @@ public class LoadTG {
 		addEdgeArr=new ArrayList<HashSet<String>>() ;
 //		deleteVertexArr=new ArrayList<HashSet<Integer>>();
 		deleteEdgeArr=new ArrayList<HashSet<String>>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 9; i++) {//9个日志
 //			addVertexArr.add(new HashSet<Integer>());
 			addEdgeArr.add(new HashSet<String>());
 //			deleteVertexArr.add(new HashSet<Integer>());
@@ -115,7 +112,6 @@ public class LoadTG {
 	}
 
 	public static void preCompute() {
-		Iterator<Integer> iterInt;
 		Iterator<String> iterStr;
 		StringTokenizer stringTokenizer;
 //		for (int i = 0; i < 10; i++) {
@@ -124,13 +120,16 @@ public class LoadTG {
 //				TGraph.graphSnapshot.deleteVertex(iterInt.next());
 //			}
 //		}
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 9; i++) {
 			iterStr = deleteEdgeArr.get(i).iterator();
 			while (iterStr.hasNext()) {
 				stringTokenizer = new StringTokenizer(iterStr.next());
-				TGraph.graphSnapshot.deleteEdge(Integer.parseInt(stringTokenizer.nextToken()),
+				TGraph.snapshot.deleteEdge(Integer.parseInt(stringTokenizer.nextToken()),
 						Integer.parseInt(stringTokenizer.nextToken()));
 			}
 		}
+		
+		///////////////////////////////待完成     去空
+		
 	}
 }
