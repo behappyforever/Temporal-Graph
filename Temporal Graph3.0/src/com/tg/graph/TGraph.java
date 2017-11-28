@@ -20,20 +20,19 @@ public class TGraph {
 		for(int i=0;i<10;i++) {
 			snapshotLogArr[i]=new SnapshotLog();
 		}
-		//S0
-//		snapshotLogArr[0].setAddVertex(LoadTG.deleteVertexArr.get(0));
-		for(int i=0,j=0;i<10;i++) {//i控制第几个增量快照,j控制第几个变化日志
-			while(j<9&&j<i) {	
+		
+		for(int i=0;i<10;i++) {//i控制第几个增量快照,j控制第几个变化日志
+			for(int j=0;j<i;j++) {
 				snapshotLogArr[i].setAddEdge(LoadTG.addEdgeArr.get(j));
-				j++;
 			}
-			while(j<9&&j>=i) {
+			for(int j=i;j<9;j++) {
 				snapshotLogArr[i].setAddEdge(LoadTG.deleteEdgeArr.get(j));
-				j++;
 			}
 		}
-		
-		
+		System.out.println(snapshotLogArr[0].getAddEdgeSize());
+		System.out.println(snapshotLogArr[1].getAddEdgeSize());
+		System.out.println(snapshotLogArr[2].getAddEdgeSize());
+		System.out.println(snapshotLogArr[3].getAddEdgeSize());
 		//计算pagerank
 //		PageRank.pageRank();
 //		for(int i=0;i<10;i++){
