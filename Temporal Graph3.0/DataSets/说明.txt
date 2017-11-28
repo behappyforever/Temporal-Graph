@@ -2,3 +2,5 @@
 # Directed Gnutella P2P network from August 9 2002
 # Nodes: 8114 Edges: 26013
 # FromNodeId	ToNodeId
+
+# 模拟变化 每天变化千分之一
