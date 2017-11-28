@@ -58,10 +58,6 @@ public class Vertex{
 		return outGoing;
 	}
 	public void setOutGoingList(LinkedList<Integer> link){
-//		Iterator<Integer> iterator=link.iterator();
-//		while(iterator.hasNext()){
-//			outGoing.add(iterator.next());
-//		}
 		outGoing.addAll(link);
 	}
 
