@@ -14,7 +14,7 @@ public class Vertex{
 		outGoing=new LinkedList<Integer>();
 	}
 	
-	public boolean addEdge(int v){
+	public boolean addEdge(int v){//该顶点边表加入弧头顶点id
 		if(!outGoing.contains(v)){
 			outGoing.add(v);
 			out_degree++;
@@ -23,11 +23,9 @@ public class Vertex{
 		return false;//已存在
 	}
 	public boolean deleteEdge(int v){//传入顶点id
-//		if(linkedList.contains(v))
-//		   linkedList.remove(v);
 		int temp=outGoing.indexOf(v);
 		if(temp!=-1){
-			outGoing.remove(temp);
+			outGoing.remove(temp);//此处传入的是索引
 			out_degree--;
 			return true;
 		}

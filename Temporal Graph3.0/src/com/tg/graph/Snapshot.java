@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 public class Snapshot {
 	private int numOfVertex;//¶¥µãÊý
 	private int numOfEdges;//±ßÊý
-	
 
 	private HashMap<Integer, Vertex> vertexMap;
 
