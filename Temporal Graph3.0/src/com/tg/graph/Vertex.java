@@ -6,11 +6,14 @@ public class Vertex{
 	private int id;
 	private int in_degree;
 	private int out_degree;
+	private double pr;
+	private double receiveSumPr;
 	private LinkedList<Integer> outGoing;//边表结点，以链表的形式存储该顶点所指向的边
 	public Vertex(int id){
 		setId(id);
 		in_degree=0;
 		out_degree=0;
+		pr=0;
 		outGoing=new LinkedList<Integer>();
 	}
 	
@@ -58,5 +61,26 @@ public class Vertex{
 	public void setOutGoingList(LinkedList<Integer> link){
 		outGoing.addAll(link);
 	}
+	
+	public double getPr() {
+		return pr;
+	}
+	public double setPr(double pr) {//此set方法返回值用于判断是否收敛
+		double temp=Math.abs(this.pr-pr);
+		this.pr=pr;
+		return temp;
+	}
+	public double getReceiveSumPr() {
+		return receiveSumPr;
+	}
 
+	public void setReceiveSumPr(double receiveSumPr) {
+		this.receiveSumPr = receiveSumPr;
+	}
+	public void addReceiveSumpr(double temp) {
+		receiveSumPr+=temp;
+	}
+	public void deleteReceiveSumpr(double temp) {
+		receiveSumPr-=temp;
+	}
 }

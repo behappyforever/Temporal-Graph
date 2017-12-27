@@ -2,6 +2,7 @@ package com.tg.graph;
 
 import java.util.ArrayList;
 
+import com.tg.algorithm.PageRank;
 import com.tg.function.GetNumOfVertex;
 
 //"DataSets/p2p-Gnutella09.txt";
@@ -24,11 +25,13 @@ public class Main {
 		}
 		
 		TGraph.start();//构建时序图存储结构
+		long start=System.currentTimeMillis();
+		PageRank.pageRank(TGraph.graphSnapshot);
+		System.out.println(TGraph.graphSnapshot.getIterations());
+		long time = System.currentTimeMillis() - start;
+		System.out.println("运行耗时= "+time+" 毫秒");
 //		PrintVertexId.printVertexId(GetVertexId.getVertexId(3));
-//		long start=System.currentTimeMillis();
 //		Diameter.diameterCompute(6);
-//		long time = System.currentTimeMillis() - start;
-//		System.out.println("运行耗时= "+time+" 毫秒");
 //		System.out.println(TGraph.graph[0].getPath());
 //		new TemGraph();
 //		System.out.println(GetNumOfVertex.getNumOfVertex(7));

@@ -27,7 +27,7 @@ public class LoadTG {
 			StringTokenizer token;
 			while ((str = br.readLine()) != null) {// 按行读入Datasets
 				token = new StringTokenizer(str);// 以空格作为分隔符得到两个顶点from->to
-				TGraph.snapshot.addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
+				TGraph.graphSnapshot.addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -93,7 +93,7 @@ public class LoadTG {
 			iterStr = deleteEdgeArr.get(i).iterator();
 			while (iterStr.hasNext()) {
 				stringTokenizer = new StringTokenizer(iterStr.next());
-				TGraph.snapshot.deleteEdge(Integer.parseInt(stringTokenizer.nextToken()),
+				TGraph.graphSnapshot.deleteEdge(Integer.parseInt(stringTokenizer.nextToken()),
 						Integer.parseInt(stringTokenizer.nextToken()));
 			}
 		}

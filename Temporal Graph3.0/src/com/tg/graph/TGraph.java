@@ -4,16 +4,16 @@ import com.tg.utils.LoadTG;
 
 public class TGraph {
 //	public static GraphSnapshot graphSnapshot;
-	public static Snapshot snapshot;
+	public static GraphSnapshot graphSnapshot;
 	public static SnapshotLog[] snapshotLogArr;
 //	public static ArrayList<double[]> pr;
 	public static void start(){
 		
-		snapshot = new Snapshot();
+		graphSnapshot = new GraphSnapshot();
 		LoadTG.loadGraph();//加载初始图快照
 		LoadTG.readRawLog();//读取日志
 		LoadTG.preCompute();//计算虚拟快照
-		snapshot.afterCompute();
+		graphSnapshot.afterCompute();
 		
 		//计算增量快照 △S0+ ... △S9+ 共十个增量快照
 		snapshotLogArr=new SnapshotLog[10];
@@ -29,10 +29,10 @@ public class TGraph {
 				snapshotLogArr[i].setAddEdge(LoadTG.deleteEdgeArr.get(j));
 			}
 		}
-		System.out.println(snapshotLogArr[0].getAddEdgeSize());
-		System.out.println(snapshotLogArr[1].getAddEdgeSize());
-		System.out.println(snapshotLogArr[2].getAddEdgeSize());
-		System.out.println(snapshotLogArr[3].getAddEdgeSize());
+		System.out.println("增量日志边数:"+snapshotLogArr[0].getAddEdgeSize());
+		System.out.println("增量日志边数:"+snapshotLogArr[1].getAddEdgeSize());
+		System.out.println("增量日志边数:"+snapshotLogArr[2].getAddEdgeSize());
+		System.out.println("增量日志边数:"+snapshotLogArr[3].getAddEdgeSize());
 		//计算pagerank
 //		PageRank.pageRank();
 //		for(int i=0;i<10;i++){
