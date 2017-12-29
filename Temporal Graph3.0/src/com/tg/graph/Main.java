@@ -1,40 +1,37 @@
 package com.tg.graph;
 
-import java.util.ArrayList;
-
 import com.tg.algorithm.PageRank;
-import com.tg.function.GetNumOfVertex;
+import com.tg.utils.MergeLogIntoGraph;
 
 //"DataSets/p2p-Gnutella09.txt";
 //"DataSets/p2p-Gnutella08.txt";
 //"DataSets/facebook_combined.txt";
 //"DataSets/test.txt";
 public class Main {
-	public static String fileName;
-	public static ArrayList<String> addEdgeList;
-	public static ArrayList<String> delEdgeList;
+	
 	
 	public static void main(String[] args) {
-		//加载数据集路径
-		fileName="DataSets/test.txt";
-		addEdgeList=new ArrayList<String>();
-		delEdgeList=new ArrayList<String>();
-		for(int i=1;i<10;i++){
-			addEdgeList.add("DataSets/addEdgesDay"+String.valueOf(i)+".txt");
-			delEdgeList.add("DataSets/deleteEdgesDay"+String.valueOf(i)+".txt");
-		}
+		
+		TGraph.loadDataSetsPath();//加载数据集
 		
 		TGraph.start();//构建时序图存储结构
-		long start=System.currentTimeMillis();
+		long start1=System.currentTimeMillis();
+		PageRank.resetPr(TGraph.graphSnapshot);
 		PageRank.pageRank(TGraph.graphSnapshot);
 		System.out.println(TGraph.graphSnapshot.getIterations());
-		long time = System.currentTimeMillis() - start;
-		System.out.println("运行耗时= "+time+" 毫秒");
-//		PrintVertexId.printVertexId(GetVertexId.getVertexId(3));
-//		Diameter.diameterCompute(6);
-//		System.out.println(TGraph.graph[0].getPath());
-//		new TemGraph();
-//		System.out.println(GetNumOfVertex.getNumOfVertex(7));
+		long time1= System.currentTimeMillis() - start1;
+		System.out.println("运行耗时= "+time1+" 毫秒");
 		
+		long start2=System.currentTimeMillis();
+		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
+		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
+		long time2 = System.currentTimeMillis() - start2;
+		System.out.println("运行耗时= "+time2+" 毫秒");
+		long start3=System.currentTimeMillis();
+		MergeLogIntoGraph.mergeLogIntoGraph(0);
+		PageRank.pageRank(TGraph.graphSnapshot);
+		System.out.println(TGraph.graphSnapshot.getIterations());
+		long time3 = System.currentTimeMillis() - start3;
+		System.out.println("运行耗时= "+time3+" 毫秒");
 	}
 }

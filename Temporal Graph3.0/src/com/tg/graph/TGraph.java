@@ -1,42 +1,39 @@
 package com.tg.graph;
 
+import java.util.ArrayList;
+
 import com.tg.utils.LoadTG;
+import com.tg.utils.LogToGraph;
 
 public class TGraph {
-//	public static GraphSnapshot graphSnapshot;
+	public static final int timeRange=10;
+	public static String fileName;
+	public static ArrayList<String> addEdgeList;
+	public static ArrayList<String> delEdgeList;
 	public static GraphSnapshot graphSnapshot;
 	public static SnapshotLog[] snapshotLogArr;
-//	public static ArrayList<double[]> pr;
-	public static void start(){
-		
-		graphSnapshot = new GraphSnapshot();
-		LoadTG.loadGraph();//加载初始图快照
-		LoadTG.readRawLog();//读取日志
-		LoadTG.preCompute();//计算虚拟快照
-		graphSnapshot.afterCompute();
-		
-		//计算增量快照 △S0+ ... △S9+ 共十个增量快照
-		snapshotLogArr=new SnapshotLog[10];
-		for(int i=0;i<10;i++) {
-			snapshotLogArr[i]=new SnapshotLog();
+	public static GraphSnapshot[] deltaGraphSnapshotArr;
+
+	public static void loadDataSetsPath() {
+		// 加载数据集路径
+		TGraph.fileName = "DataSets/test.txt";
+		TGraph.addEdgeList = new ArrayList<String>();
+		TGraph.delEdgeList = new ArrayList<String>();
+		for (int i = 1; i < 10; i++) {
+			TGraph.addEdgeList.add("DataSets/addEdgesDay" + String.valueOf(i) + ".txt");
+			TGraph.delEdgeList.add("DataSets/deleteEdgesDay" + String.valueOf(i) + ".txt");
 		}
+	}
+
+	public static void start() {
+
+		LoadTG.loadGraph();// 加载初始图快照
+		LoadTG.readRawLog();// 读取日志
+		LoadTG.computeVirtualGraphSnapshot();// 计算虚拟图快照
+		LoadTG.afterComputeVS();//对虚拟快照做一些处理
+		LoadTG.computeDeltaSnapshotLog();//计算增量日志快照
 		
-		for(int i=0;i<10;i++) {//i控制第几个增量快照,j控制第几个变化日志
-			for(int j=0;j<i;j++) {
-				snapshotLogArr[i].setAddEdge(LoadTG.addEdgeArr.get(j));
-			}
-			for(int j=i;j<9;j++) {
-				snapshotLogArr[i].setAddEdge(LoadTG.deleteEdgeArr.get(j));
-			}
-		}
-		System.out.println("增量日志边数:"+snapshotLogArr[0].getAddEdgeSize());
-		System.out.println("增量日志边数:"+snapshotLogArr[1].getAddEdgeSize());
-		System.out.println("增量日志边数:"+snapshotLogArr[2].getAddEdgeSize());
-		System.out.println("增量日志边数:"+snapshotLogArr[3].getAddEdgeSize());
-		//计算pagerank
-//		PageRank.pageRank();
-//		for(int i=0;i<10;i++){
-//			Diameter.diameterCompute(i);
-//		}
-	}//start
+		LogToGraph.transform();//将增量日志快照转变成增量图快照
+		
+	}
 }

@@ -1,12 +1,13 @@
 package com.tg.utils;
 
-import java.util.HashSet;
 import java.util.StringTokenizer;
+
 import com.tg.graph.GraphSnapshot;
+import com.tg.graph.TGraph;
 
 public class LogToGraph {//log转变成图
 	
-	public static GraphSnapshot[] logTographSnapshotArr=new GraphSnapshot[10];
+	
 //	public static void init() {
 //		logTographSnapshotArr=new GraphSnapshot[10];
 //		for(int i=0;i<10;i++) {
@@ -14,16 +15,18 @@ public class LogToGraph {//log转变成图
 //		}
 //	}
 //	
-	public static void transform(int day,HashSet<String> addEdge) {
-		logTographSnapshotArr[day]=new GraphSnapshot();
+	public static void transform() {
+		TGraph.deltaGraphSnapshotArr=new GraphSnapshot[TGraph.timeRange];
 		StringTokenizer token;
-		for(String string:addEdge) {
-			token=new StringTokenizer(string);
-			logTographSnapshotArr[day].addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
+		for(int i=0;i<TGraph.timeRange;i++) {
+			TGraph.deltaGraphSnapshotArr[i]=new GraphSnapshot();
+			for(String string:TGraph.snapshotLogArr[i].getAddEdge()) {
+				token=new StringTokenizer(string);
+				TGraph.deltaGraphSnapshotArr[i].addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
+			}
+			System.out.println("增量图快照的顶点数和边数"+i);
+			TGraph.deltaGraphSnapshotArr[i].countVerAndEdgeNum();
 		}
-		logTographSnapshotArr[day].countVerAndEdgeNum();
-		System.out.println("转换后的顶点数:"+logTographSnapshotArr[day].getNumOfVertex());
-		System.out.println("转换后的边数:"+logTographSnapshotArr[day].getNumOfEdges());
 	}
 
 }

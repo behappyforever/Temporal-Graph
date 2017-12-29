@@ -10,9 +10,15 @@ import com.tg.graph.Vertex;
 //其中 sum 为所有指向 i 点的点（设为 j） PageRank(j)/out_degree(j) 的累加值
 public class PageRank {
 	// 阈值
-	private static final double threshold = 0.000000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
+	private static final double threshold = 0.0000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
 	private static final double alpha = 0.85f;
 
+	public static void resetPr(GraphSnapshot graphSnapshot) {
+		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+			en.getValue().setPr(1.0f/graphSnapshot.getNumOfVertex());
+		}
+	}
+	
 	public static void pageRank(GraphSnapshot graphSnapshot) {
 		int numOfVertex = graphSnapshot.getNumOfVertex();
 		
@@ -23,7 +29,7 @@ public class PageRank {
 		}
 		boolean flag=compute(graphSnapshot, numOfVertex);
 		while (flag != true) {//未收敛
-			System.out.println(flag);
+//			System.out.println(flag);
 			for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 				en.getValue().setReceiveSumPr(0.0);
 			}
@@ -52,7 +58,7 @@ public class PageRank {
 			if(absTemp>threshold) {
 				flag=false;
 			}
-			System.out.println(absTemp);
+//			System.out.println(absTemp);
 		}
 		return flag;
 	}

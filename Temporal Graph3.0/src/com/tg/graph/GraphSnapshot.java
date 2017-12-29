@@ -1,6 +1,5 @@
 package com.tg.graph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -14,22 +13,6 @@ public class GraphSnapshot {
 
 	public GraphSnapshot() {
 		vertexMap = new HashMap<Integer, Vertex>();
-	}
-
-	public void afterCompute() {// 加载快照之后做一些计算工作
-		ArrayList<Integer> delTemp=new ArrayList<Integer>();
-		for(Entry<Integer,Vertex> en : vertexMap.entrySet()) {//删除孤立的点
-			numOfEdges+=en.getValue().getOut_degree();//统计快照边数
-			if(en.getValue().getIn_degree()==0&&en.getValue().getOut_degree()==0) {
-				delTemp.add(en.getKey());
-			}
-		}
-		for(Integer key:delTemp) {
-			vertexMap.remove(key);
-		}
-		numOfVertex=vertexMap.keySet().size();
-		System.out.println("虚拟快照顶点数:"+numOfVertex);
-		System.out.println("虚拟快照边数:"+numOfEdges);
 	}
 
 	public boolean addEdge(int from, int to) {
@@ -76,10 +59,14 @@ public class GraphSnapshot {
 	
 	public void countVerAndEdgeNum() {
 		numOfVertex=vertexMap.keySet().size();
+		numOfEdges=0;
 		for(Entry<Integer,Vertex> en :vertexMap.entrySet()) {
 			numOfEdges+=en.getValue().getOut_degree();//统计快照边数
 		}
+		System.out.println("顶点数:"+numOfVertex);
+		System.out.println("边数:"+numOfEdges);
 	}
+	
 	public HashMap<Integer, Vertex> getHashMap(){
 		return vertexMap;
 	}
