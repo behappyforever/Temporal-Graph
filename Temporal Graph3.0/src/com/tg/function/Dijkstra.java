@@ -36,7 +36,7 @@ public class Dijkstra {
 			for(int j=1;j<numOfVertex;j++){
 				if((!s[j])&&(dist[j]<temp)){
 					u=j;
-					temp=dist[j];//ÕÒ×îÐ¡µÄ
+					temp=dist[j];//æ‰¾æœ€å°çš„
 				}
 			}
 			s[u]=true;
