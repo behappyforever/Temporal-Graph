@@ -21,7 +21,7 @@ public class LoadTG {
 	public static ArrayList<HashSet<String>> addEdgeArr;// 0 1,1 2,2 3...
 	public static ArrayList<HashSet<String>> deleteEdgeArr;
 
-	public static void loadGraph() {// ¶Á³õÊ¼Í¼
+	public static void loadGraph() {// è¯»åˆå§‹å›¾
 		
 		TGraph.graphSnapshot = new GraphSnapshot();
 		BufferedReader br = null;
@@ -31,8 +31,8 @@ public class LoadTG {
 			br = new BufferedReader(fr);
 			String str;
 			StringTokenizer token;
-			while ((str = br.readLine()) != null) {// °´ĞĞ¶ÁÈëDatasets
-				token = new StringTokenizer(str);// ÒÔ¿Õ¸ñ×÷Îª·Ö¸ô·ûµÃµ½Á½¸ö¶¥µãfrom->to
+			while ((str = br.readLine()) != null) {// æŒ‰è¡Œè¯»å…¥Datasets
+				token = new StringTokenizer(str);// ä»¥ç©ºæ ¼ä½œä¸ºåˆ†éš”ç¬¦å¾—åˆ°ä¸¤ä¸ªé¡¶ç‚¹from->to
 				TGraph.graphSnapshot.addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
 			}
 		} catch (IOException e) {
@@ -51,7 +51,7 @@ public class LoadTG {
 	public static void readRawLog() {
 		addEdgeArr = new ArrayList<HashSet<String>>();
 		deleteEdgeArr = new ArrayList<HashSet<String>>();
-		for (int i = 0; i < 9; i++) {// 9¸öÈÕÖ¾
+		for (int i = 0; i < 9; i++) {// 9ä¸ªæ—¥å¿—
 			addEdgeArr.add(new HashSet<String>());
 			deleteEdgeArr.add(new HashSet<String>());
 		}
@@ -105,11 +105,11 @@ public class LoadTG {
 		}
 	}
 
-	public static void afterComputeVS() {// ¼ÓÔØ¿ìÕÕÖ®ºó×öÒ»Ğ©¼ÆËã¹¤×÷
+	public static void afterComputeVS() {// åŠ è½½å¿«ç…§ä¹‹ååšä¸€äº›è®¡ç®—å·¥ä½œ
 		GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
 		HashMap<Integer, Vertex> vertexMap = graphSnapshot.getHashMap();
 		ArrayList<Integer> delTemp = new ArrayList<Integer>();
-		for (Entry<Integer, Vertex> en : vertexMap.entrySet()) {// É¾³ı¹ÂÁ¢µÄµã
+		for (Entry<Integer, Vertex> en : vertexMap.entrySet()) {// åˆ é™¤å­¤ç«‹çš„ç‚¹
 			if (en.getValue().getIn_degree() == 0 && en.getValue().getOut_degree() == 0) {
 				delTemp.add(en.getKey());
 			}
@@ -117,18 +117,18 @@ public class LoadTG {
 		for (Integer key : delTemp) {
 			vertexMap.remove(key);
 		}
-		System.out.println("ĞéÄâ¿ìÕÕ¶¥µãÊıºÍ±ßÊı");
+		System.out.println("è™šæ‹Ÿå¿«ç…§é¡¶ç‚¹æ•°å’Œè¾¹æ•°");
 		graphSnapshot.countVerAndEdgeNum();
 	}
 
 	public static void computeDeltaSnapshotLog() {
-		// ¼ÆËãÔöÁ¿¿ìÕÕ ¡÷S0+ ... ¡÷S9+ ¹²Ê®¸öÔöÁ¿¿ìÕÕ
+		// è®¡ç®—å¢é‡å¿«ç…§ â–³S0+ ... â–³S9+ å…±åä¸ªå¢é‡å¿«ç…§
 		TGraph.snapshotLogArr = new SnapshotLog[10];
 		for (int i = 0; i < 10; i++) {
 			TGraph.snapshotLogArr[i] = new SnapshotLog();
 		}
 
-		for (int i = 0; i < 10; i++) {// i¿ØÖÆµÚ¼¸¸öÔöÁ¿¿ìÕÕ,j¿ØÖÆµÚ¼¸¸ö±ä»¯ÈÕÖ¾
+		for (int i = 0; i < 10; i++) {// iæ§åˆ¶ç¬¬å‡ ä¸ªå¢é‡å¿«ç…§,jæ§åˆ¶ç¬¬å‡ ä¸ªå˜åŒ–æ—¥å¿—
 			for (int j = 0; j < i; j++) {
 				TGraph.snapshotLogArr[i].setAddEdge(LoadTG.addEdgeArr.get(j));
 			}
@@ -136,9 +136,9 @@ public class LoadTG {
 				TGraph.snapshotLogArr[i].setAddEdge(LoadTG.deleteEdgeArr.get(j));
 			}
 		}
-		System.out.println("ÔöÁ¿ÈÕÖ¾±ßÊı:" + TGraph.snapshotLogArr[0].getAddEdgeSize());
-		System.out.println("ÔöÁ¿ÈÕÖ¾±ßÊı:" + TGraph.snapshotLogArr[1].getAddEdgeSize());
-		System.out.println("ÔöÁ¿ÈÕÖ¾±ßÊı:" + TGraph.snapshotLogArr[2].getAddEdgeSize());
-		System.out.println("ÔöÁ¿ÈÕÖ¾±ßÊı:" + TGraph.snapshotLogArr[3].getAddEdgeSize());
+		System.out.println("å¢é‡æ—¥å¿—è¾¹æ•°:" + TGraph.snapshotLogArr[0].getAddEdgeSize());
+		System.out.println("å¢é‡æ—¥å¿—è¾¹æ•°:" + TGraph.snapshotLogArr[1].getAddEdgeSize());
+		System.out.println("å¢é‡æ—¥å¿—è¾¹æ•°:" + TGraph.snapshotLogArr[2].getAddEdgeSize());
+		System.out.println("å¢é‡æ—¥å¿—è¾¹æ•°:" + TGraph.snapshotLogArr[3].getAddEdgeSize());
 	}
 }

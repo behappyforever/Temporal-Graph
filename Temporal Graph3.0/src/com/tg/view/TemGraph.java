@@ -12,52 +12,52 @@ public class TemGraph extends JFrame {
 	private static final long serialVersionUID=1l;
 	public TemGraph(){
 		setSize(800,600);
-		setTitle("Ê±ĞòÍ¼Êı¾İµÄ¹ÜÀíºÍ·ÖÎöÏµÍ³");
-//		setResizable(false); ÉèÖÃ´°Ìå´óĞ¡²»¿Éµ÷
+		setTitle("æ—¶åºå›¾æ•°æ®çš„ç®¡ç†å’Œåˆ†æç³»ç»Ÿ");
+//		setResizable(false); è®¾ç½®çª—ä½“å¤§å°ä¸å¯è°ƒ
 		JMenuBar jmenuBar=createJMenuBar();
 		setJMenuBar(jmenuBar);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
-	//×Ô¶¨Òå·½·¨createJMenuBar(),·µ»ØÒ»¸öJMenuBar¶ÔÏó£¬À´ÊµÏÖ´´½¨²Ëµ¥À¸µÄ¹¦ÄÜ£¬ÔÚ¹¹Ôì·½·¨ÖĞµ÷ÓÃ¸Ã·½·¨¡£
+	//è‡ªå®šä¹‰æ–¹æ³•createJMenuBar(),è¿”å›ä¸€ä¸ªJMenuBarå¯¹è±¡ï¼Œæ¥å®ç°åˆ›å»ºèœå•æ çš„åŠŸèƒ½ï¼Œåœ¨æ„é€ æ–¹æ³•ä¸­è°ƒç”¨è¯¥æ–¹æ³•ã€‚
 	private JMenuBar createJMenuBar(){
-		JMenuBar jMenuBar=new JMenuBar();//²Ëµ¥À¸
-		//²éÑ¯ºÃÓÑ
-		JMenu queryJMenu=new JMenu("²éÑ¯ºÃÓÑ");
-		//»ùÓÚµã
-		JMenuItem pointQueryJMI=new JMenuItem("»ùÓÚµã²éÑ¯");
+		JMenuBar jMenuBar=new JMenuBar();//èœå•æ 
+		//æŸ¥è¯¢å¥½å‹
+		JMenu queryJMenu=new JMenu("æŸ¥è¯¢å¥½å‹");
+		//åŸºäºç‚¹
+		JMenuItem pointQueryJMI=new JMenuItem("åŸºäºç‚¹æŸ¥è¯¢");
 		queryJMenu.add(pointQueryJMI);
-		//¸øÊÂ¼şÔ´×¢²á¼àÌıÆ÷
+		//ç»™äº‹ä»¶æºæ³¨å†Œç›‘å¬å™¨
 		pointQueryJMI.addActionListener(new PointQueryListener());
 		
-		//»ùÓÚ·¶Î§
-		JMenuItem rangeQueryJMI=new JMenuItem("»ùÓÚÊ±¼ä·¶Î§²éÑ¯");
+		//åŸºäºèŒƒå›´
+		JMenuItem rangeQueryJMI=new JMenuItem("åŸºäºæ—¶é—´èŒƒå›´æŸ¥è¯¢");
 		queryJMenu.add(rangeQueryJMI);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		rangeQueryJMI.addActionListener(new RangeQueryListener());
 		
-		//²éÑ¯¶¥µãpagerankÖµ
-		JMenu pagerankJMenu=new JMenu("²éÑ¯PageRankÖµ");
-		JMenuItem pageRankPointJMI=new JMenuItem("¿ìÕÕ¶¥µãPageRankÖµ");
-		JMenuItem pageRankRangeJMI=new JMenuItem("Ê±¼ä¶Î¶¥µãÆ½¾ùPageRankÖµ");
+		//æŸ¥è¯¢é¡¶ç‚¹pagerankå€¼
+		JMenu pagerankJMenu=new JMenu("æŸ¥è¯¢PageRankå€¼");
+		JMenuItem pageRankPointJMI=new JMenuItem("å¿«ç…§é¡¶ç‚¹PageRankå€¼");
+		JMenuItem pageRankRangeJMI=new JMenuItem("æ—¶é—´æ®µé¡¶ç‚¹å¹³å‡PageRankå€¼");
 		pagerankJMenu.add(pageRankPointJMI);
 		pagerankJMenu.add(pageRankRangeJMI);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		pageRankPointJMI.addActionListener(new PageRankPointListener());
 		pageRankRangeJMI.addActionListener(new PageRankRangeListener());
-		//ÔöÉ¾¹¦ÄÜ
-		JMenu changeJMenu=new JMenu("Î¬»¤");
-		JMenuItem infJMI=new JMenuItem("»ù±¾ĞÅÏ¢");
-		//×¢²á¼àÌıÆ÷
+		//å¢åˆ åŠŸèƒ½
+		JMenu changeJMenu=new JMenu("ç»´æŠ¤");
+		JMenuItem infJMI=new JMenuItem("åŸºæœ¬ä¿¡æ¯");
+		//æ³¨å†Œç›‘å¬å™¨
 		changeJMenu.add(infJMI);
 		infJMI.addActionListener(new DisplayListener());
-		//²éÑ¯Í¼Ö±¾¶
-		JMenu diameterJMenu=new JMenu("²éÑ¯Í¼Ö±¾¶");
-		JMenuItem diaPointJMI=new JMenuItem("Ê±¼äµã¿ìÕÕÖ±¾¶");
-		JMenuItem diaRangeJMI=new JMenuItem("Ê±¼ä¶ÎÆ½¾ùÖ±¾¶");
+		//æŸ¥è¯¢å›¾ç›´å¾„
+		JMenu diameterJMenu=new JMenu("æŸ¥è¯¢å›¾ç›´å¾„");
+		JMenuItem diaPointJMI=new JMenuItem("æ—¶é—´ç‚¹å¿«ç…§ç›´å¾„");
+		JMenuItem diaRangeJMI=new JMenuItem("æ—¶é—´æ®µå¹³å‡ç›´å¾„");
 		diameterJMenu.add(diaPointJMI);
 		diameterJMenu.add(diaRangeJMI);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		diaPointJMI.addActionListener(new DiameterPointListener());
 		diaRangeJMI.addActionListener(new DiameterRangeListener());
 		

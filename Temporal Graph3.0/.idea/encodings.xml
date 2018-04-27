@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/com/tg/algorithm/PageRank.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/function/Diameter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/com/tg/function/Dijkstra.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/function/GetVertexId.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/function/PageRank.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/function/PointQuery.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/function/RangeQuery.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/graph/GraphSnapshot.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/graph/Main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/graph/SnapshotLog.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/graph/TGraph.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/graph/Vertex.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/test/PrintVertexId.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/utils/LoadTG.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/utils/LogToGraph.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/utils/MergeLogIntoGraph.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/DiameterPointQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/DiameterRangeQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/DisplayView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/PageRankPointQueryAllView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/PageRankPointQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/PageRankRangeQueryAllView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/PageRankRangeQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/PointQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/RangeQueryView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/com/tg/view/TemGraph.java" charset="UTF-8" />
   </component>
 </project>

@@ -19,23 +19,23 @@ import com.tg.graph.TGraph;
 
 public class PageRankPointQueryView extends JFrame{
 	private static final long serialVersionUID=1l;
-	//¶¨ÒåÃæ°å
+	//å®šä¹‰é¢æ¿
 	private JPanel pageRankQueryJP,buttonJP;
-	//¶¨Òå±êÇ©
+	//å®šä¹‰æ ‡ç­¾
 	private JLabel vertexJL,timeJL;
-	//¶¨ÒåÎÄ±¾¿ò
+	//å®šä¹‰æ–‡æœ¬æ¡†
 	private JTextField vertexJTF;
-	//Ê±¼ä×éºÏ¿ò
+	//æ—¶é—´ç»„åˆæ¡†
 	private JComboBox<String> timeJCB;
-	//°´Å¥
+	//æŒ‰é’®
 	private JButton queryJB,queryAllJB;
-	//¹¹Ôì·½·¨
+	//æ„é€ æ–¹æ³•
 	public PageRankPointQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("²éÑ¯¶¥µãPageRankÖµ");
-		//°´Å¥Ãæ°å
+		setTitle("æŸ¥è¯¢é¡¶ç‚¹PageRankå€¼");
+		//æŒ‰é’®é¢æ¿
 		buttonJP=new JPanel();
-		//²éÑ¯Ãæ°åÉè¼Æ
+		//æŸ¥è¯¢é¢æ¿è®¾è®¡
 		pageRankQueryJP=new JPanel();
 		pageRankQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
 		final GridLayout gridLayout=new GridLayout(1, 2);
@@ -43,31 +43,31 @@ public class PageRankPointQueryView extends JFrame{
 		gridLayout.setHgap(10);
 		pageRankQueryJP.setLayout(gridLayout);
 		getContentPane().add(pageRankQueryJP);
-		//Ìí¼ÓÊ±¼ä±êÇ©µ½²éÑ¯Ãæ°å
-		timeJL=new JLabel("Ê±¼äµã:");
+		//æ·»åŠ æ—¶é—´æ ‡ç­¾åˆ°æŸ¥è¯¢é¢æ¿
+		timeJL=new JLabel("æ—¶é—´ç‚¹:");
 		timeJL.setHorizontalAlignment(SwingConstants.CENTER);
 		pageRankQueryJP.add(timeJL);
-		//Ê±¼äµãÏÂÀ­ÁĞ±í
+		//æ—¶é—´ç‚¹ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeJCB=new JComboBox<>(temp);
 		pageRankQueryJP.add(timeJCB);
-		//´´½¨¶¥µã±êÇ©ºÍÎÄ±¾¿ò²¢Ìí¼Óµ½²éÑ¯Ãæ°å
-		vertexJL=new JLabel("¶¥µã±àºÅ:");
+		//åˆ›å»ºé¡¶ç‚¹æ ‡ç­¾å’Œæ–‡æœ¬æ¡†å¹¶æ·»åŠ åˆ°æŸ¥è¯¢é¢æ¿
+		vertexJL=new JLabel("é¡¶ç‚¹ç¼–å·:");
 		vertexJL.setHorizontalAlignment(SwingConstants.CENTER);
 		pageRankQueryJP.add(vertexJL);
 		vertexJTF=new JTextField();
 		pageRankQueryJP.add(vertexJTF);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		queryAllJB=new JButton("²éÑ¯ËùÓĞ");
+		queryAllJB=new JButton("æŸ¥è¯¢æ‰€æœ‰");
 		buttonJP.add(queryAllJB);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new PageRankPointQueryActionListener());
 		queryAllJB.addActionListener(new PageRankQueryAllActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖĞ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(pageRankQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -75,22 +75,22 @@ public class PageRankPointQueryView extends JFrame{
 	class PageRankPointQueryActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(vertexJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "¶¥µã±àºÅ²»ÄÜÎª¿Õ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ç¼–å·ä¸èƒ½ä¸ºç©º");
 				return;
 			}
 			if(!vertexJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û£¬ÇëÊäÈë¶¥µãÊı×Ö±àºÅ");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦ï¼Œè¯·è¾“å…¥é¡¶ç‚¹æ•°å­—ç¼–å·");
 				return;
 			}
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String day=(String)timeJCB.getSelectedItem();
 			if(!TGraph.graph[Integer.parseInt(day)-1].vertexIsExist(vertex)){
-				JOptionPane.showMessageDialog(null, "¶¥µã²»´æÔÚ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ä¸å­˜åœ¨");
 				return;
 			}
 			double[] temp=TGraph.graph[Integer.parseInt(day)-1].getPr();
-//			DecimalFormat decimalFormat = new DecimalFormat("#,##0.000000000000000");//¸ñÊ½»¯ÉèÖÃ  
-			JOptionPane.showMessageDialog(null, "¸Ã¶¥µãPageRankÖµÎª:"+temp[vertex]);
+//			DecimalFormat decimalFormat = new DecimalFormat("#,##0.000000000000000");//æ ¼å¼åŒ–è®¾ç½®  
+			JOptionPane.showMessageDialog(null, "è¯¥é¡¶ç‚¹PageRankå€¼ä¸º:"+temp[vertex]);
 //			PointQueryView.this.setVisible(false);
 		}
 	}

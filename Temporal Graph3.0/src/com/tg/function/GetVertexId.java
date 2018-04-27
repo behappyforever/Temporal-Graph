@@ -7,7 +7,7 @@ import java.util.Set;
 import com.tg.graph.TGraph;
 import com.tg.graph.Vertex;
 
-//ÇóPageRankÊ±ÓÃµ½
+//æ±‚PageRankæ—¶ç”¨åˆ°
 public class GetVertexId {
 	public static Set<Integer> getVertexId(int day){
 		Set<Integer> set=new HashSet<Integer>();

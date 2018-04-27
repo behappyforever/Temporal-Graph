@@ -20,23 +20,23 @@ import com.tg.function.PointQuery;
 
 public class PointQueryView extends JFrame {
 	private static final long serialVersionUID=1l;
-	//¶¨ÒåÃæ°å
+	//å®šä¹‰é¢æ¿
 	private JPanel pointQueryJP,buttonJP;
-	//¶¨Òå±êÇ©
+	//å®šä¹‰æ ‡ç­¾
 	private JLabel vertexJL,timeJL;
-	//¶¨ÒåÎÄ±¾¿ò
+	//å®šä¹‰æ–‡æœ¬æ¡†
 	private JTextField vertexJTF;
-	//Ê±¼ä×éºÏ¿ò
+	//æ—¶é—´ç»„åˆæ¡†
 	private JComboBox<String> timeJCB;
-	//°´Å¥
+	//æŒ‰é’®
 	private JButton queryJB;
-	//¹¹Ôì·½·¨
+	//æ„é€ æ–¹æ³•
 	public PointQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("»ùÓÚÊ±¼äµã²éÑ¯");
-		//°´Å¥Ãæ°å
+		setTitle("åŸºäºæ—¶é—´ç‚¹æŸ¥è¯¢");
+		//æŒ‰é’®é¢æ¿
 		buttonJP=new JPanel();
-		//»ùÓÚÊ±¼äµã²éÑ¯Ãæ°åÉè¼Æ
+		//åŸºäºæ—¶é—´ç‚¹æŸ¥è¯¢é¢æ¿è®¾è®¡
 		pointQueryJP=new JPanel();
 		pointQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
 		final GridLayout gridLayout=new GridLayout(1, 2);
@@ -44,28 +44,28 @@ public class PointQueryView extends JFrame {
 		gridLayout.setHgap(10);
 		pointQueryJP.setLayout(gridLayout);
 		getContentPane().add(pointQueryJP);
-		//Ìí¼ÓÊ±¼ä±êÇ©µ½²éÑ¯Ãæ°å
-		timeJL=new JLabel("Ê±¼äµã:");
+		//æ·»åŠ æ—¶é—´æ ‡ç­¾åˆ°æŸ¥è¯¢é¢æ¿
+		timeJL=new JLabel("æ—¶é—´ç‚¹:");
 		timeJL.setHorizontalAlignment(SwingConstants.CENTER);
 		pointQueryJP.add(timeJL);
-		//Ê±¼äµãÏÂÀ­ÁĞ±í
+		//æ—¶é—´ç‚¹ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeJCB=new JComboBox<>(temp);
 		pointQueryJP.add(timeJCB);
-		//´´½¨¶¥µã±êÇ©ºÍÎÄ±¾¿ò²¢Ìí¼Óµ½²éÑ¯Ãæ°å
-		vertexJL=new JLabel("¶¥µã±àºÅ:");
+		//åˆ›å»ºé¡¶ç‚¹æ ‡ç­¾å’Œæ–‡æœ¬æ¡†å¹¶æ·»åŠ åˆ°æŸ¥è¯¢é¢æ¿
+		vertexJL=new JLabel("é¡¶ç‚¹ç¼–å·:");
 		vertexJL.setHorizontalAlignment(SwingConstants.CENTER);
 		pointQueryJP.add(vertexJL);
 		vertexJTF=new JTextField();
 		pointQueryJP.add(vertexJTF);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new PointQueryActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖĞ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(pointQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -73,22 +73,22 @@ public class PointQueryView extends JFrame {
 	class PointQueryActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(vertexJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "¶¥µã±àºÅ²»ÄÜÎª¿Õ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ç¼–å·ä¸èƒ½ä¸ºç©º");
 				return;
 			}
 			if(!vertexJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û£¬ÇëÊäÈë¶¥µãÊı×Ö±àºÅ");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦ï¼Œè¯·è¾“å…¥é¡¶ç‚¹æ•°å­—ç¼–å·");
 				return;
 			}
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String day=(String)timeJCB.getSelectedItem();
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(vertex)){
-				JOptionPane.showMessageDialog(null, "¶¥µã²»´æÔÚ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ä¸å­˜åœ¨");
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "¸Ã¶¥µã¹Ø×¢µÄ¶¥µãÓĞ"+PointQuery.pointQueryOutDegree(Integer.parseInt(day)-1, vertex)
-										  +"\n"+"¹Ø×¢¸Ã¶¥µãµÄ¶¥µãÓĞ"+PointQuery.pointQueryInDegree(Integer.parseInt(day)-1, vertex)
-										  +"\n"+"»¥Ïà¹Ø×¢µÄ¶¥µãÓĞ"+PointQuery.pointQuery(),"²éÑ¯½á¹û",1);
+			JOptionPane.showMessageDialog(null, "è¯¥é¡¶ç‚¹å…³æ³¨çš„é¡¶ç‚¹æœ‰"+PointQuery.pointQueryOutDegree(Integer.parseInt(day)-1, vertex)
+										  +"\n"+"å…³æ³¨è¯¥é¡¶ç‚¹çš„é¡¶ç‚¹æœ‰"+PointQuery.pointQueryInDegree(Integer.parseInt(day)-1, vertex)
+										  +"\n"+"äº’ç›¸å…³æ³¨çš„é¡¶ç‚¹æœ‰"+PointQuery.pointQuery(),"æŸ¥è¯¢ç»“æœ",1);
 			//			PointQueryView.this.setVisible(false);
 		}
 	}

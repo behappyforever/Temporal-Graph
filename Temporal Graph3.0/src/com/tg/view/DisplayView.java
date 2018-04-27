@@ -34,10 +34,10 @@ private static final long serialVersionUID=1l;
 	
 	public DisplayView(){
 		setBounds(200,200,500,500);
-		setTitle("Õ¹Ê¾Í¼µÄ»ù±¾ĞÅÏ¢");
+		setTitle("å±•ç¤ºå›¾çš„åŸºæœ¬ä¿¡æ¯");
 		jPanel=new JPanel();
 		jPanel.setLayout(new BorderLayout());
-		String[] display={"Ê±¼äµã","¶¥µãÊı","±ßÊı","ÊÇ·ñ´æ´¢ÍêÕûÍ¼¿ìÕÕ"};
+		String[] display={"æ—¶é—´ç‚¹","é¡¶ç‚¹æ•°","è¾¹æ•°","æ˜¯å¦å­˜å‚¨å®Œæ•´å›¾å¿«ç…§"};
 		Object[][] results=new Object[10][display.length];
 		for(int i=0;i<10;i++){
 			results[i][0]=i+1;
@@ -55,17 +55,17 @@ private static final long serialVersionUID=1l;
 	
 		buttonChangeJP=new JPanel();
 		buttonChangeJP.setLayout(null);
-		timeJL=new JLabel("Ê±¼äµã:");
+		timeJL=new JLabel("æ—¶é—´ç‚¹:");
 		buttonChangeJP.add(timeJL);
-		//Ê±¼äµãÏÂÀ­ÁĞ±í
+		//æ—¶é—´ç‚¹ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"2","3","4","5","6","7","8","9","10"};
 		timeJCB=new JComboBox<>(temp);
 		buttonChangeJP.add(timeJCB);
 		timeJCB.setBounds(10, 10, 50, 40);
-		addEdgeJB=new JButton("Ôö¼Ó±ß");
-		deleteEdgeJB=new JButton("É¾³ı±ß");
-		addVertexJB=new JButton("Ôö¼Ó¶¥µã");
-		deleteVertexJB=new JButton("É¾³ı¶¥µã");
+		addEdgeJB=new JButton("å¢åŠ è¾¹");
+		deleteEdgeJB=new JButton("åˆ é™¤è¾¹");
+		addVertexJB=new JButton("å¢åŠ é¡¶ç‚¹");
+		deleteVertexJB=new JButton("åˆ é™¤é¡¶ç‚¹");
 		buttonChangeJP.add(addEdgeJB);
 		buttonChangeJP.add(deleteEdgeJB);
 		buttonChangeJP.add(addVertexJB);
@@ -78,7 +78,7 @@ private static final long serialVersionUID=1l;
 		deleteEdgeJB.addActionListener(new DeleteEdgeActionListener());
 		addVertexJB.addActionListener(new AddVertexActionListener());
 		deleteVertexJB.addActionListener(new DeleteVertexActionListener());
-		fromEdgeJL=new JLabel("±ß:From");
+		fromEdgeJL=new JLabel("è¾¹:From");
 		buttonChangeJP.add(fromEdgeJL);
 		fromEdgeJL.setBounds(100, 10, 100, 40);
 		fromEdgeJTF=new JTextField();
@@ -90,7 +90,7 @@ private static final long serialVersionUID=1l;
 		toEdgeJTF=new JTextField();
 		buttonChangeJP.add(toEdgeJTF);
 		toEdgeJTF.setBounds(235, 10, 50, 40);
-		vertexJL=new JLabel("¶¥µã:");
+		vertexJL=new JLabel("é¡¶ç‚¹:");
 		buttonChangeJP.add(vertexJL);
 		vertexJL.setBounds(100,70,100,40);
 		vertexJTF=new JTextField();
@@ -115,22 +115,22 @@ private static final long serialVersionUID=1l;
 	class AddEdgeActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(fromEdgeJTF.getText().length()==0|toEdgeJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "ÊäÈë²»ÕıÈ·");
+				JOptionPane.showMessageDialog(null, "è¾“å…¥ä¸æ­£ç¡®");
 				return;
 			}
 			if(!fromEdgeJTF.getText().matches("[0-9]+")|!toEdgeJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦");
 				return;
 			}
-			int from=Integer.parseInt(fromEdgeJTF.getText().trim());//¶¥µã±àºÅ
+			int from=Integer.parseInt(fromEdgeJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			int to=Integer.parseInt(toEdgeJTF.getText().trim());
 			String day=(String)timeJCB.getSelectedItem();
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(from)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+from+"²»´æÔÚ£¬ÇëÏÈ¼ÓÈë¶¥µã");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+from+"ä¸å­˜åœ¨ï¼Œè¯·å…ˆåŠ å…¥é¡¶ç‚¹");
 				return;
 			}
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(to)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+to+"²»´æÔÚ£¬ÇëÏÈ¼ÓÈë¶¥µã");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+to+"ä¸å­˜åœ¨ï¼Œè¯·å…ˆåŠ å…¥é¡¶ç‚¹");
 				return;
 			}
 			new AddEdgeView(Integer.parseInt(day)-1,from,to);
@@ -139,22 +139,22 @@ private static final long serialVersionUID=1l;
 	class DeleteEdgeActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(fromEdgeJTF.getText().length()==0|toEdgeJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "ÊäÈë²»ÕıÈ·");
+				JOptionPane.showMessageDialog(null, "è¾“å…¥ä¸æ­£ç¡®");
 				return;
 			}
 			if(!fromEdgeJTF.getText().matches("[0-9]+")|!toEdgeJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦");
 				return;
 			}
-			int from=Integer.parseInt(fromEdgeJTF.getText().trim());//¶¥µã±àºÅ
+			int from=Integer.parseInt(fromEdgeJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			int to=Integer.parseInt(toEdgeJTF.getText().trim());
 			String day=(String)timeJCB.getSelectedItem();
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(from)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+from+"²»´æÔÚ£¬ÇëÏÈ¼ÓÈë¶¥µã");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+from+"ä¸å­˜åœ¨ï¼Œè¯·å…ˆåŠ å…¥é¡¶ç‚¹");
 				return;
 			}
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(to)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+to+"²»´æÔÚ£¬ÇëÏÈ¼ÓÈë¶¥µã");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+to+"ä¸å­˜åœ¨ï¼Œè¯·å…ˆåŠ å…¥é¡¶ç‚¹");
 				return;
 			}
 			new DeleteEdgeView(Integer.parseInt(day)-1,from,to);
@@ -163,17 +163,17 @@ private static final long serialVersionUID=1l;
 	class AddVertexActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(vertexJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "¶¥µã±àºÅ²»ÄÜÎª¿Õ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ç¼–å·ä¸èƒ½ä¸ºç©º");
 				return;
 			}
 			if(!vertexJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û£¬ÇëÊäÈë¶¥µãÊı×Ö±àºÅ");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦ï¼Œè¯·è¾“å…¥é¡¶ç‚¹æ•°å­—ç¼–å·");
 				return;
 			}
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String day=(String)timeJCB.getSelectedItem();
 			if(GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(vertex)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+vertex+"ÒÑ´æÔÚ£¬ÎŞ·¨Ìí¼Ó");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+vertex+"å·²å­˜åœ¨ï¼Œæ— æ³•æ·»åŠ ");
 				return;
 			}
 			new AddVertexView(Integer.parseInt(day)-1,vertex);
@@ -181,10 +181,10 @@ private static final long serialVersionUID=1l;
 	}
 	class DeleteVertexActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String day=(String)timeJCB.getSelectedItem();
 			if(!GetVertexId.getVertexId(Integer.parseInt(day)-1).contains(vertex)){
-				JOptionPane.showMessageDialog(null, "¶¥µã"+vertex+"²»´æÔÚ£¬ÎŞ·¨É¾³ı");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹"+vertex+"ä¸å­˜åœ¨ï¼Œæ— æ³•åˆ é™¤");
 				return;
 			}
 			new DeleteVertexView(Integer.parseInt(day)-1,vertex);

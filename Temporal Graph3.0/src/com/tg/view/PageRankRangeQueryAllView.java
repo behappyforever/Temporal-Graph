@@ -21,7 +21,7 @@ private static final long serialVersionUID=1l;
 	
 	public PageRankRangeQueryAllView(int from,int to){
 		setBounds(200,200,500,500);
-		setTitle("Õ¹Ê¾ËùÓÐ¶¥µãPageRankÖµ");
+		setTitle("å±•ç¤ºæ‰€æœ‰é¡¶ç‚¹PageRankå€¼");
 		jPanel=new JPanel();
 		jPanel.setLayout(new BorderLayout());
 		int range=to-from+1;
@@ -39,7 +39,7 @@ private static final long serialVersionUID=1l;
 				for(int k=0;k<arrayList.size();k++){
 					if(arrayList.get(k)==temp[j][0]){
 						temp[j][1]+=TGraph.graph[i].getPr()[k];
-						flag=true;//¶¥µã´æÔÚ
+						flag=true;//é¡¶ç‚¹å­˜åœ¨
 						break;
 					}
 				}
@@ -88,7 +88,7 @@ private static final long serialVersionUID=1l;
 		for (int j = 0; j < results.length ; j++) {
 			obj[j][0]=(int)results[j][0];
 		}
-		String[] display={"¶¥µãid    ","PageRankÖµ        "};
+		String[] display={"é¡¶ç‚¹id    ","PageRankå€¼        "};
 		jScrollPane=new JScrollPane();
 		jScrollPane.setPreferredSize(new Dimension(400, 200));
 		jTable=new JTable();

@@ -2,7 +2,7 @@ package com.tg.graph;
 
 import java.util.HashSet;
 
-public class SnapshotLog {//相对于虚拟快照VS的delta+增量快照
+public class SnapshotLog {//鐩稿浜庤櫄鎷熷揩鐓S鐨刣elta+澧為噺蹇収
 	private HashSet<String> addEdge;
 
 	public SnapshotLog() {

@@ -15,7 +15,7 @@ public class TGraph {
 	public static GraphSnapshot[] deltaGraphSnapshotArr;
 
 	public static void loadDataSetsPath() {
-		// ¼ÓÔØÊı¾İ¼¯Â·¾¶
+		// åŠ è½½æ•°æ®é›†è·¯å¾„
 		TGraph.fileName = "DataSets/test.txt";
 		TGraph.addEdgeList = new ArrayList<String>();
 		TGraph.delEdgeList = new ArrayList<String>();
@@ -27,13 +27,13 @@ public class TGraph {
 
 	public static void start() {
 
-		LoadTG.loadGraph();// ¼ÓÔØ³õÊ¼Í¼¿ìÕÕ
-		LoadTG.readRawLog();// ¶ÁÈ¡ÈÕÖ¾
-		LoadTG.computeVirtualGraphSnapshot();// ¼ÆËãĞéÄâÍ¼¿ìÕÕ
-		LoadTG.afterComputeVS();//¶ÔĞéÄâ¿ìÕÕ×öÒ»Ğ©´¦Àí
-		LoadTG.computeDeltaSnapshotLog();//¼ÆËãÔöÁ¿ÈÕÖ¾¿ìÕÕ
+		LoadTG.loadGraph();// åŠ è½½åˆå§‹å›¾å¿«ç…§
+		LoadTG.readRawLog();// è¯»å–æ—¥å¿—
+		LoadTG.computeVirtualGraphSnapshot();// è®¡ç®—è™šæ‹Ÿå›¾å¿«ç…§
+		LoadTG.afterComputeVS();//å¯¹è™šæ‹Ÿå¿«ç…§åšä¸€äº›å¤„ç†
+		LoadTG.computeDeltaSnapshotLog();//è®¡ç®—å¢é‡æ—¥å¿—å¿«ç…§
 		
-		LogToGraph.transform();//½«ÔöÁ¿ÈÕÖ¾¿ìÕÕ×ª±ä³ÉÔöÁ¿Í¼¿ìÕÕ
+		LogToGraph.transform();//å°†å¢é‡æ—¥å¿—å¿«ç…§è½¬å˜æˆå¢é‡å›¾å¿«ç…§
 		
 	}
 }

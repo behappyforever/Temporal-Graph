@@ -6,12 +6,12 @@ import java.util.Iterator;
 
 import com.tg.graph.TGraph;
 
-//³õÊ¼»¯£ºµãÖµ±íÊ¾ PageRank µÄ rank Öµ£¨double ÀàĞÍ£©£¬³õÊ¼Ê±£¬ËùÓĞµãÈ¡ÖµÎª 1/TotalNumVertices
-//µü´ú¹«Ê½£ºPageRank(i)=0.15/TotalNumVertices+0.85*sum£¬
-//ÆäÖĞ sum ÎªËùÓĞÖ¸Ïò i µãµÄµã£¨ÉèÎª j£© PageRank(j)/out_degree(j) µÄÀÛ¼ÓÖµ
+//åˆå§‹åŒ–ï¼šç‚¹å€¼è¡¨ç¤º PageRank çš„ rank å€¼ï¼ˆdouble ç±»å‹ï¼‰ï¼Œåˆå§‹æ—¶ï¼Œæ‰€æœ‰ç‚¹å–å€¼ä¸º 1/TotalNumVertices
+//è¿­ä»£å…¬å¼ï¼šPageRank(i)=0.15/TotalNumVertices+0.85*sumï¼Œ
+//å…¶ä¸­ sum ä¸ºæ‰€æœ‰æŒ‡å‘ i ç‚¹çš„ç‚¹ï¼ˆè®¾ä¸º jï¼‰ PageRank(j)/out_degree(j) çš„ç´¯åŠ å€¼
 public class PageRank {
-	//ãĞÖµ
-	private static double threshold=0.00001f;//Ô½Ğ¡ÒªÇó¾«¶ÈÔ½¸ß£¬µü´ú´ÎÊıÔ½´ó 10µÄ-5
+	//é˜ˆå€¼
+	private static double threshold=0.00001f;//è¶Šå°è¦æ±‚ç²¾åº¦è¶Šé«˜ï¼Œè¿­ä»£æ¬¡æ•°è¶Šå¤§ 10çš„-5
 	private static double alpha=0.85f;
 	private static double[] pr;
 	private static double[] last;
@@ -19,7 +19,7 @@ public class PageRank {
 	private static double sumOfPr=0;
 	
 	public static void pageRank(){
-		//µÚÒ»Ìì
+		//ç¬¬ä¸€å¤©
 		int numOfVertex=GetNumOfVertex.getNumOfVertex(0);
 		pr=new double[numOfVertex];
 		last=new double[numOfVertex];
@@ -35,7 +35,7 @@ public class PageRank {
 		TGraph.graph[0].setIterations(iterations);
 		TGraph.graph[0].setSumOfPr(sumOfPr);
 		TGraph.graph[0].setPr(pr);
-		//Ö®ºó¼¸Ìì
+		//ä¹‹åå‡ å¤©
 		for(int day=1;day<10;day++){
 			int num=GetNumOfVertex.getNumOfVertex(day);
 			double[] temp=new double[pr.length];
@@ -81,13 +81,13 @@ public class PageRank {
 		for(int i=0;i<numOfVertex;i++){
 			int size;
 			size=PointQuery.pointQueryOutDegree(day,prId.get(i)).size();
-			if(size==0){//Èç¹û¸Ãµã³ö¶ÈÎª0£¬Ôò½«prÖµÆ½·Ö¸øÆäËûn-1¸ö¶¥µã
+			if(size==0){//å¦‚æœè¯¥ç‚¹å‡ºåº¦ä¸º0ï¼Œåˆ™å°†prå€¼å¹³åˆ†ç»™å…¶ä»–n-1ä¸ªé¡¶ç‚¹
 				for(int j=0;j<numOfVertex;j++){
 					sumList.set(j, sumList.get(j)+pr[i]/(numOfVertex-1));
 				}
 				sumList.set(i, sumList.get(i)-pr[i]/(numOfVertex-1));
 			}
-			else{//Èç¹û¸Ãµã³ö¶È²»Îª0£¬Ôò½«prÖµÆ½·Ö¸øÆä³ö±ß¶¥µã
+			else{//å¦‚æœè¯¥ç‚¹å‡ºåº¦ä¸ä¸º0ï¼Œåˆ™å°†prå€¼å¹³åˆ†ç»™å…¶å‡ºè¾¹é¡¶ç‚¹
 				Iterator<Integer> iterator=PointQuery.pointQueryOutDegree(day,prId.get(i)).iterator();
 				while(iterator.hasNext()){
 					int temp=iterator.next();
@@ -121,7 +121,7 @@ public class PageRank {
 		boolean flag = true;  
         for (int i = 0; i < pr.length; i++) {  
             if (Math.abs(pr[i] - last[i]) > threshold) {  
-                flag = false;  //Ö»ÒªÓĞÒ»¸ö´óÓÚãĞÖµµÄ£¬¼´¼ÌĞøµü´ú
+                flag = false;  //åªè¦æœ‰ä¸€ä¸ªå¤§äºé˜ˆå€¼çš„ï¼Œå³ç»§ç»­è¿­ä»£
                 break;  
             }  
         }  

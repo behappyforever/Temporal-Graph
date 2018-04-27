@@ -6,8 +6,8 @@ import java.util.Set;
 
 public class PrintVertexId {
 	public static void printVertexId(Set<Integer> set){
-		System.out.println("¶¥µã¸öÊıÎª£º"+set.size());
-		System.out.println("¶¥µãidÈçÏÂ£º");
+		System.out.println("é¡¶ç‚¹ä¸ªæ•°ä¸ºï¼š"+set.size());
+		System.out.println("é¡¶ç‚¹idå¦‚ä¸‹ï¼š");
 		Iterator<Integer> iterator=set.iterator();
 		ArrayList<Integer> list=new ArrayList<Integer>();
 		while(iterator.hasNext()){

@@ -28,7 +28,7 @@ public class PageRankRangeQueryView extends JFrame{
 	
 	public PageRankRangeQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("²éÑ¯¶¥µãPageRankÖµ");
+		setTitle("æŸ¥è¯¢é¡¶ç‚¹PageRankå€¼");
 		buttonJP=new JPanel();
 		rangeQueryJP=new JPanel();
 		rangeQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -37,37 +37,37 @@ public class PageRankRangeQueryView extends JFrame{
 		gridLayout.setHgap(10);
 		rangeQueryJP.setLayout(gridLayout);
 		getContentPane().add(rangeQueryJP);
-		timeFromJL=new JLabel("Ê±¼ä:From");
+		timeFromJL=new JLabel("æ—¶é—´:From");
 		timeFromJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeFromJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁÐ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeFromJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeFromJCB);
-		//Ìí¼Óto
+		//æ·»åŠ to
 		timeToJL=new JLabel("To");
 		timeToJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeToJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁÐ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		timeToJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeToJCB);
-		//´´½¨¶¥µã±êÇ©ºÍÎÄ±¾¿ò²¢Ìí¼Óµ½²éÑ¯Ãæ°å
-		vertexJL=new JLabel("¶¥µã±àºÅ:");
+		//åˆ›å»ºé¡¶ç‚¹æ ‡ç­¾å’Œæ–‡æœ¬æ¡†å¹¶æ·»åŠ åˆ°æŸ¥è¯¢é¢æ¿
+		vertexJL=new JLabel("é¡¶ç‚¹ç¼–å·:");
 		vertexJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(vertexJL);
 		vertexJTF=new JTextField();
 		rangeQueryJP.add(vertexJTF);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		queryAllJB=new JButton("²éÑ¯ËùÓÐ");
+		queryAllJB=new JButton("æŸ¥è¯¢æ‰€æœ‰");
 		buttonJP.add(queryAllJB);
-		//×¢²á¼àÌýÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new PageRankRangeQueryActionListener());
 		queryAllJB.addActionListener(new PageRankRangeQueryAllActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖÐ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(rangeQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -75,14 +75,14 @@ public class PageRankRangeQueryView extends JFrame{
 	class PageRankRangeQueryActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(vertexJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "¶¥µã±àºÅ²»ÄÜÎª¿Õ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ç¼–å·ä¸èƒ½ä¸ºç©º");
 				return;
 			}
 			if(!vertexJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓÐ·Ç·¨×Ö·û£¬ÇëÊäÈë¶¥µãÊý×Ö±àºÅ");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éžæ³•å­—ç¬¦ï¼Œè¯·è¾“å…¥é¡¶ç‚¹æ•°å­—ç¼–å·");
 				return;
 			}
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String from=(String)timeFromJCB.getSelectedItem();
 			String to=(String)timeToJCB.getSelectedItem();
 			boolean temp=true;
@@ -93,11 +93,11 @@ public class PageRankRangeQueryView extends JFrame{
 				}
 			}
 			if(!temp){
-				JOptionPane.showMessageDialog(null, "¶¥µã²»´æÔÚ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ä¸å­˜åœ¨");
 				return;
 			}
 			if(Integer.parseInt(from)>=Integer.parseInt(to)){
-				JOptionPane.showMessageDialog(null,"Ê±¼ä¶ÎÑ¡ÔñÓÐÎó");
+				JOptionPane.showMessageDialog(null,"æ—¶é—´æ®µé€‰æ‹©æœ‰è¯¯");
 				return;
 			}
 			double count=0;
@@ -105,7 +105,7 @@ public class PageRankRangeQueryView extends JFrame{
 				count+=TGraph.graph[i].getPr()[vertex];
 			}
 			count=count/(Integer.parseInt(to)-Integer.parseInt(from)+1);
-			JOptionPane.showMessageDialog(null, "¸Ã¶¥µãPageRankÖµÎª:"+count);
+			JOptionPane.showMessageDialog(null, "è¯¥é¡¶ç‚¹PageRankå€¼ä¸º:"+count);
 		}
 	}
 	class PageRankRangeQueryAllActionListener implements ActionListener{
@@ -113,7 +113,7 @@ public class PageRankRangeQueryView extends JFrame{
 			String from=(String)timeFromJCB.getSelectedItem();
 			String to=(String)timeToJCB.getSelectedItem();
 			if(Integer.parseInt(from)>=Integer.parseInt(to)){
-				JOptionPane.showMessageDialog(null,"Ê±¼ä¶ÎÑ¡ÔñÓÐÎó");
+				JOptionPane.showMessageDialog(null,"æ—¶é—´æ®µé€‰æ‹©æœ‰è¯¯");
 				return;
 			}
 			new PageRankRangeQueryAllView(Integer.parseInt(from)-1,Integer.parseInt(to)-1);

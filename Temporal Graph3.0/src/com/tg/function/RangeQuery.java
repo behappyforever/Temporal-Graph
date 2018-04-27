@@ -10,8 +10,8 @@ import com.tg.graph.TGraph;
 public class RangeQuery {
 	private static Set<Integer> set1,set2,set3;
 	public static Set<Integer> rangeQueryOutDegree(int from,int to,int vertex){
-		//µÚÒ»ÖÖÇé¿ö fromÓëtoÖ®¼ä´æÔÚ´æ´¢¿ìÕÕµÄÊ±¼ä´Á£¬¼ÇµÚÒ»¸öÎªi£¬
-		//±éÀúfromµ½iÖ®¼äµÄdelete¼ÇÂ¼ºÍiµ½toµÄadd¼ÇÂ¼
+		//ç¬¬ä¸€ç§æƒ…å†µ fromä¸toä¹‹é—´å­˜åœ¨å­˜å‚¨å¿«ç…§çš„æ—¶é—´æˆ³ï¼Œè®°ç¬¬ä¸€ä¸ªä¸ºiï¼Œ
+		//éå†fromåˆ°iä¹‹é—´çš„deleteè®°å½•å’Œiåˆ°toçš„addè®°å½•
 		set1=new HashSet<Integer>();
 		set1.clear();
 		int i;
@@ -24,9 +24,9 @@ public class RangeQuery {
 				break;
 			}
 		}
-		if(flag){//µÚÒ»ÖÖÇé¿ö
+		if(flag){//ç¬¬ä¸€ç§æƒ…å†µ
 			set1.addAll(PointQuery.pointQueryOutDegree(i,vertex));
-			for(int j=from;j<i;j++){//´æÔÚ¹ı¾Í¼ÓÈëset
+			for(int j=from;j<i;j++){//å­˜åœ¨è¿‡å°±åŠ å…¥set
 				Iterator<String> iterator=TGraph.graph[j].getSnapLog().getDeleteEdge().iterator();
 				while (iterator.hasNext()) {
 					token=new StringTokenizer(iterator.next());
@@ -37,7 +37,7 @@ public class RangeQuery {
 					}
 				}
 				Iterator<Integer> iterator2=TGraph.graph[j].getSnapLog().getDeleteVertex().iterator();
-				while (iterator2.hasNext()) {//É¾³ı¶¥µãµÄ³ö±ß
+				while (iterator2.hasNext()) {//åˆ é™¤é¡¶ç‚¹çš„å‡ºè¾¹
 					p=iterator2.next();
 					if(p==vertex){
 						set1.addAll(PointQuery.pointQueryOutDegree(j, p));
@@ -56,7 +56,7 @@ public class RangeQuery {
 				}
 			}
 		 }//if
-		else{//µÚ¶şÖÖÇé¿ö£¬fromµ½toÖ®¼ä²»´æÔÚ´æ´¢ÍêÕû¿ìÕÕµÄÊ±¼ä´Á
+		else{//ç¬¬äºŒç§æƒ…å†µï¼Œfromåˆ°toä¹‹é—´ä¸å­˜åœ¨å­˜å‚¨å®Œæ•´å¿«ç…§çš„æ—¶é—´æˆ³
 			set1.addAll(PointQuery.pointQueryOutDegree(from,vertex));
 			for(int j=from+1;j<=to;j++){
 				Iterator<String> iterator=TGraph.graph[j].getSnapLog().getAddEdge().iterator();
@@ -87,7 +87,7 @@ public class RangeQuery {
 		}
 		if(flag){
 			set2.addAll(PointQuery.pointQueryInDegree(i,vertex));
-			for(int j=from;j<i;j++){//´æÔÚ¹ı¾Í¼ÓÈëset
+			for(int j=from;j<i;j++){//å­˜åœ¨è¿‡å°±åŠ å…¥set
 				Iterator<String> iterator=TGraph.graph[j].getSnapLog().getDeleteEdge().iterator();
 				while (iterator.hasNext()) {
 					token=new StringTokenizer(iterator.next());
@@ -98,7 +98,7 @@ public class RangeQuery {
 					}
 				}
 				Iterator<Integer> iterator2=TGraph.graph[j].getSnapLog().getDeleteVertex().iterator();
-				while (iterator2.hasNext()) {//É¾³ı¶¥µãµÄ³ö±ß
+				while (iterator2.hasNext()) {//åˆ é™¤é¡¶ç‚¹çš„å‡ºè¾¹
 					p=iterator2.next();
 					if(p==vertex){
 						set2.addAll(PointQuery.pointQueryInDegree(j, p));
@@ -117,7 +117,7 @@ public class RangeQuery {
 				}
 			}
 		}
-		else{//µÚ¶şÖÖÇé¿ö£¬fromµ½toÖ®¼ä²»´æÔÚ´æ´¢ÍêÕû¿ìÕÕµÄÊ±¼ä´Á
+		else{//ç¬¬äºŒç§æƒ…å†µï¼Œfromåˆ°toä¹‹é—´ä¸å­˜åœ¨å­˜å‚¨å®Œæ•´å¿«ç…§çš„æ—¶é—´æˆ³
 			set2.addAll(PointQuery.pointQueryInDegree(from,vertex));
 			for(int j=from+1;j<=to;j++){
 				Iterator<String> iterator=TGraph.graph[j].getSnapLog().getAddEdge().iterator();

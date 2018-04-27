@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class GraphSnapshot {
-	private int numOfVertex;//¶¥µãÊı
-	private int numOfEdges;//±ßÊı
+	private int numOfVertex;//é¡¶ç‚¹æ•°
+	private int numOfEdges;//è¾¹æ•°
 	private int iterations;
 
 	
@@ -17,13 +17,13 @@ public class GraphSnapshot {
 
 	public boolean addEdge(int from, int to) {
 
-		if (!vertexMap.containsKey(from)) {// ¶¥µã²»´æÔÚ£¬ÏÈ´´½¨
+		if (!vertexMap.containsKey(from)) {// é¡¶ç‚¹ä¸å­˜åœ¨ï¼Œå…ˆåˆ›å»º
 			vertexMap.put(from, new Vertex(from));
 		}
-		if (!vertexMap.containsKey(to)) {// ¶¥µã²»´æÔÚ£¬ÏÈ´´½¨
+		if (!vertexMap.containsKey(to)) {// é¡¶ç‚¹ä¸å­˜åœ¨ï¼Œå…ˆåˆ›å»º
 			vertexMap.put(to, new Vertex(to));
 		}
-		boolean flag=vertexMap.get(from).addEdge(to);// ÕÒµ½fromµÄ³ö±ß±í£¬¼ÓÈëto
+		boolean flag=vertexMap.get(from).addEdge(to);// æ‰¾åˆ°fromçš„å‡ºè¾¹è¡¨ï¼ŒåŠ å…¥to
 		if(flag) {
 			Vertex temp=vertexMap.get(to);
 			temp.setIn_degree(temp.getIn_degree()+1);
@@ -35,7 +35,7 @@ public class GraphSnapshot {
 
 	public boolean deleteEdge(int from, int to) {
 		Object o = vertexMap.get(from);
-		if (o != null) {// Ô´¶¥µã´æÔÚ
+		if (o != null) {// æºé¡¶ç‚¹å­˜åœ¨
 			Vertex vertex = (Vertex) o;
 			boolean flag= vertex.deleteEdge(to);
 			if(flag) {
@@ -61,10 +61,10 @@ public class GraphSnapshot {
 		numOfVertex=vertexMap.keySet().size();
 		numOfEdges=0;
 		for(Entry<Integer,Vertex> en :vertexMap.entrySet()) {
-			numOfEdges+=en.getValue().getOut_degree();//Í³¼Æ¿ìÕÕ±ßÊı
+			numOfEdges+=en.getValue().getOut_degree();//ç»Ÿè®¡å¿«ç…§è¾¹æ•°
 		}
-		System.out.println("¶¥µãÊı:"+numOfVertex);
-		System.out.println("±ßÊı:"+numOfEdges);
+		System.out.println("é¡¶ç‚¹æ•°:"+numOfVertex);
+		System.out.println("è¾¹æ•°:"+numOfEdges);
 	}
 	
 	public HashMap<Integer, Vertex> getHashMap(){

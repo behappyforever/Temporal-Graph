@@ -19,21 +19,21 @@ import com.tg.graph.TGraph;
 
 public class DiameterRangeQueryView extends JFrame{
 	private static final long serialVersionUID=1l;
-	//¶¨ÒåÃæ°å
+	//å®šä¹‰é¢æ¿
 	private JPanel rangeQueryJP,buttonJP;
-	//¶¨Òå±êÇ©
+	//å®šä¹‰æ ‡ç­¾
 	private JLabel timeFromJL,timeToJL;
-	//Ê±¼ä×éºÏ¿ò
+	//æ—¶é—´ç»„åˆæ¡†
 	private JComboBox<String> timeFromJCB,timeToJCB;
-	//°´Å¥
+	//æŒ‰é’®
 	private JButton queryJB;
-	//¹¹Ôì·½·¨
+	//æ„é€ æ–¹æ³•
 	public DiameterRangeQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("»ùÓÚÊ±¼ä·¶Î§²éÑ¯");
-		//°´Å¥Ãæ°å
+		setTitle("åŸºäºæ—¶é—´èŒƒå›´æŸ¥è¯¢");
+		//æŒ‰é’®é¢æ¿
 		buttonJP=new JPanel();
-		//»ùÓÚÊ±¼ä·¶Î§²éÑ¯Ãæ°åÉè¼Æ
+		//åŸºäºæ—¶é—´èŒƒå›´æŸ¥è¯¢é¢æ¿è®¾è®¡
 		rangeQueryJP=new JPanel();
 		rangeQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
 		final GridLayout gridLayout=new GridLayout(1, 3);
@@ -41,29 +41,29 @@ public class DiameterRangeQueryView extends JFrame{
 		gridLayout.setHgap(10);
 		rangeQueryJP.setLayout(gridLayout);
 		getContentPane().add(rangeQueryJP);
-		//Ìí¼ÓÊ±¼ä±êÇ©µ½²éÑ¯Ãæ°å
-		timeFromJL=new JLabel("Ê±¼ä:From");
+		//æ·»åŠ æ—¶é—´æ ‡ç­¾åˆ°æŸ¥è¯¢é¢æ¿
+		timeFromJL=new JLabel("æ—¶é—´:From");
 		timeFromJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeFromJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁĞ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeFromJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeFromJCB);
-		//Ìí¼Óto
+		//æ·»åŠ to
 		timeToJL=new JLabel("To");
 		timeToJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeToJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁĞ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		timeToJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeToJCB);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new RangeQueryActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖĞ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(rangeQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -73,7 +73,7 @@ public class DiameterRangeQueryView extends JFrame{
 			String from=(String)timeFromJCB.getSelectedItem();
 			String to=(String)timeToJCB.getSelectedItem();
 			if(Integer.parseInt(from)>=Integer.parseInt(to)){
-				JOptionPane.showMessageDialog(null,"Ê±¼ä¶ÎÑ¡ÔñÓĞÎó");
+				JOptionPane.showMessageDialog(null,"æ—¶é—´æ®µé€‰æ‹©æœ‰è¯¯");
 				return;
 			}
 			double diameter=0;
@@ -83,7 +83,7 @@ public class DiameterRangeQueryView extends JFrame{
 			}
 			diameter=diameter/range;
 			DecimalFormat decimalFormat = new DecimalFormat("#,##0.00000");
-			JOptionPane.showMessageDialog(null, "¸Ã¶ÎÊ±¼äÄÚÍ¼Ö±¾¶Îª£º"+decimalFormat.format(diameter),"²éÑ¯½á¹û",1);
+			JOptionPane.showMessageDialog(null, "è¯¥æ®µæ—¶é—´å†…å›¾ç›´å¾„ä¸ºï¼š"+decimalFormat.format(diameter),"æŸ¥è¯¢ç»“æœ",1);
 		}
 	}
 }

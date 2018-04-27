@@ -24,7 +24,7 @@ public class MergeLogIntoGraph {
 			}
 		}
 
-		System.out.println("ºÏ²¢ºó¶¥µãÊıºÍ±ßÊı");
+		System.out.println("åˆå¹¶åé¡¶ç‚¹æ•°å’Œè¾¹æ•°");
 		graphSnapshot.countVerAndEdgeNum();
 	}
 }

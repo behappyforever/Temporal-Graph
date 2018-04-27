@@ -18,21 +18,21 @@ import com.tg.graph.TGraph;
 
 public class DiameterPointQueryView extends JFrame{
 	private static final long serialVersionUID=1l;
-	//¶¨ÒåÃæ°å
+	//å®šä¹‰é¢æ¿
 	private JPanel pointQueryJP,buttonJP;
-	//¶¨Òå±êÇ©
+	//å®šä¹‰æ ‡ç­¾
 	private JLabel timeJL;
-	//Ê±¼ä×éºÏ¿ò
+	//æ—¶é—´ç»„åˆæ¡†
 	private JComboBox<String> timeJCB;
-	//°´Å¥
+	//æŒ‰é’®
 	private JButton queryJB;
-	//¹¹Ôì·½·¨
+	//æ„é€ æ–¹æ³•
 	public DiameterPointQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("»ùÓÚÊ±¼äµã²éÑ¯");
-		//°´Å¥Ãæ°å
+		setTitle("åŸºäºæ—¶é—´ç‚¹æŸ¥è¯¢");
+		//æŒ‰é’®é¢æ¿
 		buttonJP=new JPanel();
-		//»ùÓÚÊ±¼äµã²éÑ¯Ãæ°åÉè¼Æ
+		//åŸºäºæ—¶é—´ç‚¹æŸ¥è¯¢é¢æ¿è®¾è®¡
 		pointQueryJP=new JPanel();
 		pointQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
 		final GridLayout gridLayout=new GridLayout(1, 2);
@@ -40,22 +40,22 @@ public class DiameterPointQueryView extends JFrame{
 		gridLayout.setHgap(10);
 		pointQueryJP.setLayout(gridLayout);
 		getContentPane().add(pointQueryJP);
-		//Ìí¼ÓÊ±¼ä±êÇ©µ½²éÑ¯Ãæ°å
-		timeJL=new JLabel("Ê±¼äµã:");
+		//æ·»åŠ æ—¶é—´æ ‡ç­¾åˆ°æŸ¥è¯¢é¢æ¿
+		timeJL=new JLabel("æ—¶é—´ç‚¹:");
 		timeJL.setHorizontalAlignment(SwingConstants.CENTER);
 		pointQueryJP.add(timeJL);
-		//Ê±¼äµãÏÂÀ­ÁĞ±í
+		//æ—¶é—´ç‚¹ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeJCB=new JComboBox<>(temp);
 		pointQueryJP.add(timeJCB);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new PointQueryActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖĞ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(pointQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -63,7 +63,7 @@ public class DiameterPointQueryView extends JFrame{
 	class PointQueryActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			String day=(String)timeJCB.getSelectedItem();
-			JOptionPane.showMessageDialog(null, "¸ÃÊ±¿Ì¿ìÕÕµÄÖ±¾¶Îª£º"+TGraph.graph[Integer.parseInt(day)-1].getDiameter()+"\n"+"Â·¾¶Îª£º"+TGraph.graph[Integer.parseInt(day)-1].getPath(),"²éÑ¯½á¹û",1);
+			JOptionPane.showMessageDialog(null, "è¯¥æ—¶åˆ»å¿«ç…§çš„ç›´å¾„ä¸ºï¼š"+TGraph.graph[Integer.parseInt(day)-1].getDiameter()+"\n"+"è·¯å¾„ä¸ºï¼š"+TGraph.graph[Integer.parseInt(day)-1].getPath(),"æŸ¥è¯¢ç»“æœ",1);
 		}
 	}
 }

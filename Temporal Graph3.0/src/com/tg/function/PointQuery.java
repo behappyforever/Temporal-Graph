@@ -9,7 +9,7 @@ import com.tg.graph.TGraph;
 
 public class PointQuery {
 	private static Set<Integer> set1,set2,set3;
-	public static Set<Integer> pointQueryOutDegree(int day,int v){//存取快照的时间点
+	public static Set<Integer> pointQueryOutDegree(int day,int v){//瀛樺彇蹇収鐨勬椂闂寸偣
 		set1=new HashSet<Integer>();
 		if(TGraph.graph[day].getFlag()==true){
 			if(TGraph.graph[day].getOutDegree(v)!=null)
@@ -60,7 +60,7 @@ public class PointQuery {
 		return set1;
 	}
 	
-	public static Set<Integer> pointQueryInDegree(int day,int v){//存取快照的时间点
+	public static Set<Integer> pointQueryInDegree(int day,int v){//瀛樺彇蹇収鐨勬椂闂寸偣
 		set2=new HashSet<Integer>();
 		set2.clear();
 		if(TGraph.graph[day].getFlag()==true){

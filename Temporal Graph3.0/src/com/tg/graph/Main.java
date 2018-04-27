@@ -12,26 +12,26 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		TGraph.loadDataSetsPath();//¼ÓÔØÊı¾İ¼¯
+		TGraph.loadDataSetsPath();//åŠ è½½æ•°æ®é›†
 		
-		TGraph.start();//¹¹½¨Ê±ĞòÍ¼´æ´¢½á¹¹
+		TGraph.start();//æ„å»ºæ—¶åºå›¾å­˜å‚¨ç»“æ„
 		long start1=System.currentTimeMillis();
 		PageRank.resetPr(TGraph.graphSnapshot);
 		PageRank.pageRank(TGraph.graphSnapshot);
 		System.out.println(TGraph.graphSnapshot.getIterations());
 		long time1= System.currentTimeMillis() - start1;
-		System.out.println("ÔËĞĞºÄÊ±= "+time1+" ºÁÃë");
+		System.out.println("è¿è¡Œè€—æ—¶= "+time1+" æ¯«ç§’");
 		
 		long start2=System.currentTimeMillis();
 		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
 		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
 		long time2 = System.currentTimeMillis() - start2;
-		System.out.println("ÔËĞĞºÄÊ±= "+time2+" ºÁÃë");
+		System.out.println("è¿è¡Œè€—æ—¶= "+time2+" æ¯«ç§’");
 		long start3=System.currentTimeMillis();
 		MergeLogIntoGraph.mergeLogIntoGraph(0);
 		PageRank.pageRank(TGraph.graphSnapshot);
 		System.out.println(TGraph.graphSnapshot.getIterations());
 		long time3 = System.currentTimeMillis() - start3;
-		System.out.println("ÔËĞĞºÄÊ±= "+time3+" ºÁÃë");
+		System.out.println("è¿è¡Œè€—æ—¶= "+time3+" æ¯«ç§’");
 	}
 }

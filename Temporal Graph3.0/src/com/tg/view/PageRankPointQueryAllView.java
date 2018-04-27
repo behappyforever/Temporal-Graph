@@ -21,10 +21,10 @@ public class PageRankPointQueryAllView extends JFrame{
 	
 	public PageRankPointQueryAllView(int day){
 		setBounds(200,200,500,500);
-		setTitle("Õ¹Ê¾ËùÓÐ¶¥µãPageRankÖµ");
+		setTitle("å±•ç¤ºæ‰€æœ‰é¡¶ç‚¹PageRankå€¼");
 		jPanel=new JPanel();
 		jPanel.setLayout(new BorderLayout());
-		String[] display={"¶¥µãid  µü´ú´ÎÊý"+TGraph.graph[day].getIterations(),"PageRankÖµ   ×ÜºÍ"+TGraph.graph[day].getSumOfPr()};
+		String[] display={"é¡¶ç‚¹id  è¿­ä»£æ¬¡æ•°"+TGraph.graph[day].getIterations(),"PageRankå€¼   æ€»å’Œ"+TGraph.graph[day].getSumOfPr()};
 		double[][] results=new double[GetNumOfVertex.getNumOfVertex(day)][display.length];
 		ArrayList<Integer> arrayList=TGraph.graph[day].getVertexId();
 		for(int i=0;i<GetNumOfVertex.getNumOfVertex(day);i++){

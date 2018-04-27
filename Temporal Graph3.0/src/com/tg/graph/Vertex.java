@@ -8,7 +8,7 @@ public class Vertex{
 	private int out_degree;
 	private double pr;
 	private double receiveSumPr;
-	private LinkedList<Integer> outGoing;//±ß±í½áµã£¬ÒÔÁ´±íµÄĞÎÊ½´æ´¢¸Ã¶¥µãËùÖ¸ÏòµÄ±ß
+	private LinkedList<Integer> outGoing;//è¾¹è¡¨ç»“ç‚¹ï¼Œä»¥é“¾è¡¨çš„å½¢å¼å­˜å‚¨è¯¥é¡¶ç‚¹æ‰€æŒ‡å‘çš„è¾¹
 	public Vertex(int id){
 		setId(id);
 		in_degree=0;
@@ -17,22 +17,22 @@ public class Vertex{
 		outGoing=new LinkedList<Integer>();
 	}
 	
-	public boolean addEdge(int v){//¸Ã¶¥µã±ß±í¼ÓÈë»¡Í·¶¥µãid
+	public boolean addEdge(int v){//è¯¥é¡¶ç‚¹è¾¹è¡¨åŠ å…¥å¼§å¤´é¡¶ç‚¹id
 		if(!outGoing.contains(v)){
 			outGoing.add(v);
 			out_degree++;
 			return true;
 		}
-		return false;//ÒÑ´æÔÚ
+		return false;//å·²å­˜åœ¨
 	}
-	public boolean deleteEdge(int v){//´«Èë¶¥µãid
+	public boolean deleteEdge(int v){//ä¼ å…¥é¡¶ç‚¹id
 		int temp=outGoing.indexOf(v);
 		if(temp!=-1){
-			outGoing.remove(temp);//´Ë´¦´«ÈëµÄÊÇË÷Òı
+			outGoing.remove(temp);//æ­¤å¤„ä¼ å…¥çš„æ˜¯ç´¢å¼•
 			out_degree--;
 			return true;
 		}
-		return false;//ÒÑÉ¾³ı
+		return false;//å·²åˆ é™¤
 	}
 	public int getId() {
 		return id;
@@ -65,7 +65,7 @@ public class Vertex{
 	public double getPr() {
 		return pr;
 	}
-	public double setPr(double pr) {//´Ëset·½·¨·µ»ØÖµÓÃÓÚÅĞ¶ÏÊÇ·ñÊÕÁ²
+	public double setPr(double pr) {//æ­¤setæ–¹æ³•è¿”å›å€¼ç”¨äºåˆ¤æ–­æ˜¯å¦æ”¶æ•›
 		double temp=Math.abs(this.pr-pr);
 		this.pr=pr;
 		return temp;

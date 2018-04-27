@@ -5,12 +5,12 @@ import java.util.Map.Entry;
 import com.tg.graph.GraphSnapshot;
 import com.tg.graph.Vertex;
 
-//³õÊ¼»¯£ºµãÖµ±íÊ¾ PageRank µÄ rank Öµ£¨double ÀàĞÍ£©£¬³õÊ¼Ê±£¬ËùÓĞµãÈ¡ÖµÎª 1/TotalNumVertices
-//µü´ú¹«Ê½£ºPageRank(i)=0.15/TotalNumVertices+0.85*sum£¬
-//ÆäÖĞ sum ÎªËùÓĞÖ¸Ïò i µãµÄµã£¨ÉèÎª j£© PageRank(j)/out_degree(j) µÄÀÛ¼ÓÖµ
+//åˆå§‹åŒ–ï¼šç‚¹å€¼è¡¨ç¤º PageRank çš„ rank å€¼ï¼ˆdouble ç±»å‹ï¼‰ï¼Œåˆå§‹æ—¶ï¼Œæ‰€æœ‰ç‚¹å–å€¼ä¸º 1/TotalNumVertices
+//è¿­ä»£å…¬å¼ï¼šPageRank(i)=0.15/TotalNumVertices+0.85*sumï¼Œ
+//å…¶ä¸­ sum ä¸ºæ‰€æœ‰æŒ‡å‘ i ç‚¹çš„ç‚¹ï¼ˆè®¾ä¸º jï¼‰ PageRank(j)/out_degree(j) çš„ç´¯åŠ å€¼
 public class PageRank {
-	// ãĞÖµ
-	private static final double threshold = 0.0000000000000001;// Ô½Ğ¡ÒªÇó¾«¶ÈÔ½¸ß£¬µü´ú´ÎÊıÔ½´ó 10µÄ-5
+	// é˜ˆå€¼
+	private static final double threshold = 0.0000000000000001;// è¶Šå°è¦æ±‚ç²¾åº¦è¶Šé«˜ï¼Œè¿­ä»£æ¬¡æ•°è¶Šå¤§ 10çš„-5
 	private static final double alpha = 0.85f;
 
 	public static void resetPr(GraphSnapshot graphSnapshot) {
@@ -28,7 +28,7 @@ public class PageRank {
 			en.getValue().setReceiveSumPr(0.0);
 		}
 		boolean flag=compute(graphSnapshot, numOfVertex);
-		while (flag != true) {//Î´ÊÕÁ²
+		while (flag != true) {//æœªæ”¶æ•›
 //			System.out.println(flag);
 			for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 				en.getValue().setReceiveSumPr(0.0);
@@ -40,14 +40,14 @@ public class PageRank {
 	}
 
 	private static boolean compute(GraphSnapshot graphSnapshot, int numOfVertex) {
-		boolean flag=true;//ÓÃÓÚÅĞ¶ÏÊÇ·ñÊÕÁ²
+		boolean flag=true;//ç”¨äºåˆ¤æ–­æ˜¯å¦æ”¶æ•›
 		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
-			if(en.getValue().getOutGoingList().size()==0) {// Èç¹û¸Ãµã³ö¶ÈÎª0£¬Ôò½«prÖµÆ½·Ö¸øÆäËûn-1¸ö¶¥µã
+			if(en.getValue().getOutGoingList().size()==0) {// å¦‚æœè¯¥ç‚¹å‡ºåº¦ä¸º0ï¼Œåˆ™å°†prå€¼å¹³åˆ†ç»™å…¶ä»–n-1ä¸ªé¡¶ç‚¹
 				for(Entry<Integer,Vertex> enInner : graphSnapshot.getHashMap().entrySet()) {
 					enInner.getValue().addReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
 				}
 			   en.getValue().deleteReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
-			}else {// Èç¹û¸Ãµã³ö¶È²»Îª0£¬Ôò½«prÖµÆ½·Ö¸øÆä³ö±ß¶¥µã
+			}else {// å¦‚æœè¯¥ç‚¹å‡ºåº¦ä¸ä¸º0ï¼Œåˆ™å°†prå€¼å¹³åˆ†ç»™å…¶å‡ºè¾¹é¡¶ç‚¹
 				for(Integer integer:en.getValue().getOutGoingList()) {
 					graphSnapshot.getHashMap().get(integer).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
 				}

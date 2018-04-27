@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 import com.tg.graph.GraphSnapshot;
 import com.tg.graph.TGraph;
 
-public class LogToGraph {//log转变成图
+public class LogToGraph {//log杞彉鎴愬浘
 	
 	
 //	public static void init() {
@@ -24,7 +24,7 @@ public class LogToGraph {//log转变成图
 				token=new StringTokenizer(string);
 				TGraph.deltaGraphSnapshotArr[i].addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
 			}
-			System.out.println("增量图快照的顶点数和边数"+i);
+			System.out.println("澧為噺鍥惧揩鐓х殑椤剁偣鏁板拰杈规暟"+i);
 			TGraph.deltaGraphSnapshotArr[i].countVerAndEdgeNum();
 		}
 	}

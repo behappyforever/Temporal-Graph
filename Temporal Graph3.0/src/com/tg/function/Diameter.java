@@ -36,9 +36,9 @@ public class Diameter{
 		 }
 		 TGraph.graph[day].setDiameter(diameter);
 		 TGraph.graph[day].setPath(TGraph.graph[day].getVertexId().get(maxi));
-//		 System.out.print("Í¼Ö±¾¶Îª£º");
+//		 System.out.print("å›¾ç›´å¾„ä¸ºï¼š");
 //		 System.out.println(diameter);
-//		 System.out.println("Â·¾¶Îª£º");
+//		 System.out.println("è·¯å¾„ä¸ºï¼š");
 //		 System.out.print(TGraph.graph[day].getVertexId().get(maxi)+"->");
 		 ArrayList<Integer> temp=new ArrayList<Integer>();
 		 temp=Dijkstra.computeShortestPath(day, maxi,maxj);

@@ -20,23 +20,23 @@ import com.tg.function.RangeQuery;
 
 public class RangeQueryView extends JFrame {
 	private static final long serialVersionUID=1l;
-	//¶¨ÒåÃæ°å
+	//å®šä¹‰é¢æ¿
 	private JPanel rangeQueryJP,buttonJP;
-	//¶¨Òå±êÇ©
+	//å®šä¹‰æ ‡ç­¾
 	private JLabel vertexJL,timeFromJL,timeToJL;
-	//¶¨ÒåÎÄ±¾¿ò
+	//å®šä¹‰æ–‡æœ¬æ¡†
 	private JTextField vertexJTF;
-	//Ê±¼ä×éºÏ¿ò
+	//æ—¶é—´ç»„åˆæ¡†
 	private JComboBox<String> timeFromJCB,timeToJCB;
-	//°´Å¥
+	//æŒ‰é’®
 	private JButton queryJB;
-	//¹¹Ôì·½·¨
+	//æ„é€ æ–¹æ³•
 	public RangeQueryView(){
 		setBounds(200,200,500,110);
-		setTitle("»ùÓÚÊ±¼ä·¶Î§²éÑ¯");
-		//°´Å¥Ãæ°å
+		setTitle("åŸºäºæ—¶é—´èŒƒå›´æŸ¥è¯¢");
+		//æŒ‰é’®é¢æ¿
 		buttonJP=new JPanel();
-		//»ùÓÚÊ±¼ä·¶Î§²éÑ¯Ãæ°åÉè¼Æ
+		//åŸºäºæ—¶é—´èŒƒå›´æŸ¥è¯¢é¢æ¿è®¾è®¡
 		rangeQueryJP=new JPanel();
 		rangeQueryJP.setBorder(new EmptyBorder(5, 10, 5, 10));
 		final GridLayout gridLayout=new GridLayout(1, 3);
@@ -44,35 +44,35 @@ public class RangeQueryView extends JFrame {
 		gridLayout.setHgap(10);
 		rangeQueryJP.setLayout(gridLayout);
 		getContentPane().add(rangeQueryJP);
-		//Ìí¼ÓÊ±¼ä±êÇ©µ½²éÑ¯Ãæ°å
-		timeFromJL=new JLabel("Ê±¼ä:From");
+		//æ·»åŠ æ—¶é—´æ ‡ç­¾åˆ°æŸ¥è¯¢é¢æ¿
+		timeFromJL=new JLabel("æ—¶é—´:From");
 		timeFromJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeFromJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁĞ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		String[] temp={"1","2","3","4","5","6","7","8","9","10"};
 		timeFromJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeFromJCB);
-		//Ìí¼Óto
+		//æ·»åŠ to
 		timeToJL=new JLabel("To");
 		timeToJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(timeToJL);
-		//Ê±¼ä·¶Î§ÏÂÀ­ÁĞ±í
+		//æ—¶é—´èŒƒå›´ä¸‹æ‹‰åˆ—è¡¨
 		timeToJCB=new JComboBox<>(temp);
 		rangeQueryJP.add(timeToJCB);
-		//´´½¨¶¥µã±êÇ©ºÍÎÄ±¾¿ò²¢Ìí¼Óµ½²éÑ¯Ãæ°å
-		vertexJL=new JLabel("¶¥µã±àºÅ:");
+		//åˆ›å»ºé¡¶ç‚¹æ ‡ç­¾å’Œæ–‡æœ¬æ¡†å¹¶æ·»åŠ åˆ°æŸ¥è¯¢é¢æ¿
+		vertexJL=new JLabel("é¡¶ç‚¹ç¼–å·:");
 		vertexJL.setHorizontalAlignment(SwingConstants.CENTER);
 		rangeQueryJP.add(vertexJL);
 		vertexJTF=new JTextField();
 		rangeQueryJP.add(vertexJTF);
-		//°´Å¥Ãæ°åÉè¼Æ
-		queryJB=new JButton("²éÑ¯");
+		//æŒ‰é’®é¢æ¿è®¾è®¡
+		queryJB=new JButton("æŸ¥è¯¢");
 		buttonJP.add(queryJB);
-		//×¢²á¼àÌıÆ÷
+		//æ³¨å†Œç›‘å¬å™¨
 		queryJB.addActionListener(new RangeQueryActionListener());
-		//Ìí¼Ó²éÑ¯Ãæ°å·ÅÔÚ´°ÌåµÄÖĞ²¿
+		//æ·»åŠ æŸ¥è¯¢é¢æ¿æ”¾åœ¨çª—ä½“çš„ä¸­éƒ¨
 		this.add(rangeQueryJP,BorderLayout.CENTER);
-		//Ìí¼Ó°´Å¥Ãæ°å·ÅÔÚ´°ÌåµÄÄÏ²¿
+		//æ·»åŠ æŒ‰é’®é¢æ¿æ”¾åœ¨çª—ä½“çš„å—éƒ¨
 		this.add(buttonJP,BorderLayout.SOUTH);
 		this.setVisible(true);
 		setResizable(false);
@@ -80,14 +80,14 @@ public class RangeQueryView extends JFrame {
 	class RangeQueryActionListener implements ActionListener{
 		public void actionPerformed(final ActionEvent e){
 			if(vertexJTF.getText().length()==0){
-				JOptionPane.showMessageDialog(null, "¶¥µã±àºÅ²»ÄÜÎª¿Õ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ç¼–å·ä¸èƒ½ä¸ºç©º");
 				return;
 			}
 			if(!vertexJTF.getText().matches("[0-9]+")){
-				JOptionPane.showMessageDialog(null, "º¬ÓĞ·Ç·¨×Ö·û£¬ÇëÊäÈë¶¥µãÊı×Ö±àºÅ");
+				JOptionPane.showMessageDialog(null, "å«æœ‰éæ³•å­—ç¬¦ï¼Œè¯·è¾“å…¥é¡¶ç‚¹æ•°å­—ç¼–å·");
 				return;
 			}
-			int vertex=Integer.parseInt(vertexJTF.getText().trim());//¶¥µã±àºÅ
+			int vertex=Integer.parseInt(vertexJTF.getText().trim());//é¡¶ç‚¹ç¼–å·
 			String from=(String)timeFromJCB.getSelectedItem();
 			String to=(String)timeToJCB.getSelectedItem();
 			boolean temp=true;
@@ -98,16 +98,16 @@ public class RangeQueryView extends JFrame {
 				}
 			}
 			if(!temp){
-				JOptionPane.showMessageDialog(null, "¶¥µã²»´æÔÚ");
+				JOptionPane.showMessageDialog(null, "é¡¶ç‚¹ä¸å­˜åœ¨");
 				return;
 			}
 			if(Integer.parseInt(from)>=Integer.parseInt(to)){
-				JOptionPane.showMessageDialog(null,"Ê±¼ä¶ÎÑ¡ÔñÓĞÎó");
+				JOptionPane.showMessageDialog(null,"æ—¶é—´æ®µé€‰æ‹©æœ‰è¯¯");
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "¸Ã¶¥µã¹Ø×¢µÄ¶¥µãÓĞ"+RangeQuery.rangeQueryOutDegree(Integer.parseInt(from)-1,Integer.parseInt(to)-1,vertex)
-			  +"\n"+"¹Ø×¢¸Ã¶¥µãµÄ¶¥µãÓĞ"+RangeQuery.rangeQueryInDegree(Integer.parseInt(from)-1,Integer.parseInt(to)-1,vertex)
-			  +"\n"+"»¥Ïà¹Ø×¢µÄ¶¥µãÓĞ"+RangeQuery.rangeQuery(),"²éÑ¯½á¹û",1);
+			JOptionPane.showMessageDialog(null, "è¯¥é¡¶ç‚¹å…³æ³¨çš„é¡¶ç‚¹æœ‰"+RangeQuery.rangeQueryOutDegree(Integer.parseInt(from)-1,Integer.parseInt(to)-1,vertex)
+			  +"\n"+"å…³æ³¨è¯¥é¡¶ç‚¹çš„é¡¶ç‚¹æœ‰"+RangeQuery.rangeQueryInDegree(Integer.parseInt(from)-1,Integer.parseInt(to)-1,vertex)
+			  +"\n"+"äº’ç›¸å…³æ³¨çš„é¡¶ç‚¹æœ‰"+RangeQuery.rangeQuery(),"æŸ¥è¯¢ç»“æœ",1);
 		}
 	}
 }
