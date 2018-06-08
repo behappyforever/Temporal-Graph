@@ -10,15 +10,15 @@ public class MergeLogIntoGraph {
 	public static void mergeLogIntoGraph(int day) {
 		GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
 		GraphSnapshot deltaGraphSnapshot = TGraph.deltaGraphSnapshotArr[day];
-		for (Entry<Integer, Vertex> en : deltaGraphSnapshot.getHashMap().entrySet()) {
+		for (Entry<Long, Vertex> en : deltaGraphSnapshot.getHashMap().entrySet()) {
 			if (graphSnapshot.getHashMap().containsKey(en.getKey())) {
-				for (Integer integer : en.getValue().getOutGoingList()) {
-					graphSnapshot.addEdge(en.getKey(), integer);
+				for (Long l : en.getValue().getOutGoingList()) {
+					graphSnapshot.addEdge(en.getKey(), l);
 				}
 			}else {
 				graphSnapshot.getHashMap().put(en.getKey(), new Vertex(en.getKey()));
-				for (Integer integer : en.getValue().getOutGoingList()) {
-					graphSnapshot.addEdge(en.getKey(), integer);
+				for (Long l : en.getValue().getOutGoingList()) {
+					graphSnapshot.addEdge(en.getKey(), l);
 				}
 				graphSnapshot.getHashMap().get(en.getKey()).setPr(en.getValue().getPr());
 			}

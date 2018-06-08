@@ -7,14 +7,6 @@ import com.tg.graph.TGraph;
 
 public class LogToGraph {//log转变成图
 	
-	
-//	public static void init() {
-//		logTographSnapshotArr=new GraphSnapshot[10];
-//		for(int i=0;i<10;i++) {
-//			logTographSnapshotArr[i]=new GraphSnapshot();
-//		}
-//	}
-//	
 	public static void transform() {
 		TGraph.deltaGraphSnapshotArr=new GraphSnapshot[TGraph.timeRange];
 		StringTokenizer token;

@@ -1,6 +1,7 @@
 package com.tg.graph;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class GraphSnapshot {
@@ -9,13 +10,13 @@ public class GraphSnapshot {
 	private int iterations;
 
 	
-	private HashMap<Integer, Vertex> vertexMap;
+	private Map<Long, Vertex> vertexMap;
 
 	public GraphSnapshot() {
-		vertexMap = new HashMap<Integer, Vertex>();
+		vertexMap = new HashMap();
 	}
 
-	public boolean addEdge(int from, int to) {
+	public boolean addEdge(long from, long to) {
 
 		if (!vertexMap.containsKey(from)) {// 顶点不存在，先创建
 			vertexMap.put(from, new Vertex(from));
@@ -60,14 +61,14 @@ public class GraphSnapshot {
 	public void countVerAndEdgeNum() {
 		numOfVertex=vertexMap.keySet().size();
 		numOfEdges=0;
-		for(Entry<Integer,Vertex> en :vertexMap.entrySet()) {
+		for(Entry<Long,Vertex> en :vertexMap.entrySet()) {
 			numOfEdges+=en.getValue().getOut_degree();//统计快照边数
 		}
 		System.out.println("顶点数:"+numOfVertex);
 		System.out.println("边数:"+numOfEdges);
 	}
 	
-	public HashMap<Integer, Vertex> getHashMap(){
+	public Map<Long, Vertex> getHashMap(){
 		return vertexMap;
 	}
 	
@@ -77,5 +78,9 @@ public class GraphSnapshot {
 
 	public void setIterations(int iterations) {
 		this.iterations = iterations;
+	}
+
+	public long getNeighborNum(long vertexId){
+		return vertexMap.get(vertexId).getOut_degree();
 	}
 }

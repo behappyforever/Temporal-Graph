@@ -14,7 +14,7 @@ public class PageRank {
 	private static final double alpha = 0.85f;
 
 	public static void resetPr(GraphSnapshot graphSnapshot) {
-		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 			en.getValue().setPr(1.0f/graphSnapshot.getNumOfVertex());
 		}
 	}
@@ -23,14 +23,14 @@ public class PageRank {
 		int numOfVertex = graphSnapshot.getNumOfVertex();
 		
 		int iterations=1;
-		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 			en.getValue().setPr(1.0f/numOfVertex);
 			en.getValue().setReceiveSumPr(0.0);
 		}
 		boolean flag=compute(graphSnapshot, numOfVertex);
 		while (flag != true) {//未收敛
 //			System.out.println(flag);
-			for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+			for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 				en.getValue().setReceiveSumPr(0.0);
 			}
 			flag=compute(graphSnapshot, numOfVertex);
@@ -41,19 +41,19 @@ public class PageRank {
 
 	private static boolean compute(GraphSnapshot graphSnapshot, int numOfVertex) {
 		boolean flag=true;//用于判断是否收敛
-		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 			if(en.getValue().getOutGoingList().size()==0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-				for(Entry<Integer,Vertex> enInner : graphSnapshot.getHashMap().entrySet()) {
+				for(Entry<Long,Vertex> enInner : graphSnapshot.getHashMap().entrySet()) {
 					enInner.getValue().addReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
 				}
 			   en.getValue().deleteReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
 			}else {// 如果该点出度不为0，则将pr值平分给其出边顶点
-				for(Integer integer:en.getValue().getOutGoingList()) {
-					graphSnapshot.getHashMap().get(integer).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
+				for(Long l:en.getValue().getOutGoingList()) {
+					graphSnapshot.getHashMap().get(l).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
 				}
 			}
 		}
-		for(Entry<Integer,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
+		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 			double absTemp=en.getValue().setPr((1 - alpha) * (1.0f / numOfVertex) + alpha * en.getValue().getReceiveSumPr());
 			if(absTemp>threshold) {
 				flag=false;

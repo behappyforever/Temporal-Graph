@@ -15,7 +15,7 @@ public class TimeLocality {
             SnapshotLog sl=TGraph.snapshotLogArr[i];
             Iterator<String> it = sl.getAddEdge().iterator();
             while(it.hasNext()){
-                String[] split = it.next().split(" ");
+                String[] split = it.next().split("\t");
                 Long from=Long.parseLong(split[0]);
                 Long to=Long.parseLong(split[1]);
                 if(!map.containsKey(from)){

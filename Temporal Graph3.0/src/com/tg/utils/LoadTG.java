@@ -4,12 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.StringTokenizer;
 
 import com.tg.graph.GraphSnapshot;
 import com.tg.graph.SnapshotLog;
@@ -30,10 +26,9 @@ public class LoadTG {
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 			String str;
-			StringTokenizer token;
 			while ((str = br.readLine()) != null) {// 按行读入Datasets
-				token = new StringTokenizer(str);// 以空格作为分隔符得到两个顶点from->to
-				TGraph.graphSnapshot.addEdge(Integer.parseInt(token.nextToken()), Integer.parseInt(token.nextToken()));
+				String[] split = str.split("\t");
+				TGraph.graphSnapshot.addEdge(Long.parseLong(split[0]),Long.parseLong(split[1]));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -49,11 +44,11 @@ public class LoadTG {
 	}
 
 	public static void readRawLog() {
-		addEdgeArr = new ArrayList<HashSet<String>>();
-		deleteEdgeArr = new ArrayList<HashSet<String>>();
+		addEdgeArr = new ArrayList();
+		deleteEdgeArr = new ArrayList();
 		for (int i = 0; i < 9; i++) {// 9个日志
-			addEdgeArr.add(new HashSet<String>());
-			deleteEdgeArr.add(new HashSet<String>());
+			addEdgeArr.add(new HashSet());
+			deleteEdgeArr.add(new HashSet());
 		}
 
 		File file = null;
@@ -107,14 +102,14 @@ public class LoadTG {
 
 	public static void afterComputeVS() {// 加载快照之后做一些计算工作
 		GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
-		HashMap<Integer, Vertex> vertexMap = graphSnapshot.getHashMap();
-		ArrayList<Integer> delTemp = new ArrayList<Integer>();
-		for (Entry<Integer, Vertex> en : vertexMap.entrySet()) {// 删除孤立的点
+		Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
+		List<Long> delTemp = new ArrayList();
+		for (Entry<Long, Vertex> en : vertexMap.entrySet()) {// 删除孤立的点
 			if (en.getValue().getIn_degree() == 0 && en.getValue().getOut_degree() == 0) {
 				delTemp.add(en.getKey());
 			}
 		}
-		for (Integer key : delTemp) {
+		for (Long key : delTemp) {
 			vertexMap.remove(key);
 		}
 		System.out.println("虚拟快照顶点数和边数");
