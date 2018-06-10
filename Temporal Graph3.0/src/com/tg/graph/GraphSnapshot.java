@@ -10,7 +10,7 @@ public class GraphSnapshot {
 	private int iterations;
 
 	
-	private Map<Long, Vertex> vertexMap;
+	private Map<Long, Vertex> vertexMap;//为了更快地找到顶点对象
 
 	public GraphSnapshot() {
 		vertexMap = new HashMap();

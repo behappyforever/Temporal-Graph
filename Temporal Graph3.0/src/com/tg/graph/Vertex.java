@@ -8,7 +8,7 @@ public class Vertex{
 	private long out_degree;
 	private double pr;
 	private double receiveSumPr;
-	private LinkedList<Long> outGoing;//边表结点，以链表的形式存储该顶点所指向的边
+	private LinkedList<Edge> outGoing;//边表结点，以链表的形式存储该顶点所指向的边
 	public Vertex(long id){
 		setId(id);
 		in_degree=0;
@@ -17,9 +17,9 @@ public class Vertex{
 		outGoing=new LinkedList();
 	}
 	
-	public boolean addEdge(long v){//该顶点边表加入弧头顶点id
-		if(!outGoing.contains(v)){
-			outGoing.add(v);
+	public boolean addEdge(long desId){//该顶点边表加入弧头顶点id
+		if(!outGoing.contains(desId)){
+			outGoing.add(desId);
 			out_degree++;
 			return true;
 		}
