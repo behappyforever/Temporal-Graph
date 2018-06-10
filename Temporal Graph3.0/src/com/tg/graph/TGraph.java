@@ -10,9 +10,8 @@ import com.tg.utils.TimeLocality;
 
 public class TGraph {
 	public static final int timeRange=10;
-	public static String fileName;
-	public static ArrayList<String> addEdgeList;
-	public static ArrayList<String> delEdgeList;
+	public static String fileName;//初始图文件路径
+	public static List<String> logList;//原始日志路径
 	//时序图所有组件    1个组的
 	public static GraphSnapshot graphSnapshot;//全图快照
 	public static SnapshotLog[] snapshotLogArr;//增量日志数组 n个
@@ -23,11 +22,9 @@ public class TGraph {
 	public static void loadDataSetsPath() {
 		// 加载数据集路径
 		TGraph.fileName = "DataSets/test.txt";
-		TGraph.addEdgeList = new ArrayList();
-		TGraph.delEdgeList = new ArrayList();
+		TGraph.logList = new ArrayList();
 		for (int i = 1; i < timeRange; i++) {
-			TGraph.addEdgeList.add("DataSets/addEdgesDay" + String.valueOf(i) + ".txt");
-			TGraph.delEdgeList.add("DataSets/deleteEdgesDay" + String.valueOf(i) + ".txt");
+			TGraph.logList.add("DataSets/day" +i+ ".txt");
 		}
 	}
 

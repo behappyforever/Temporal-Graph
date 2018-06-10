@@ -26,7 +26,7 @@ public class LoadTG {
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 			String str;
-			while ((str = br.readLine()) != null) {// 按行读入Datasets
+			while ((str = br.readLine()) != null) {// 按行读入原始图数据
 				String[] split = str.split("\t");
 				TGraph.graphSnapshot.addEdge(Long.parseLong(split[0]),Long.parseLong(split[1]));
 			}

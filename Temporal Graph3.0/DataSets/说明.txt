@@ -3,4 +3,4 @@
 # Nodes: 8114 Edges: 26013
 # FromNodeId	ToNodeId
 
-# 模拟变化 每天变化千分之一
+# 妯℃嫙鍙樺寲 姣忓ぉ鍙樺寲鍗冨垎涔嬩竴
