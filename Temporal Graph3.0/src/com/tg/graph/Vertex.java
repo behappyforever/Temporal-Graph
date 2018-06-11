@@ -8,7 +8,7 @@ public class Vertex{
 	private long out_degree;
 	private double pr;
 	private double receiveSumPr;
-	private LinkedList<Edge> outGoing;//边表结点，以链表的形式存储该顶点所指向的边
+	private LinkedList<Long> outGoing;//边表结点，以链表的形式存储该顶点所指向的边
 	public Vertex(long id){
 		setId(id);
 		in_degree=0;

@@ -44,46 +44,46 @@ public class LoadTG {
 	}
 
 	public static void readRawLog() {
-		addEdgeArr = new ArrayList();
-		deleteEdgeArr = new ArrayList();
-		for (int i = 0; i < 9; i++) {// 9个日志
-			addEdgeArr.add(new HashSet());
-			deleteEdgeArr.add(new HashSet());
-		}
-
-		File file = null;
-		FileReader fr = null;
-		BufferedReader br = null;
-		try {
-			for (int i = 0; i < 9; i++) {
-				file = new File(TGraph.addEdgeList.get(i));
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				String str;
-				while ((str = br.readLine()) != null) {
-					addEdgeArr.get(i).add(str);
-				}
-			}
-			for (int i = 0; i < 9; i++) {
-				file = new File(TGraph.delEdgeList.get(i));
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				String str;
-				while ((str = br.readLine()) != null) {
-					deleteEdgeArr.get(i).add(str);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+//		addEdgeArr = new ArrayList();
+//		deleteEdgeArr = new ArrayList();
+//		for (int i = 0; i < 9; i++) {// 9个日志
+//			addEdgeArr.add(new HashSet());
+//			deleteEdgeArr.add(new HashSet());
+//		}
+//
+//		File file = null;
+//		FileReader fr = null;
+//		BufferedReader br = null;
+//		try {
+//			for (int i = 0; i < 9; i++) {
+//				file = new File(TGraph.addEdgeList.get(i));
+//				fr = new FileReader(file);
+//				br = new BufferedReader(fr);
+//				String str;
+//				while ((str = br.readLine()) != null) {
+//					addEdgeArr.get(i).add(str);
+//				}
+//			}
+//			for (int i = 0; i < 9; i++) {
+//				file = new File(TGraph.delEdgeList.get(i));
+//				fr = new FileReader(file);
+//				br = new BufferedReader(fr);
+//				String str;
+//				while ((str = br.readLine()) != null) {
+//					deleteEdgeArr.get(i).add(str);
+//				}
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (br != null) {
+//				try {
+//					br.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 
 	public static void computeVirtualGraphSnapshot() {
