@@ -42,7 +42,7 @@ public class Preprocess {
                 long srcId = Long.parseLong(split[0]);
                 long desId = Long.parseLong(split[1]);
 //                long weight=Long.parseLong(split[2]);
-                long weight = 1;
+                long weight = 1;//数据集无权值，暂时模拟为1
                 //装载数据
                 Map<Long, long[]> innerMap;
                 if (!map.containsKey(srcId)) {//源顶点不存在于map
@@ -94,10 +94,10 @@ public class Preprocess {
 
                     switch (str.charAt(0)) {
                         case 'A':
-                            addLog.get(i).add(str.substring(2));
+                            addLog.get(i).add(str.substring(2)+"\t"+1);
                             break;
                         case 'D':
-                            delLog.get(i).add(str.substring(2));
+                            delLog.get(i).add(str.substring(2)+"\t"+1);
                             break;
                         case 'M':
                             modLog.get(i).add(str.substring(2));
@@ -125,7 +125,7 @@ public class Preprocess {
         for (int i = 0; i < TGraph.timeRange - 1; i++) {
             iter = delLog.get(i).iterator();
             while (iter.hasNext()) {
-                Scanner sc = new Scanner(iter.next());
+                Scanner sc = new Scanner(iter.next());//解析每一行的源顶点和目的顶点，无需权值
                 long srcId = sc.nextLong();
                 long desId = sc.nextLong();
                 if (map.containsKey(srcId)) {
@@ -197,27 +197,54 @@ public class Preprocess {
     }
 
     public static void persistDeltaLog() {//磁盘索引实现 todo
-        //Structure-Locality
-        List<Map<Long,List<Long>>> mapList=new ArrayList();
+        //不区分布局，简单持久化
+        List<Map<Long,Map<Long,Long>>> mapList=new ArrayList();
         Iterator<String> iter;
         for(int i=0;i<TGraph.timeRange;i++){
-            mapList.add(new TreeMap<>());
+            mapList.add(new TreeMap<>());//利用TreeMap保证key有序
             iter= deltaLog.get(i).iterator();
             while(iter.hasNext()){
                 Scanner sc = new Scanner(iter.next());
                 long srcId = sc.nextLong();
                 long desId = sc.nextLong();
+                long weight = sc.nextLong();
                 if(!mapList.get(i).containsKey(srcId)){
-                    List<Long> tmp=new ArrayList();
-                    tmp.add(desId);
+                    Map<Long,Long> tmp=new TreeMap();
+                    tmp.put(desId,weight);
                     mapList.get(i).put(srcId,tmp);
                 }else{
-                    mapList.get(i).get(srcId).add(desId);
+                    mapList.get(i).get(srcId).put(desId,weight);
                 }
             }
         }
 
-        //Time-Locality
-        Map<Long,List<Long>> map=new TreeMap();
+        FileOutputStream out = null;
+        BufferedOutputStream bos = null;
+        try {
+            for (int i = 0; i < mapList.size(); i++) {
+                out = new FileOutputStream(new File("Persistence/delta"+i+".txt"));
+                bos = new BufferedOutputStream(out);
+                for (Map.Entry<Long, Map<Long, Long>> en : mapList.get(i).entrySet()) {
+                    for (Map.Entry<Long,Long> innerEn : en.getValue().entrySet()) {
+                        bos.write(en.getKey().toString().getBytes());
+                        bos.write("\t".getBytes());
+                        bos.write(innerEn.getKey().toString().getBytes());
+                        bos.write("\t".getBytes());
+                        bos.write(innerEn.getValue().toString().getBytes());
+                        bos.write("\r\n".getBytes());
+                    }
+                }
+                bos.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+                bos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
