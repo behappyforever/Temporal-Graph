@@ -1,8 +1,6 @@
-package com.tg.graph;
+package temporalGraph.graph;
 
-import com.tg.algorithm.LocalPointQuery;
-import com.tg.algorithm.PageRank;
-import com.tg.utils.MergeLogIntoGraph;
+import temporalGraph.algorithm.LocalPointQuery;
 
 //"DataSets/p2p-Gnutella09.txt";
 //"DataSets/p2p-Gnutella08.txt";

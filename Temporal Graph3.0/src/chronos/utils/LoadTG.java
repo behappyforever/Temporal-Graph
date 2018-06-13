@@ -1,4 +1,4 @@
-package com.tg.utils;
+package chronos.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.tg.graph.GraphSnapshot;
-import com.tg.graph.SnapshotLog;
-import com.tg.graph.TGraph;
-import com.tg.graph.Vertex;
+import chronos.graph.GraphSnapshot;
+import chronos.graph.SnapshotLog;
+import chronos.graph.TGraph;
+import chronos.graph.Vertex;
 
 public class LoadTG {
 

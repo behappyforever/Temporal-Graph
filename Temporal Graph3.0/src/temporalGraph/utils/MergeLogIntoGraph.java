@@ -1,10 +1,10 @@
-package com.tg.utils;
+package temporalGraph.utils;
+
+import temporalGraph.graph.GraphSnapshot;
+import temporalGraph.graph.TGraph;
+import temporalGraph.graph.Vertex;
 
 import java.util.Map.Entry;
-
-import com.tg.graph.GraphSnapshot;
-import com.tg.graph.TGraph;
-import com.tg.graph.Vertex;
 
 public class MergeLogIntoGraph {
 	public static void mergeLogIntoGraph(int day) {

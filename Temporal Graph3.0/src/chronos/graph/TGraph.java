@@ -1,12 +1,12 @@
-package com.tg.graph;
+package chronos.graph;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.tg.utils.LoadTG;
-import com.tg.utils.LogToGraph;
-import com.tg.utils.TimeLocality;
+import chronos.utils.LoadTG;
+import chronos.utils.LogToGraph;
+import chronos.utils.TimeLocality;
 
 public class TGraph {
 	public static final int timeRange=10;

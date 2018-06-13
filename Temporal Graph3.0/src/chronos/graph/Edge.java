@@ -1,4 +1,4 @@
-package com.tg.graph;
+package chronos.graph;
 
 public class Edge {
     private long desId;

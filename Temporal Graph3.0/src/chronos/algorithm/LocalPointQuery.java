@@ -1,6 +1,6 @@
-package com.tg.algorithm;
+package chronos.algorithm;
 
-import com.tg.graph.TGraph;
+import chronos.graph.TGraph;
 
 public class LocalPointQuery {
 

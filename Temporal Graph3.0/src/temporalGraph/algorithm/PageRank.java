@@ -1,9 +1,9 @@
-package com.tg.algorithm;
+package temporalGraph.algorithm;
+
+import temporalGraph.graph.GraphSnapshot;
+import temporalGraph.graph.Vertex;
 
 import java.util.Map.Entry;
-
-import com.tg.graph.GraphSnapshot;
-import com.tg.graph.Vertex;
 
 //初始化：点值表示 PageRank 的 rank 值（double 类型），初始时，所有点取值为 1/TotalNumVertices
 //迭代公式：PageRank(i)=0.15/TotalNumVertices+0.85*sum，

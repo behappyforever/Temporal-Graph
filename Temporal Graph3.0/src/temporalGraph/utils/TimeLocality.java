@@ -1,7 +1,7 @@
-package com.tg.utils;
+package temporalGraph.utils;
 
-import com.tg.graph.SnapshotLog;
-import com.tg.graph.TGraph;
+import temporalGraph.graph.SnapshotLog;
+import temporalGraph.graph.TGraph;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public class TimeLocality {
     public static void transform(){
         TGraph.timeLocalityDeltaSnapshot=new HashMap<>();
         Map<Long,List[]> map=TGraph.timeLocalityDeltaSnapshot;
-        for(int i=0;i<TGraph.timeRange;i++){//i为组内时间
+        for(int i = 0; i<TGraph.timeRange; i++){//i为组内时间
             SnapshotLog sl=TGraph.snapshotLogArr[i];
             Iterator<String> it = sl.getAddEdge().iterator();
             while(it.hasNext()){

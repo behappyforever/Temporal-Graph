@@ -1,4 +1,4 @@
-package com.tg.graph;
+package chronos.graph;
 
 import java.util.HashMap;
 import java.util.Map;

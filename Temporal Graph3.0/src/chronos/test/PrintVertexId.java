@@ -1,4 +1,4 @@
-package com.tg.test;
+package chronos.test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,7 +9,7 @@ public class PrintVertexId {
 		System.out.println("顶点个数为："+set.size());
 		System.out.println("顶点id如下：");
 		Iterator<Integer> iterator=set.iterator();
-		ArrayList<Integer> list=new ArrayList<Integer>();
+		ArrayList<Integer> list=new ArrayList();
 		while(iterator.hasNext()){
 			list.add(iterator.next());
 		}

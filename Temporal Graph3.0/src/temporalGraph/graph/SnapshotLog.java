@@ -1,17 +1,18 @@
-package com.tg.graph;
+package temporalGraph.graph;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class SnapshotLog {//相对于虚拟快照VS的delta+增量快照
-	private HashSet<String> addEdge;
+	private Set<String> addEdge;
 
 	public SnapshotLog() {
 		addEdge=new HashSet();
 	}
-	public HashSet<String> getAddEdge() {
+	public Set<String> getAddEdge() {
 		return addEdge;
 	}
-	public void setAddEdge(HashSet<String> hashSet) {
+	public void setAddEdge(Set<String> hashSet) {
 		addEdge.addAll(hashSet);
 	}
 	public int getAddEdgeSize() {

@@ -1,8 +1,6 @@
 package preprocessing;
 
-import com.tg.graph.SnapshotLog;
-import com.tg.graph.TGraph;
-import com.tg.utils.LoadTG;
+import chronos.graph.TGraph;
 
 import java.io.*;
 import java.util.*;
@@ -196,7 +194,7 @@ public class Preprocess {
         }
     }
 
-    public static void persistDeltaLog() {//磁盘索引实现 todo
+    public static void persistDeltaLog() {
         //不区分布局，简单持久化
         List<Map<Long,Map<Long,Long>>> mapList=new ArrayList();
         Iterator<String> iter;
