@@ -8,8 +8,8 @@ import java.util.*;
 
 public class TGraph {
     public static final int timeRange = 10;
-    private static String vsFileName;//初始图文件路径
-    public static List<String> deltaLogList;//原始日志路径
+    public static String vsFileName;//初始图文件路径
+    public static List<String> deltaLogPath;//原始日志路径
     //时序图所有组件    1个组的
     public static GraphSnapshot graphSnapshot;//全图快照VS
     public static List<String>[] strucLocalityDelta;//增量日志数组 n个
@@ -20,9 +20,9 @@ public class TGraph {
     public static void setPath() {
         // 加载数据集路径
         vsFileName = "Persistence/VS.txt";
-        deltaLogList = new ArrayList();
+        deltaLogPath = new ArrayList();
         for (int i = 1; i < timeRange; i++) {
-            deltaLogList.add("Persistence/day" + i + ".txt");
+            deltaLogPath.add("Persistence/day" + i + ".txt");
         }
     }
 
@@ -74,7 +74,7 @@ public class TGraph {
         BufferedReader br = null;
         try {
             for (int i = 0; i < timeRange; i++) {
-                file = new File(deltaLogList.get(i));
+                file = new File(deltaLogPath.get(i));
                 fr = new FileReader(file);
                 br = new BufferedReader(fr);
                 String str;
@@ -98,8 +98,8 @@ public class TGraph {
     public static void buildTimeLocality() {
         //负责从结构局部性增量快照生成时间局部性增量快照
         timeLocalityDeltaSnapshot = new HashMap();
-        Map<Long, List[]> map = TGraph.timeLocalityDeltaSnapshot;
-        for (int i = 0; i < TGraph.timeRange; i++) {//i为组内时间
+        Map<Long, List[]> map = timeLocalityDeltaSnapshot;
+        for (int i = 0; i < timeRange; i++) {//i为组内时间
             List<String> list = strucLocalityDelta[i];
             Iterator<String> it = list.iterator();
             while (it.hasNext()) {
@@ -108,7 +108,7 @@ public class TGraph {
                 Long to = sc.nextLong();
 //                Long weight=sc.nextLong();权值待处理
                 if (!map.containsKey(from)) {
-                    List[] l = new List[TGraph.timeRange];
+                    List[] l = new List[timeRange];
                     l[i] = new ArrayList();
                     l[i].add(to);
                     map.put(from, l);
