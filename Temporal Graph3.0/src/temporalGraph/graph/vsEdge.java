@@ -1,10 +1,10 @@
 package temporalGraph.graph;
 
-public class Edge {
+public class vsEdge {
     private long desId;
-    private long weight;//保存该边的权值
+    private long[] weight;//保存VS中带时间戳的权值
 
-    public Edge(long id,long w){
+    public vsEdge(long id, long[] w){
         desId=id;
         weight=w;
     }

@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		TGraph.start();//构建时序图存储结构
-		System.err.println(LocalPointQuery.query(0, 2));
+//		System.err.println(LocalPointQuery.query(0, 2));
 //		long start1=System.currentTimeMillis();
 //		PageRank.resetPr(TGraph.graphSnapshot);
 //		PageRank.pageRank(TGraph.graphSnapshot);

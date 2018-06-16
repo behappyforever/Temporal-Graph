@@ -12,17 +12,22 @@ public class TGraph {
     public static List<String> deltaLogPath;//原始日志路径
     //时序图所有组件    1个组的
     public static GraphSnapshot graphSnapshot;//全图快照VS
-    public static List<String>[] strucLocalityDelta;//增量日志数组 n个
+    public static List<String>[] deltaLogList;//增量日志数组 n个
     public static GraphSnapshot[] deltaGraphSnapshotArr;//增量快照 与上面日志对应
-    public static Map<Long, List[]> timeLocalityDeltaSnapshot;//增量快照的时间局部性布局
+
+    //数组下标对应时间(时间为一级索引),数组放入Map，Map的key为顶点Id，value为顶点的出边表(List<Edge>)
+    public static Map<Long,List<Edge>>[] strucLocalityDeltaSnapshot;
+
+    //增量快照的时间局部性布局,key为顶点Id,value为一个长度为timeRange的数组，数组放入一个顶点的出边表(List<Edge>)
+    public static Map<Long, List<Edge>[]> timeLocalityDeltaSnapshot;
 
 
     public static void setPath() {
         // 加载数据集路径
         vsFileName = "Persistence/VS.txt";
         deltaLogPath = new ArrayList();
-        for (int i = 1; i < timeRange; i++) {
-            deltaLogPath.add("Persistence/day" + i + ".txt");
+        for (int i = 0; i < timeRange; i++) {
+            deltaLogPath.add("Persistence/delta" + i + ".txt");
         }
     }
 
@@ -31,7 +36,9 @@ public class TGraph {
 
         loadVS();// 加载VS
 
-        readDeltaLog();// 读取增量日志,构造结构局部性布局
+        readDeltaLog();// 读取增量日志
+
+        buildStructureLocality();//构造结构局部性布局
 
         buildTimeLocality();//构造时间局部性布局
 
@@ -64,10 +71,10 @@ public class TGraph {
     }
 
     private static void readDeltaLog() {//边集
-        strucLocalityDelta = new ArrayList[timeRange];//读入增量日志，即为结构局部性布局
+        deltaLogList = new ArrayList[timeRange];//读入增量日志，即为结构局部性布局
 
         for (int i = 0; i < timeRange; i++) {//初始化list数组
-            strucLocalityDelta[i] = new ArrayList();
+            deltaLogList[i] = new ArrayList();
         }
         File file = null;
         FileReader fr = null;
@@ -79,7 +86,7 @@ public class TGraph {
                 br = new BufferedReader(fr);
                 String str;
                 while ((str = br.readLine()) != null) {
-                    strucLocalityDelta[i].add(str);
+                    deltaLogList[i].add(str);
                 }
             }
         } catch (IOException e) {
@@ -95,29 +102,48 @@ public class TGraph {
         }
     }
 
+    public static void buildStructureLocality(){
+        strucLocalityDeltaSnapshot=new Map[timeRange];
+        for (int i = 0; i < timeRange; i++) {//初始化list数组
+            strucLocalityDeltaSnapshot[i]=new HashMap();
+            for(String s:deltaLogList[i]){
+                Scanner sc = new Scanner(s);
+                Long srcId=sc.nextLong();
+                Long desId=sc.nextLong();
+                Long weight=sc.nextLong();
+                Map<Long, List<Edge>> tmpRef = strucLocalityDeltaSnapshot[i];
+                if(!tmpRef.containsKey(srcId)){
+                    List<Edge> tmpList=new LinkedList();
+                    tmpList.add(new Edge(desId,weight));
+                    tmpRef.put(srcId,tmpList);
+                }else{
+                    tmpRef.get(srcId).add(new Edge(desId,weight));
+                }
+            }
+
+        }
+    }
+
     public static void buildTimeLocality() {
         //负责从结构局部性增量快照生成时间局部性增量快照
         timeLocalityDeltaSnapshot = new HashMap();
-        Map<Long, List[]> map = timeLocalityDeltaSnapshot;
         for (int i = 0; i < timeRange; i++) {//i为组内时间
-            List<String> list = strucLocalityDelta[i];
-            Iterator<String> it = list.iterator();
-            while (it.hasNext()) {
-                Scanner sc = new Scanner(it.next());
-                Long from = sc.nextLong();
-                Long to = sc.nextLong();
-//                Long weight=sc.nextLong();权值待处理
-                if (!map.containsKey(from)) {
-                    List[] l = new List[timeRange];
-                    l[i] = new ArrayList();
-                    l[i].add(to);
-                    map.put(from, l);
+            for(String s:deltaLogList[i]){
+                Scanner sc = new Scanner(s);
+                Long srcId=sc.nextLong();
+                Long desId=sc.nextLong();
+                Long weight=sc.nextLong();
+                if (!timeLocalityDeltaSnapshot.containsKey(srcId)) {
+                    List<Edge>[] tmpList = new List[timeRange];
+                    tmpList[i] = new ArrayList();
+                    tmpList[i].add(new Edge(desId,weight));
+                    timeLocalityDeltaSnapshot.put(srcId, tmpList);
                 } else {
-                    List[] lt = map.get(from);
-                    if (lt[i] == null) {
-                        lt[i] = new ArrayList();
+                    List<Edge>[] tmpList = timeLocalityDeltaSnapshot.get(srcId);
+                    if (tmpList[i] == null) {
+                        tmpList[i] = new ArrayList();
                     }
-                    lt[i].add(to);
+                    tmpList[i].add(new Edge(desId,weight));
                 }
             }
         }

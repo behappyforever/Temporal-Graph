@@ -14,7 +14,7 @@ public class Main {
 		TGraph.loadDataSetsPath();//加载数据集
 		
 		TGraph.start();//构建时序图存储结构
-		System.err.println(LocalPointQuery.query(0, 2));
+//		System.err.println(LocalPointQuery.query(0, 2));
 //		long start1=System.currentTimeMillis();
 //		PageRank.resetPr(TGraph.graphSnapshot);
 //		PageRank.pageRank(TGraph.graphSnapshot);

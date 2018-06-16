@@ -2,6 +2,7 @@ package temporalGraph.algorithm;
 
 import temporalGraph.graph.GraphSnapshot;
 import temporalGraph.graph.Vertex;
+import temporalGraph.graph.vsEdge;
 
 import java.util.Map.Entry;
 
@@ -48,8 +49,8 @@ public class PageRank {
 				}
 			   en.getValue().deleteReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
 			}else {// 如果该点出度不为0，则将pr值平分给其出边顶点
-				for(Long l:en.getValue().getOutGoingList()) {
-					graphSnapshot.getHashMap().get(l).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
+				for(vsEdge edge:en.getValue().getOutGoingList()) {
+					graphSnapshot.getHashMap().get(edge.getDesId()).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
 				}
 			}
 		}
