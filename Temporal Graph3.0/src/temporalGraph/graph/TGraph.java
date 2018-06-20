@@ -103,6 +103,7 @@ public class TGraph {
     }
 
     public static void buildStructureLocality(){
+        //生成结构局部性增量快照
         strucLocalityDeltaSnapshot=new Map[timeRange];
         for (int i = 0; i < timeRange; i++) {//初始化list数组
             strucLocalityDeltaSnapshot[i]=new HashMap();
@@ -125,7 +126,7 @@ public class TGraph {
     }
 
     public static void buildTimeLocality() {
-        //负责从结构局部性增量快照生成时间局部性增量快照
+        //生成时间局部性增量快照
         timeLocalityDeltaSnapshot = new HashMap();
         for (int i = 0; i < timeRange; i++) {//i为组内时间
             for(String s:deltaLogList[i]){
