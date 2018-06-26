@@ -1,6 +1,7 @@
 package temporalGraph.graph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -88,5 +89,9 @@ public class GraphSnapshot {
 
 	public long getNeighborNum(long vertexId){
 		return vertexMap.get(vertexId).getOut_degree();
+	}
+
+	public List<vsEdge> getNeighborList(long vertexId){
+		return vertexMap.get(vertexId).getOutGoingList();
 	}
 }

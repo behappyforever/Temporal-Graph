@@ -1,6 +1,7 @@
 package temporalGraph.graph;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Vertex{
 	private long id;
@@ -8,7 +9,7 @@ public class Vertex{
 	private long out_degree;
 	private double pr;
 	private double receiveSumPr;
-	private LinkedList<vsEdge> outGoing;//边表结点，出边用Edge类来存，包括出边Id和出边权重
+	private List<vsEdge> outGoing;//边表结点，出边用Edge类来存，包括出边Id和出边权重
 	public Vertex(long id){
 		setId(id);
 		in_degree=0;
@@ -56,7 +57,7 @@ public class Vertex{
 	public void setOut_degree(long out_degree) {
 		this.out_degree = out_degree;
 	}
-	public LinkedList<vsEdge> getOutGoingList(){
+	public List<vsEdge> getOutGoingList(){
 		return outGoing;
 	}
 	public void setOutGoingList(LinkedList<vsEdge> link){

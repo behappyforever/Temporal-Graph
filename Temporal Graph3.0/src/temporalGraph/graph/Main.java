@@ -1,6 +1,7 @@
 package temporalGraph.graph;
 
 import temporalGraph.algorithm.LocalPointQuery;
+import temporalGraph.algorithm.LocalRangeQuery;
 
 //"DataSets/p2p-Gnutella09.txt";
 //"DataSets/p2p-Gnutella08.txt";
@@ -12,7 +13,13 @@ public class Main {
 	public static void main(String[] args) {
 		
 		TGraph.start();//构建时序图存储结构
-//		System.err.println(LocalPointQuery.query(0, 2));
+//		System.err.println(LocalPointQuery.twoHopNeighborQuery(0, 2));
+//		System.err.println(LocalRangeQuery.twoHopNeighborQuery(0));
+
+		long[] longs = LocalRangeQuery.twoHopNeighborQuery(0);
+		for (long aLong : longs) {
+			System.out.println(aLong);
+		}
 //		long start1=System.currentTimeMillis();
 //		PageRank.resetPr(TGraph.graphSnapshot);
 //		PageRank.pageRank(TGraph.graphSnapshot);
