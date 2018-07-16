@@ -96,6 +96,8 @@ public class GlobalPointQuery {
 
         @Override
         public void run() {
+
+            //bsp 逻辑
             try {
                 GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
                 Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
@@ -154,19 +156,76 @@ public class GlobalPointQuery {
         }
     }
 
+
+    /**
+     *  增量快照的PageRank计算
+     * @param time
+     */
     private static void pageRankDeltaSnapshot(int time) {
 
         Map<Long, List<Edge>> refMap = TGraph.strucLocalityDeltaSnapshot[time];
 
         setArr=Partition.partitionDeltaSnapshot(threadNum,listArr,refMap);
 
+        //设置循环路障
+        CyclicBarrier barrier = new CyclicBarrier(threadNum);
+
+        //用来判断所有子线程是否结束
+        CountDownLatch latch=new CountDownLatch(threadNum);
+
+        //设置线程池
+        ExecutorService executor = Executors.newFixedThreadPool(threadNum);
+
+        //创建线程
+        for (int i = 1; i <= threadNum; i++) {
+            executor.submit(new Thread(new PageRankDeltaRunner(barrier,latch, "thread" + i, listArr[i - 1],setArr[i-1])));
+        }
+
+        executor.shutdown();
+
+        try {
+            latch.await();//当latch中的值变为0，执行之后的语句
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //所有子线程结束，输出pagerank值
+        double total=0.0;
+        for (Double aDouble : prValueMap.values()) {
+            total+=aDouble;
+        }
+        System.out.println(total);
+
     }
 
     static class PageRankDeltaRunner implements Runnable {
 
+        private CyclicBarrier barrier;
+        private CountDownLatch latch;
+        private String name;
+        private List<Long> list;//虚拟快照分块
+        private Set<Long> set;//增量快照分块
+
+        public PageRankDeltaRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list, Set<Long> set) {
+            this.barrier = barrier;
+            this.latch = latch;
+            this.name = name;
+            this.list = list;
+            this.set = set;
+        }
+
         @Override
         public void run() {
-            
+            try {
+
+
+
+                barrier.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(name + "完成");
+            latch.countDown();
         }
     }
 }
