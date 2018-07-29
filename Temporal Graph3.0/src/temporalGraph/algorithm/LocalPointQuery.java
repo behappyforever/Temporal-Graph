@@ -2,7 +2,7 @@ package temporalGraph.algorithm;
 
 import temporalGraph.graph.Edge;
 import temporalGraph.graph.TGraph;
-import temporalGraph.graph.vsEdge;
+import temporalGraph.graph.VSEdge;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ public class LocalPointQuery {
     //2跳邻居原始结果计算(VS)
     private static long twoHopNeighborVS(long sourceVertex) {
         long res = 0;
-        List<vsEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
+        List<VSEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
-        for (vsEdge e : tmpRef) {
+        for (VSEdge e : tmpRef) {
             res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
         }
         return res;
@@ -30,9 +30,9 @@ public class LocalPointQuery {
     //2跳邻居增量结果计算
     private static long deltaTwoHopNeighbor(long sourceVertex, int time) {
         long res = 0;
-        List<vsEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
+        List<VSEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
-        for (vsEdge e : vsEdgeList) {
+        for (VSEdge e : vsEdgeList) {
             List<Edge> edgeList = TGraph.strucLocalityDeltaSnapshot[time].get(e.getDesId());
             if(edgeList!=null){//存在
                 res += edgeList.size();

@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 public class GraphSnapshot {
-	private int numOfVertex;//顶点数
-	private int numOfEdges;//边数
+	private long numOfVertex;//顶点数
+	private long numOfEdges;//边数
 	private int iterations;
 
 	
@@ -57,11 +57,11 @@ public class GraphSnapshot {
 		return false;
 
 	}
-	public int getNumOfVertex() {
+	public long getNumOfVertex() {
 		return numOfVertex;
 	}
 
-	public int getNumOfEdges() {
+	public long getNumOfEdges() {
 		return numOfEdges;
 	}
 	
@@ -91,7 +91,7 @@ public class GraphSnapshot {
 		return vertexMap.get(vertexId).getOut_degree();
 	}
 
-	public List<vsEdge> getNeighborList(long vertexId){
+	public List<VSEdge> getNeighborList(long vertexId){
 		return vertexMap.get(vertexId).getOutGoingList();
 	}
 }

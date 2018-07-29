@@ -2,7 +2,7 @@ package temporalGraph.algorithm;
 
 import temporalGraph.graph.GraphSnapshot;
 import temporalGraph.graph.Vertex;
-import temporalGraph.graph.vsEdge;
+import temporalGraph.graph.VSEdge;
 
 import java.util.Map.Entry;
 
@@ -21,7 +21,7 @@ public class PageRank {
 	}
 	
 	public static void pageRank(GraphSnapshot graphSnapshot) {
-		int numOfVertex = graphSnapshot.getNumOfVertex();
+		long numOfVertex = graphSnapshot.getNumOfVertex();
 		
 		int iterations=1;
 		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
@@ -40,7 +40,7 @@ public class PageRank {
 		graphSnapshot.setIterations(iterations);
 	}
 
-	private static boolean compute(GraphSnapshot graphSnapshot, int numOfVertex) {
+	private static boolean compute(GraphSnapshot graphSnapshot, long numOfVertex) {
 		boolean flag=true;//用于判断是否收敛
 		for(Entry<Long,Vertex> en : graphSnapshot.getHashMap().entrySet()) {
 			if(en.getValue().getOutGoingList().size()==0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
@@ -49,7 +49,7 @@ public class PageRank {
 				}
 			   en.getValue().deleteReceiveSumpr(en.getValue().getPr()/(numOfVertex-1));
 			}else {// 如果该点出度不为0，则将pr值平分给其出边顶点
-				for(vsEdge edge:en.getValue().getOutGoingList()) {
+				for(VSEdge edge:en.getValue().getOutGoingList()) {
 					graphSnapshot.getHashMap().get(edge.getDesId()).addReceiveSumpr(en.getValue().getPr()/en.getValue().getOutGoingList().size());
 				}
 			}

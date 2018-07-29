@@ -9,7 +9,7 @@ public class Vertex{
 	private long out_degree;
 	private double pr;
 	private double receiveSumPr;
-	private List<vsEdge> outGoing;//边表结点，出边用Edge类来存，包括出边Id和出边权重
+	private List<VSEdge> outGoing;//边表结点，出边用Edge类来存，包括出边Id和出边权重
 	public Vertex(long id){
 		setId(id);
 		in_degree=0;
@@ -20,7 +20,7 @@ public class Vertex{
 	
 	public boolean addEdge(long desId,long[] w){//该顶点边表加入弧头顶点id
 		if(!outGoing.contains(desId)){
-			vsEdge e = new vsEdge(desId, w);
+			VSEdge e = new VSEdge(desId, w);
 			outGoing.add(e);
 			out_degree++;
 			return true;
@@ -57,10 +57,10 @@ public class Vertex{
 	public void setOut_degree(long out_degree) {
 		this.out_degree = out_degree;
 	}
-	public List<vsEdge> getOutGoingList(){
+	public List<VSEdge> getOutGoingList(){
 		return outGoing;
 	}
-	public void setOutGoingList(LinkedList<vsEdge> link){
+	public void setOutGoingList(LinkedList<VSEdge> link){
 		outGoing.addAll(link);
 	}
 	
