@@ -1,6 +1,7 @@
 package chronos.graph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -82,5 +83,9 @@ public class GraphSnapshot {
 
 	public long getNeighborNum(long vertexId){
 		return vertexMap.get(vertexId).getOut_degree();
+	}
+
+	public List<Long> getNeighborList(long vertexId){
+		return vertexMap.get(vertexId).getOutGoingList();
 	}
 }
