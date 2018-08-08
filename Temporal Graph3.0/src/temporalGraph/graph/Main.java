@@ -1,6 +1,7 @@
 package temporalGraph.graph;
 
 import temporalGraph.algorithm.GlobalPointQuery;
+import temporalGraph.algorithm.GlobalRangeQuery;
 import temporalGraph.algorithm.LocalPointQuery;
 import temporalGraph.algorithm.LocalRangeQuery;
 
@@ -15,10 +16,11 @@ public class Main {
 		
 		TGraph.start();//构建时序图存储结构
 
-		long s=System.currentTimeMillis();
-		LocalRangeQuery.twoHopNeighborQuery(0);
-		System.out.println(System.currentTimeMillis()-s);
+//		long s=System.currentTimeMillis();
+//		LocalRangeQuery.twoHopNeighborQuery(0);
+//		System.out.println(System.currentTimeMillis()-s);
 
+		GlobalRangeQuery.pageRank();
 
 //		GlobalPointQuery.pageRank(1);
 
