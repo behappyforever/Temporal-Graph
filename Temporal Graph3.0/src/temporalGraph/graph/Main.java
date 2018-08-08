@@ -15,7 +15,14 @@ public class Main {
 		
 		TGraph.start();//构建时序图存储结构
 
-		GlobalPointQuery.pageRank(1);
+		long s=System.currentTimeMillis();
+		LocalRangeQuery.twoHopNeighborQuery(0);
+		System.out.println(System.currentTimeMillis()-s);
+
+
+//		GlobalPointQuery.pageRank(1);
+
+
 //		System.err.println(LocalPointQuery.twoHopNeighborQuery(0, 2));
 //		System.err.println(LocalRangeQuery.twoHopNeighborQuery(0));
 

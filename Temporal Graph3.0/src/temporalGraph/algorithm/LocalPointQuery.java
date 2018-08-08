@@ -8,6 +8,10 @@ import java.util.List;
 
 public class LocalPointQuery {
 
+    private static long originalCostTime;
+    private static long deltaCostTime;
+
+
     public static long oneHopNeighborQuery(long sourceVertex, int time) {//1跳邻居个数查询
         long res = 0;
         res += TGraph.graphSnapshot.getNeighborNum(sourceVertex);//VS
@@ -18,17 +22,24 @@ public class LocalPointQuery {
 
     //2跳邻居原始结果计算(VS)
     private static long twoHopNeighborVS(long sourceVertex) {
+        long startTime=System.currentTimeMillis();
+
         long res = 0;
         List<VSEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
         for (VSEdge e : tmpRef) {
             res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
         }
+
+        originalCostTime=System.currentTimeMillis()-startTime;
         return res;
     }
 
     //2跳邻居增量结果计算
     private static long deltaTwoHopNeighbor(long sourceVertex, int time) {
+
+        long startTime=System.currentTimeMillis();
+
         long res = 0;
         List<VSEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
@@ -48,6 +59,8 @@ public class LocalPointQuery {
                 res += tmp.size();
             }
         }
+
+        deltaCostTime=System.currentTimeMillis()-startTime;
         return res;
     }
 

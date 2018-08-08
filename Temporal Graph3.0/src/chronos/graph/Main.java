@@ -1,5 +1,6 @@
 package chronos.graph;
 
+
 import chronos.algorithm.LocalPointQuery;
 
 //"DataSets/p2p-Gnutella09.txt";
@@ -12,13 +13,18 @@ public class Main {
 	public static void main(String[] args) {
 		
 		TGraph.start();//构建时序图存储结构
+
+
 //		System.err.println(LocalPointQuery.query(0, 2));
-//		long start1=System.currentTimeMillis();
+		long start1=System.currentTimeMillis();
+
+		LocalPointQuery.twoHopNeighborQuery(0,0);
+
 //		PageRank.resetPr(TGraph.graphSnapshot);
 //		PageRank.pageRank(TGraph.graphSnapshot);
 //		System.out.println(TGraph.graphSnapshot.getIterations());
-//		long time1= System.currentTimeMillis() - start1;
-//		System.out.println("运行耗时= "+time1+" 毫秒");
+		long time1= System.currentTimeMillis() - start1;
+		System.out.println("运行耗时= "+time1+" 毫秒");
 //
 //		long start2=System.currentTimeMillis();
 //		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);

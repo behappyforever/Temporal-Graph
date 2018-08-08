@@ -1,13 +1,11 @@
 package chronos.graph;
 
+import chronos.utils.LoadTG;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import chronos.utils.LoadTG;
-import chronos.utils.LogToGraph;
-import chronos.utils.TimeLocality;
 
 public class TGraph {
 	public static final int timeRange=10;
@@ -18,7 +16,6 @@ public class TGraph {
 	public static List<HashSet<String>> logArr;// 0 1,1 2,2 3...
 
 
-	public static SnapshotLog[] snapshotLogArr;//增量日志数组 n个
 	public static GraphSnapshot[] deltaGraphSnapshotArr;//增量快照 与上面日志对应
 	public static Map<Long,List[]> timeLocalityDeltaSnapshot;//增量快照的时间局部性布局
 

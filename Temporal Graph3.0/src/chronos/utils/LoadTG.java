@@ -1,16 +1,14 @@
 package chronos.utils;
 
+import chronos.graph.GraphSnapshot;
+import chronos.graph.TGraph;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-
-import chronos.graph.GraphSnapshot;
-import chronos.graph.SnapshotLog;
-import chronos.graph.TGraph;
-import chronos.graph.Vertex;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class LoadTG {
 
