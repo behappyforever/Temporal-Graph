@@ -1,9 +1,6 @@
 package temporalGraph.graph;
 
-import temporalGraph.algorithm.GlobalPointQuery;
-import temporalGraph.algorithm.GlobalRangeQuery;
-import temporalGraph.algorithm.LocalPointQuery;
-import temporalGraph.algorithm.LocalRangeQuery;
+import temporalGraph.algorithm.*;
 
 //"DataSets/p2p-Gnutella09.txt";
 //"DataSets/p2p-Gnutella08.txt";
@@ -18,9 +15,9 @@ public class Main {
 
 //		long s=System.currentTimeMillis();
 //		LocalRangeQuery.twoHopNeighborQuery(0);
+//		GlobalRangeQuery.pageRank();
 //		System.out.println(System.currentTimeMillis()-s);
 
-		GlobalRangeQuery.pageRank();
 
 //		GlobalPointQuery.pageRank(1);
 
@@ -39,11 +36,11 @@ public class Main {
 //		long time1= System.currentTimeMillis() - start1;
 //		System.out.println("运行耗时= "+time1+" 毫秒");
 //
-//		long start2=System.currentTimeMillis();
-//		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
-//		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
-//		long time2 = System.currentTimeMillis() - start2;
-//		System.out.println("运行耗时= "+time2+" 毫秒");
+		long start2=System.currentTimeMillis();
+		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
+		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
+		long time2 = System.currentTimeMillis() - start2;
+		System.out.println("运行耗时= "+time2+" 毫秒");
 //		long start3=System.currentTimeMillis();
 //		MergeLogIntoGraph.mergeLogIntoGraph(0);
 //		PageRank.pageRank(TGraph.graphSnapshot);
