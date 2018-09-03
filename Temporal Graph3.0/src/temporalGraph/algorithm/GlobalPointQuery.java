@@ -30,7 +30,7 @@ public class GlobalPointQuery {
     public static void pageRank(int time) {
         pageRankVS();
 
-        System.out.println("原始迭代---------");
+        System.out.println("PageRank原始迭代完成---------");
 
         pageRankDeltaSnapshot(time);
 
@@ -367,4 +367,116 @@ public class GlobalPointQuery {
             latch.countDown();
         }
     }
+
+    //---------------------------------------------------------------------------------
+
+    //以下是SSSP算法
+
+    private static Map<Long,SSSPBean> ssspMap;//key为顶点id,value为路径长度
+
+
+    /**
+     * 供外部调用的接口
+     *
+     * @param time 处理某个时间点的快照
+     */
+    public static void singleShortestPath(long sourceId,int time) {
+        singleShortestPathVS(sourceId);
+
+        System.out.println("最短路径原始迭代完成---------");
+
+        pageRankDeltaSnapshot(time);
+
+
+    }
+
+    static class SSSPBean{
+        long pathLength;
+        long message;
+        boolean flag;//true表示激活
+
+        public SSSPBean(long pathLength,long message,boolean flag){
+            this.pathLength=pathLength;
+            this.message=message;
+            this.flag=flag;
+        }
+    }
+
+    private static void initSSSPMap(long sourceId){
+        ssspMap=new ConcurrentHashMap<>();
+
+        Set<Long> set = TGraph.graphSnapshot.getHashMap().keySet();
+
+        for (Long vertexId : set) {//所有顶点路径长度赋值为正无穷，激活状态设为否
+            ssspMap.put(vertexId,new SSSPBean(Integer.MAX_VALUE,Integer.MAX_VALUE,false));
+        }
+
+        //对源点特殊处理
+        SSSPBean source = ssspMap.get(sourceId);
+        source.pathLength=0;
+        source.flag=true;
+
+    }
+
+    private static void singleShortestPathVS(long sourceId) {
+
+        initSSSPMap(sourceId);
+
+
+        //划分虚拟快照
+        listArr = Partition.partitionVS(threadNum);
+
+        //设置循环路障
+        CyclicBarrier barrier = new CyclicBarrier(threadNum);
+
+        //用来判断所有子线程是否结束
+        CountDownLatch latch=new CountDownLatch(threadNum);
+
+        //设置线程池
+        ExecutorService executor = Executors.newFixedThreadPool(threadNum);
+
+        //创建线程
+        for (int i = 1; i <= threadNum; i++) {
+            executor.submit(new Thread(new SSSPRunner(barrier,latch, "thread" + i, listArr[i - 1])));
+        }
+
+        executor.shutdown();
+
+        try {
+            latch.await();//当latch中的值变为0，执行之后的语句
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class SSSPRunner implements Runnable{
+
+        private CyclicBarrier barrier;
+        private CountDownLatch latch;
+        private String name;
+        private List<Long> list;//虚拟快照分块
+
+        public SSSPRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list) {
+            this.barrier = barrier;
+            this.latch = latch;
+            this.name = name;
+            this.list = list;
+        }
+        @Override
+        public void run() {
+            int iterations=1;
+            while (iterations<maxStep){
+                for (Long vertexId : list) {
+                    SSSPBean bean = ssspMap.get(vertexId);
+                    if(bean.flag){
+
+                        bean.flag=false;
+                        //todo
+                    }
+
+                }
+            }
+        }
+    }
+
 }
