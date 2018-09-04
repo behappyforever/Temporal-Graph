@@ -36,16 +36,18 @@ public class Main {
 //		long time1= System.currentTimeMillis() - start1;
 //		System.out.println("运行耗时= "+time1+" 毫秒");
 //
-		long start2=System.currentTimeMillis();
-		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
-		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
-		long time2 = System.currentTimeMillis() - start2;
-		System.out.println("运行耗时= "+time2+" 毫秒");
+//		long start2=System.currentTimeMillis();
+//		PageRank.pageRank(TGraph.deltaGraphSnapshotArr[0]);
+//		System.out.println(TGraph.deltaGraphSnapshotArr[0].getIterations());
+//		long time2 = System.currentTimeMillis() - start2;
+//		System.out.println("运行耗时= "+time2+" 毫秒");
 //		long start3=System.currentTimeMillis();
 //		MergeLogIntoGraph.mergeLogIntoGraph(0);
 //		PageRank.pageRank(TGraph.graphSnapshot);
 //		System.out.println(TGraph.graphSnapshot.getIterations());
 //		long time3 = System.currentTimeMillis() - start3;
 //		System.out.println("运行耗时= "+time3+" 毫秒");
+
+		GlobalPointQuery.singleShortestPath(0,0);
 	}
 }

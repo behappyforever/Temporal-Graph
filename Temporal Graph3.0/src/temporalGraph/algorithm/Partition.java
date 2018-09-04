@@ -43,7 +43,7 @@ public class Partition {
         int rtn=0;
         long minLoad=load[0];
         for(int i=1;i<load.length;i++){
-            if(minLoad<load[i]){
+            if(minLoad>load[i]){
                 minLoad=load[i];
                 rtn=i;
             }

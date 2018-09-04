@@ -30,6 +30,10 @@ public class VSEdge {
         this.desId = desId;
     }
 
+    public long getWeight(int time){
+        return weightDisplay.get(weightIndex[time]);
+    }
+
 //    public long getWeight() {
 //        return weight;
 //    }
