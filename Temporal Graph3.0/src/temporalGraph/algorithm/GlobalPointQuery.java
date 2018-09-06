@@ -389,10 +389,11 @@ public class GlobalPointQuery {
 
         System.out.println("最短路径原始迭代完成---------");
 
-//        pageRankDeltaSnapshot(time);
+        singleShortestPathDelta(sourceId,time);
 
 
     }
+
 
     static class SSSPBean {
         long pathLength;
@@ -528,4 +529,136 @@ public class GlobalPointQuery {
         }
     }
 
+
+    private static void singleShortestPathDelta(long sourceId,int time) {
+        Map<Long, List<Edge>> refMap = TGraph.strucLocalityDeltaSnapshot[time];
+
+        setArr = Partition.partitionDeltaSnapshot(threadNum, listArr, refMap);
+
+        //设置循环路障
+        CyclicBarrier barrier = new CyclicBarrier(threadNum);
+
+        //用来判断所有子线程是否结束
+        CountDownLatch latch = new CountDownLatch(threadNum);
+
+        //设置线程池
+        ExecutorService executor = Executors.newFixedThreadPool(threadNum);
+
+        //创建线程
+        for (int i = 1; i <= threadNum; i++) {
+            executor.submit(new Thread(new SSSPDeltaRunner(barrier, latch, "thread" + i, listArr[i - 1], setArr[i - 1], refMap,time)));
+        }
+
+        executor.shutdown();
+
+        try {
+            latch.await();//当latch中的值变为0，执行之后的语句
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class SSSPDeltaRunner implements Runnable{
+        private CyclicBarrier barrier;
+        private CountDownLatch latch;
+        private String name;
+        private List<Long> list;//虚拟快照分块
+        private Set<Long> set;//增量快照分块
+        private Map<Long, List<Edge>> refMap;
+        private int time;
+
+        public SSSPDeltaRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list, Set<Long> set, Map<Long, List<Edge>> refMap,int time) {
+            this.barrier = barrier;
+            this.latch = latch;
+            this.name = name;
+            this.list = list;
+            this.set = set;
+            this.refMap = refMap;
+            this.time=time;
+        }
+
+        @Override
+        public void run() {
+            try {
+                GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
+                Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
+
+                //将增量顶点加入ssspMap
+                for (Long vertexId : set) {
+                    if (!ssspMap.containsKey(vertexId)) {
+                        ssspMap.put(vertexId, new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+                    }
+                    for (Edge edge : refMap.get(vertexId)) {
+                        if (!ssspMap.containsKey(edge.getDesId())) {
+                            ssspMap.put(edge.getDesId(), new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+                        }
+                    }
+                }
+
+                //遍历增量的每个源顶点,“转移”pr值
+                for (Long vertexId : set) {
+                    if (list.contains(vertexId)) {//属于关联边
+                        //源顶点的增量边集合
+                        List<Edge> edges = refMap.get(vertexId);
+
+                        //对增量边中的顶点进行松弛操作
+                        for (Edge edge : edges) {
+
+                            ssspMap.get(edge.getDesId()).pathLength
+                                    = Math.min(ssspMap.get(vertexId).pathLength + edge.getWeight(),
+                                    ssspMap.get(edge.getDesId()).pathLength);
+                        }
+
+                    }
+                }
+                barrier.await();
+
+                //开启bsp过程,全量迭代
+
+                Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
+
+                int iterations = 0;
+
+                while (iterations<100) {
+                    if(iterations>0){//本地计算
+                        for(Long vertexId:list){
+                            SSSPBean bean = ssspMap.get(vertexId);
+                            if(bean.message<bean.pathLength){
+                                bean.pathLength=bean.message;
+                                bean.flag=true;
+                            }
+                        }
+
+                    }
+
+                    for (Long vertexId : list) {//发消息
+                        SSSPBean bean = ssspMap.get(vertexId);
+                        if (bean.flag) {
+                            List<VSEdge> vsEdges = map.get(vertexId).getOutGoingList();
+                            for (VSEdge vsEdge : vsEdges) {
+                                long newPathLength = bean.pathLength + vsEdge.getWeight(time);
+                                ssspMap.get(vsEdge.getDesId()).message=Math.min(ssspMap.get(vsEdge.getDesId()).message,newPathLength);
+                            }
+                            if (refMap.containsKey(vertexId)) {
+                                for (Edge edge : refMap.get(vertexId)) {//发送给增量边
+                                    long newPathLength = bean.pathLength + edge.getWeight();
+                                    ssspMap.get(edge.getDesId()).message=Math.min(ssspMap.get(edge.getDesId()).message,newPathLength);
+                                }
+                            }
+                            bean.flag=false;
+                        }
+                    }
+                    iterations++;
+                    System.out.println(name+"----"+iterations);
+
+                    //路障同步
+                    barrier.await();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println(name + "完成");
+            latch.countDown();
+        }
+    }
 }

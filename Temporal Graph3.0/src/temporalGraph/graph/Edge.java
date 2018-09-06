@@ -17,11 +17,11 @@ public class Edge {
         this.desId = desId;
     }
 
-//    public long getWeight() {
-//        return weight;
-//    }
-//
-//    public void setWeight(long weight) {
-//        this.weight = weight;
-//    }
+    public long getWeight() {
+        return weight;
+    }
+
+    public void setWeight(long weight) {
+        this.weight = weight;
+    }
 }
