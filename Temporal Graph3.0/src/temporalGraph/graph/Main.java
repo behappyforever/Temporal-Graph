@@ -49,5 +49,7 @@ public class Main {
 //		System.out.println("运行耗时= "+time3+" 毫秒");
 
 		GlobalPointQuery.singleShortestPath(0,0);
+
+//		GlobalRangeQuery.singleShortestPath(0);
 	}
 }

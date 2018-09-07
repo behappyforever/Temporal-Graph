@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 
 public class GlobalPointQuery {
 
@@ -491,7 +490,7 @@ public class GlobalPointQuery {
 
                 int iterations = 0;
 
-                while (iterations<10000) {
+                while (true) {
                     if(iterations>0){//本地计算
                         for(Long vertexId:list){
                             SSSPBean bean = ssspMap.get(vertexId);
@@ -502,6 +501,11 @@ public class GlobalPointQuery {
                         }
 
                     }
+
+                    if(!checkActive(map.keySet()))
+                        break;
+
+                    barrier.await();
 
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
@@ -619,7 +623,7 @@ public class GlobalPointQuery {
 
                 int iterations = 0;
 
-                while (iterations<100) {
+                while (true) {
                     if(iterations>0){//本地计算
                         for(Long vertexId:list){
                             SSSPBean bean = ssspMap.get(vertexId);
@@ -630,6 +634,11 @@ public class GlobalPointQuery {
                         }
 
                     }
+
+                    if(!checkActive(map.keySet()))
+                        break;
+
+                    barrier.await();
 
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
