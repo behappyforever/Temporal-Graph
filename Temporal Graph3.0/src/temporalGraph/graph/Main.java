@@ -48,8 +48,8 @@ public class Main {
 //		long time3 = System.currentTimeMillis() - start3;
 //		System.out.println("运行耗时= "+time3+" 毫秒");
 
-		GlobalPointQuery.singleShortestPath(0,0);
+//		GlobalPointQuery.singleShortestPath(0,0);
 
-//		GlobalRangeQuery.singleShortestPath(0);
+		GlobalRangeQuery.singleShortestPath(0);
 	}
 }

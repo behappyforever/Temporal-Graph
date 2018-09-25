@@ -491,21 +491,17 @@ public class GlobalPointQuery {
                 int iterations = 0;
 
                 while (true) {
-                    if(iterations>0){//本地计算
-                        for(Long vertexId:list){
-                            SSSPBean bean = ssspMap.get(vertexId);
-                            if(bean.message<bean.pathLength){
-                                bean.pathLength=bean.message;
-                                bean.flag=true;
-                            }
-                        }
+//                    if(iterations>0){//本地计算
+//                        for(Long vertexId:list){
+//                            SSSPBean bean = ssspMap.get(vertexId);
+//                            if(bean.message<bean.pathLength){
+//                                bean.pathLength=bean.message;
+//                                bean.flag=true;
+//                            }
+//                        }
+//                    }
 
-                    }
-
-                    if(!checkActive(map.keySet()))
-                        break;
-
-                    barrier.await();
+//                    barrier.await();
 
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
@@ -513,7 +509,11 @@ public class GlobalPointQuery {
                             List<VSEdge> vsEdges = map.get(vertexId).getOutGoingList();
                             for (VSEdge vsEdge : vsEdges) {
                                 long newPathLength = bean.pathLength + vsEdge.getWeight(time);
-                                ssspMap.get(vsEdge.getDesId()).message=Math.min(ssspMap.get(vsEdge.getDesId()).message,newPathLength);
+//                                ssspMap.get(vsEdge.getDesId()).message=Math.min(ssspMap.get(vsEdge.getDesId()).message,newPathLength);
+                                if(ssspMap.get(vsEdge.getDesId()).pathLength>newPathLength){
+                                    ssspMap.get(vsEdge.getDesId()).pathLength=newPathLength;
+                                    ssspMap.get(vsEdge.getDesId()).flag=true;
+                                }
                             }
                             bean.flag=false;
                         }
@@ -523,6 +523,9 @@ public class GlobalPointQuery {
 
                     //路障同步
                     barrier.await();
+                    if(!checkActive(map.keySet())) {
+                        break;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -607,10 +610,11 @@ public class GlobalPointQuery {
 
                         //对增量边中的顶点进行松弛操作
                         for (Edge edge : edges) {
-
-                            ssspMap.get(edge.getDesId()).pathLength
-                                    = Math.min(ssspMap.get(vertexId).pathLength + edge.getWeight(),
-                                    ssspMap.get(edge.getDesId()).pathLength);
+                            long newPathLength = ssspMap.get(vertexId).pathLength + edge.getWeight();
+                            if(ssspMap.get(edge.getDesId()).pathLength>newPathLength){
+                                ssspMap.get(edge.getDesId()).pathLength=newPathLength;
+                                ssspMap.get(edge.getDesId()).flag=true;
+                            }
                         }
 
                     }
@@ -624,21 +628,16 @@ public class GlobalPointQuery {
                 int iterations = 0;
 
                 while (true) {
-                    if(iterations>0){//本地计算
-                        for(Long vertexId:list){
-                            SSSPBean bean = ssspMap.get(vertexId);
-                            if(bean.message<bean.pathLength){
-                                bean.pathLength=bean.message;
-                                bean.flag=true;
-                            }
-                        }
-
-                    }
-
-                    if(!checkActive(map.keySet()))
-                        break;
-
-                    barrier.await();
+//                    if(iterations>0){//本地计算
+//                        for(Long vertexId:list){
+//                            SSSPBean bean = ssspMap.get(vertexId);
+//                            if(bean.message<bean.pathLength){
+//                                bean.pathLength=bean.message;
+//                                bean.flag=true;
+//                            }
+//                        }
+//
+//                    }
 
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
@@ -651,7 +650,10 @@ public class GlobalPointQuery {
                             if (refMap.containsKey(vertexId)) {
                                 for (Edge edge : refMap.get(vertexId)) {//发送给增量边
                                     long newPathLength = bean.pathLength + edge.getWeight();
-                                    ssspMap.get(edge.getDesId()).message=Math.min(ssspMap.get(edge.getDesId()).message,newPathLength);
+                                    if(newPathLength<ssspMap.get(edge.getDesId()).pathLength){
+                                        ssspMap.get(edge.getDesId()).pathLength=newPathLength;
+                                        ssspMap.get(edge.getDesId()).flag=true;
+                                    }
                                 }
                             }
                             bean.flag=false;
@@ -662,6 +664,8 @@ public class GlobalPointQuery {
 
                     //路障同步
                     barrier.await();
+                    if(!checkActive(map.keySet()))
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

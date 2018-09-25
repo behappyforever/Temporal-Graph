@@ -1,5 +1,6 @@
 package temporalGraph.algorithm;
 
+import org.omg.CORBA.TIMEOUT;
 import temporalGraph.graph.*;
 
 import java.util.Collection;
@@ -302,7 +303,9 @@ public class GlobalRangeQuery {
 
         System.out.println("最短路径原始迭代完成---------");
 
-//        singleShortestPathDelta(sourceId);
+        singleShortestPathDelta(sourceId);
+
+        System.out.println("最短路径增量迭代完成---------");
 
     }
 
@@ -404,38 +407,38 @@ public class GlobalRangeQuery {
                 int iterations = 0;
 
                 while (true) {
-                    if (iterations > 0) {//本地计算
-                        for (Long vertexId : list) {
+//                        if (iterations > 0) {//本地计算
+//                            for (Long vertexId : list) {
+//                                SSSPBean bean = ssspMap.get(vertexId);
+//                                if (bean.message < bean.pathLength) {
+//                                    bean.pathLength = bean.message;
+//                                    bean.flag = true;
+//                                }
+//                            }
+//
+//                        }
+
+                        for (Long vertexId : list) {//发消息
                             SSSPBean bean = ssspMap.get(vertexId);
-                            if (bean.message < bean.pathLength) {
-                                bean.pathLength = bean.message;
-                                bean.flag = true;
+                            if (bean.flag) {
+                                List<VSEdge> vsEdges = map.get(vertexId).getOutGoingList();
+                                for (VSEdge vsEdge : vsEdges) {
+                                    long newPathLength = bean.pathLength + vsEdge.getWeight(time);
+//                                    ssspMap.get(vsEdge.getDesId()).message = Math.min(ssspMap.get(vsEdge.getDesId()).message, newPathLength);
+                                    if(ssspMap.get(vsEdge.getDesId()).pathLength>newPathLength){
+                                        ssspMap.get(vsEdge.getDesId()).pathLength=newPathLength;
+                                        ssspMap.get(vsEdge.getDesId()).flag=true;
+                                    }
+                                }
+                                bean.flag = false;
                             }
                         }
-
-                    }
-
-                    if (!checkActive(map.keySet()))
-                        break;
-
-                    barrier.await();
-
-                    for (Long vertexId : list) {//发消息
-                        SSSPBean bean = ssspMap.get(vertexId);
-                        if (bean.flag) {
-                            List<VSEdge> vsEdges = map.get(vertexId).getOutGoingList();
-                            for (VSEdge vsEdge : vsEdges) {
-                                long newPathLength = bean.pathLength + vsEdge.getWeight(time);
-                                ssspMap.get(vsEdge.getDesId()).message = Math.min(ssspMap.get(vsEdge.getDesId()).message, newPathLength);
-                            }
-                            bean.flag = false;
-                        }
-                    }
-                    iterations++;
-                    System.out.println(name + "----" + iterations);
-
+                        iterations++;
+                        System.out.println(name + "----" + iterations);
                     //路障同步
-                    barrier.await();
+                    barrier.await(500,TimeUnit.MILLISECONDS);
+                    if(!checkActive(map.keySet()))
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -463,7 +466,7 @@ public class GlobalRangeQuery {
 
         //创建线程
         for (int i = 1; i <= threadNum; i++) {
-            executor.submit(new Thread(new SSSPDeltaRunner(barrier, latch, "thread" + i, listArr[i - 1], refMap, i-1)));
+            executor.submit(new Thread(new SSSPDeltaRunner(barrier, latch, "thread" + i, listArr[i - 1], refMap, i - 1)));
         }
 
         executor.shutdown();
@@ -521,7 +524,11 @@ public class GlobalRangeQuery {
                             }
 
                             if (ssspMapArr[time].containsKey(vertexId) && ssspMapArr[time].containsKey(edge.getDesId())) {
-                                ssspMapArr[time].get(edge.getDesId()).message = Math.min(ssspMapArr[time].get(edge.getDesId()).message, ssspMapArr[time].get(vertexId).pathLength + edge.getWeight());
+                                long newPathLength=ssspMapArr[time].get(vertexId).pathLength + edge.getWeight();
+                                if(ssspMapArr[time].get(edge.getDesId()).pathLength>newPathLength){
+                                    ssspMapArr[time].get(edge.getDesId()).pathLength=newPathLength;
+                                    ssspMapArr[time].get(edge.getDesId()).flag=true;
+                                }
                             }
                         }
                     }
@@ -544,23 +551,24 @@ public class GlobalRangeQuery {
                         }
                     }
 
-                    if (!checkActive(0))
-                        break;
-
-                    barrier.await();
 
                     for (Map.Entry<Long, SSSPBean> entry : ssspMapArr[time].entrySet()) {
 
                         if (entry.getValue().flag) {
-                            List<VSEdge> vsEdges = map.get(entry.getKey()).getOutGoingList();
-                            for (VSEdge vsEdge : vsEdges) {
-                                long newPathLength = entry.getValue().pathLength + vsEdge.getWeight(time);
-                                ssspMapArr[time].get(vsEdge.getDesId()).message = Math.min(ssspMapArr[time].get(vsEdge.getDesId()).message, newPathLength);
+                            if(map.containsKey(entry.getKey())) {
+                                List<VSEdge> vsEdges = map.get(entry.getKey()).getOutGoingList();
+                                for (VSEdge vsEdge : vsEdges) {
+                                    long newPathLength = entry.getValue().pathLength + vsEdge.getWeight(time);
+                                    ssspMapArr[time].get(vsEdge.getDesId()).message = Math.min(ssspMapArr[time].get(vsEdge.getDesId()).message, newPathLength);
+                                }
                             }
                             if (refMap.containsKey(entry.getKey())) {
-                                for (Edge edge : refMap.get(entry.getKey())[time]) {//发送给增量边
-                                    long newPathLength = entry.getValue().pathLength + edge.getWeight();
-                                    ssspMapArr[time].get(edge.getDesId()).message = Math.min(ssspMapArr[time].get(edge.getDesId()).message, newPathLength);
+                                List<Edge> edges = refMap.get(entry.getKey())[time];
+                                if(edges!=null) {
+                                    for (Edge edge : edges) {//发送给增量边
+                                        long newPathLength = entry.getValue().pathLength + edge.getWeight();
+                                        ssspMapArr[time].get(edge.getDesId()).message = Math.min(ssspMapArr[time].get(edge.getDesId()).message, newPathLength);
+                                    }
                                 }
                             }
                             entry.getValue().flag = false;
@@ -570,7 +578,9 @@ public class GlobalRangeQuery {
                     System.out.println(name + "----" + iterations);
 
                     //路障同步
-                    barrier.await();
+                    barrier.await(500, TimeUnit.MILLISECONDS);
+                    if (!checkActive(time))
+                        break;
                 }
             } catch (
                     Exception e) {
