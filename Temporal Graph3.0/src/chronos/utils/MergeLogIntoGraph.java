@@ -1,5 +1,6 @@
 package chronos.utils;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import chronos.graph.GraphSnapshot;
@@ -7,24 +8,27 @@ import chronos.graph.TGraph;
 import chronos.graph.Vertex;
 
 public class MergeLogIntoGraph {
-	public static void mergeLogIntoGraph(int day) {
-		GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
-		GraphSnapshot deltaGraphSnapshot = TGraph.deltaGraphSnapshotArr[day];
-		for (Entry<Long, Vertex> en : deltaGraphSnapshot.getHashMap().entrySet()) {
-			if (graphSnapshot.getHashMap().containsKey(en.getKey())) {
-				for (Long l : en.getValue().getOutGoingList()) {
-					graphSnapshot.addEdge(en.getKey(), l);
-				}
-			}else {
-				graphSnapshot.getHashMap().put(en.getKey(), new Vertex(en.getKey()));
-				for (Long l : en.getValue().getOutGoingList()) {
-					graphSnapshot.addEdge(en.getKey(), l);
-				}
-				graphSnapshot.getHashMap().get(en.getKey()).setPr(en.getValue().getPr());
-			}
-		}
-
-		System.out.println("合并后顶点数和边数");
-		graphSnapshot.countVerAndEdgeNum();
-	}
+    public static void mergeLogIntoGraph(int day) {
+        try {
+            GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
+            HashSet<String> set = TGraph.logArr.get(day);
+            for (String s : set) {
+                if (s.charAt(0) == 'A') {
+                    String[] split = s.substring(2).split(" ");
+                    long sourceId = Long.parseLong(split[0]);
+                    long desId = Long.parseLong(split[1]);
+                    graphSnapshot.addEdge(sourceId, desId);
+                }else{
+                    String[] split = s.substring(2).split(" ");
+                    long sourceId = Long.parseLong(split[0]);
+                    long desId = Long.parseLong(split[1]);
+                    graphSnapshot.deleteEdge(sourceId,desId);
+                }
+            }
+        }catch (Exception e){
+//            e.printStackTrace();
+        }
+//        System.out.println("合并后顶点数和边数");
+//        graphSnapshot.countVerAndEdgeNum();
+    }
 }

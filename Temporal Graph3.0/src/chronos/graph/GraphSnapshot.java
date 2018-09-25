@@ -35,7 +35,7 @@ public class GraphSnapshot {
 		}
 	}
 
-	public boolean deleteEdge(int from, int to) {
+	public boolean deleteEdge(long from, long to) {
 		Object o = vertexMap.get(from);
 		if (o != null) {// 源顶点存在
 			Vertex vertex = (Vertex) o;

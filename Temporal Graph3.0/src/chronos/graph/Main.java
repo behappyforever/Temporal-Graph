@@ -1,7 +1,7 @@
 package chronos.graph;
 
 
-import chronos.algorithm.LocalPointQuery;
+import chronos.algorithm.GlobalPointQuery;
 
 //"DataSets/p2p-Gnutella09.txt";
 //"DataSets/p2p-Gnutella08.txt";
@@ -18,8 +18,9 @@ public class Main {
 //		System.err.println(LocalPointQuery.query(0, 2));
 		long start1=System.currentTimeMillis();
 
-		LocalPointQuery.twoHopNeighborQuery(0,0);
+//		LocalPointQuery.twoHopNeighborQuery(0,0);
 
+		GlobalPointQuery.pageRank(0);
 //		PageRank.resetPr(TGraph.graphSnapshot);
 //		PageRank.pageRank(TGraph.graphSnapshot);
 //		System.out.println(TGraph.graphSnapshot.getIterations());
