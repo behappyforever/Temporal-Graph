@@ -1,24 +1,33 @@
 package temporalGraph.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class VSEdge {
     private long desId;
 //    private long[] weight;//保存VS中带时间戳的权值,未压缩前
-    private List<Long> weightDisplay;//权值表
+    private long[] weightDisplay;//权值表
     private byte[] weightIndex;//对应到权值表的索引
 
 
     public VSEdge(long id, long[] weightArr){
         desId=id;
-        weightDisplay=new ArrayList();
+        Set<Long> set=new HashSet();
+        for (long w : weightArr) {
+            set.add(w);
+        }
+        weightDisplay=new long[set.size()];
+        Iterator<Long> it = set.iterator();
+        for(int i=0;i<weightDisplay.length;i++){
+            weightDisplay[i]=it.next();
+        }
         weightIndex=new byte[TGraph.timeRange];
         for (int i = 0; i < weightArr.length; i++) {
-            if(!weightDisplay.contains(weightArr[i])){//权值表不能有重复元素，不能用set
-                weightDisplay.add(weightArr[i]);
+            for(int k=0;k<weightDisplay.length;k++){
+                if(weightArr[i]==weightDisplay[k]){
+                    weightIndex[i]=(byte)k;
+                    break;
+                }
             }
-            weightIndex[i]=(byte) weightDisplay.indexOf(weightArr[i]);
         }
     }
 
@@ -31,7 +40,7 @@ public class VSEdge {
     }
 
     public long getWeight(int time){
-        return weightDisplay.get(weightIndex[time]);
+        return weightDisplay[weightIndex[time]];
     }
 
 //    public long getWeight() {
