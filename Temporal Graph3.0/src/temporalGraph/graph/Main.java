@@ -8,18 +8,21 @@ import temporalGraph.algorithm.*;
 //"DataSets/test.txt";
 public class Main {
 	
-	
+	public static long startTime;
 	public static void main(String[] args) {
 		
 		TGraph.start();//构建时序图存储结构
 
-//		long s=System.currentTimeMillis();
+		startTime=System.currentTimeMillis();
+		for(int i=0;i<10000;i++){
+			LocalPointQuery.twoHopNeighborQuery(0,1);
+		}
 //		LocalRangeQuery.twoHopNeighborQuery(0);
 //		GlobalRangeQuery.pageRank();
-//		System.out.println(System.currentTimeMillis()-s);
-
-
 //		GlobalPointQuery.pageRank(1);
+		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime));
+
+
 
 
 //		System.err.println(LocalPointQuery.twoHopNeighborQuery(0, 2));
@@ -50,6 +53,6 @@ public class Main {
 
 //		GlobalPointQuery.singleShortestPath(0,0);
 
-		GlobalRangeQuery.singleShortestPath(0);
+//		GlobalRangeQuery.singleShortestPath(0);
 	}
 }

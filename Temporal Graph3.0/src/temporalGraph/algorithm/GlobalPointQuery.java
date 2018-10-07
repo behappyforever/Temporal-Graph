@@ -32,6 +32,7 @@ public class GlobalPointQuery {
         pageRankVS();
 
         System.out.println("PageRank原始迭代完成---------");
+        System.out.println(System.currentTimeMillis()-Main.startTime);
 
         pageRankDeltaSnapshot(time);
 
@@ -139,7 +140,7 @@ public class GlobalPointQuery {
                             messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (VSEdge e : outGoingList) {
-                                messageMap.put(e.getDesId(), messageMap.get(e.getDesId()) + prValueMap.get(vertexId) / outGoingList.size());
+                                messageMap.put(e.getDesId(), messageMap.getOrDefault(e.getDesId(),1.0/numOfVertex) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
                     }
@@ -283,6 +284,7 @@ public class GlobalPointQuery {
                 }
 
                 barrier.await();
+                System.out.println(System.currentTimeMillis()-Main.startTime);
 
                 //开启bsp过程,全量迭代
 

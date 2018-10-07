@@ -20,7 +20,7 @@ public class GlobalPointQuery {
     private static final double threshold = 0.0000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
     private static final double alpha = 0.85f;
     private static final int maxStep = 10;
-    private static final int maxDeltaStep = 5;
+    private static final int maxDeltaStep = 8;
 
     private static List<Long>[] listArr;
     private static Set<Long>[] setArr;
@@ -45,7 +45,7 @@ public class GlobalPointQuery {
     /**
      * 虚拟快照 page rank
      */
-    private static void pageRankVS() {
+    public static void pageRankVS() {
 
         //存放顶点pr值,线程共用
         prValueMap = new ConcurrentHashMap();
@@ -176,7 +176,7 @@ public class GlobalPointQuery {
      *
      * @param time
      */
-    private static void pageRankDeltaSnapshot(int time) {
+    public static void pageRankDeltaSnapshot(int time) {
 
         MergeLogIntoGraph.mergeLogIntoGraph(time);
 
@@ -243,7 +243,7 @@ public class GlobalPointQuery {
                 int iterations = 1;
 
 
-                while (iterations <= maxStep / 10) {
+                while (iterations <= maxDeltaStep) {
                     if (iterations > 1) {//第一个超步不需要本地计算
                         for (Long vertexId : list) {
                             double total = messageMap.get(vertexId);
@@ -264,9 +264,9 @@ public class GlobalPointQuery {
                         List<Long> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
                             for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
+                                messageMap.put(en.getKey(), en.getValue() + prValueMap.getOrDefault(vertexId,1.0/numOfVertex) / (numOfVertex - 1));
                             }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.getOrDefault(vertexId,1.0/numOfVertex) / (numOfVertex - 1));
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (Long e : outGoingList) {
                                 messageMap.put(e, messageMap.get(e) + prValueMap.get(vertexId) / outGoingList.size());
@@ -344,7 +344,7 @@ public class GlobalPointQuery {
         return false;
     }
 
-    private static void singleShortestPathVS(long sourceId, int time) {
+    public static void singleShortestPathVS(long sourceId, int time) {
 
         initSSSPMap(sourceId);
 
@@ -439,7 +439,7 @@ public class GlobalPointQuery {
     }
 
 
-    private static void singleShortestPathDelta(long sourceId, int time) {
+    public static void singleShortestPathDelta(long sourceId, int time) {
 
         MergeLogIntoGraph.mergeLogIntoGraph(time);
         listArr = Partition.partitionVS(threadNum);

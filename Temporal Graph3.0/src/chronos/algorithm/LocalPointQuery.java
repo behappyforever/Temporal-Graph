@@ -3,8 +3,7 @@ package chronos.algorithm;
 
 import chronos.graph.TGraph;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class LocalPointQuery {
 
@@ -24,7 +23,7 @@ public class LocalPointQuery {
     }
 
     //2跳邻居原始结果计算(VS)
-    private static long twoHopNeighborVS(long sourceVertex) {
+    public static long twoHopNeighborVS(long sourceVertex) {
         long res = 0;
         List<Long> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
@@ -35,25 +34,41 @@ public class LocalPointQuery {
     }
 
     //2跳邻居增量结果计算
-    private static long deltaTwoHopNeighbor(long sourceVertex, int time) {
+    public static long deltaTwoHopNeighbor(long sourceVertex, int time) {
         long res = 0;
         List<Long> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
         Set<String> set = TGraph.logArr.get(time);
+        Map<Long,Integer> addMap=new HashMap<>();
+        Map<Long,Integer>  delMap=new HashMap<>();
+
+        for (String s : set) {
+            if (s.charAt(0) == 'A') {
+                String[] split = s.substring(2).split(" ");
+                long currentVertexId = Long.parseLong(split[0]);
+                addMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
+            }else{
+                String[] split = s.substring(2).split(" ");
+                long currentVertexId = Long.parseLong(split[0]);
+                delMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
+            }
+        }
 
         for (Long e : vsEdgeList) {
-            for (String s : set) {
-                if (s.charAt(0) == 'A') {
-                    String[] split = s.substring(2).split(" ");
-                    long currentVertexId = Long.parseLong(split[0]);
-                    if (e == currentVertexId)
-                        res++;
-                } else {
-                    String[] split = s.substring(2).split(" ");
-                    long currentVertexId = Long.parseLong(split[0]);
-                    if (e == currentVertexId)
-                        res--;
-                }
-            }
+            res+=addMap.getOrDefault(e,0);
+            res-=delMap.getOrDefault(e,0);
+//            for (String s : set) {
+//                if (s.charAt(0) == 'A') {
+//                    String[] split = s.substring(2).split(" ");
+//                    long currentVertexId = Long.parseLong(split[0]);
+//                    if (e == currentVertexId)
+//                        res++;
+//                } else {
+//                    String[] split = s.substring(2).split(" ");
+//                    long currentVertexId = Long.parseLong(split[0]);
+//                    if (e == currentVertexId)
+//                        res--;
+//                }
+//            }
         }
 
         for(String s:set){
@@ -73,6 +88,7 @@ public class LocalPointQuery {
                 }
             }
         }
+
 
         return res;
     }
