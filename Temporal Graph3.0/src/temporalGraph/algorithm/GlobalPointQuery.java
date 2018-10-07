@@ -389,6 +389,7 @@ public class GlobalPointQuery {
         singleShortestPathVS(sourceId, time);
 
         System.out.println("最短路径原始迭代完成---------");
+        System.out.println(System.currentTimeMillis()-Main.startTime);
 
         singleShortestPathDelta(sourceId,time);
 
@@ -462,10 +463,10 @@ public class GlobalPointQuery {
             e.printStackTrace();
         }
 
-        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
-            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
-            System.out.println();
-        });
+//        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
+//            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
+//            System.out.println();
+//        });
     }
 
     static class SSSPRunner implements Runnable {
@@ -524,8 +525,12 @@ public class GlobalPointQuery {
                     System.out.println(name+"----"+iterations);
 
                     //路障同步
-                    barrier.await();
-                    if(!checkActive(map.keySet())) {
+                    try {
+                        barrier.await(500,TimeUnit.MILLISECONDS);
+                        if(!checkActive(map.keySet())) {
+                            break;
+                        }
+                    }catch (Exception e){
                         break;
                     }
                 }
@@ -622,6 +627,7 @@ public class GlobalPointQuery {
                     }
                 }
                 barrier.await();
+                System.out.println(System.currentTimeMillis()-Main.startTime);
 
                 //开启bsp过程,全量迭代
 
@@ -665,7 +671,7 @@ public class GlobalPointQuery {
                     System.out.println(name+"----"+iterations);
 
                     //路障同步
-                    barrier.await();
+                    barrier.await(500,TimeUnit.MILLISECONDS);
                     if(!checkActive(map.keySet()))
                         break;
                 }

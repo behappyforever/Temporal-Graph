@@ -13,7 +13,7 @@ public class GlobalRangeQuery {
         }
     }
 
-    public static void singleShortestPath(long sourceId, int time) {
+    public static void singleShortestPath(long sourceId) {
 
         GlobalPointQuery.singleShortestPathVS(sourceId,0);
 

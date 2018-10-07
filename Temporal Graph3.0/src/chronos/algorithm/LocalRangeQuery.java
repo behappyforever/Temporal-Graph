@@ -8,7 +8,7 @@ public class LocalRangeQuery {
 
         LocalPointQuery.twoHopNeighborVS(sourceVertex);
 
-        for(int i = 0; i< TGraph.timeRange; i++){
+        for(int i = 0; i< TGraph.timeRange-1; i++){
             LocalPointQuery.twoHopNeighborQuery(sourceVertex,i);
         }
     }

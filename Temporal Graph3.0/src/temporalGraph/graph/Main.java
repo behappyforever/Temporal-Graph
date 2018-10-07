@@ -14,19 +14,31 @@ public class Main {
 		TGraph.start();//构建时序图存储结构
 
 		startTime=System.currentTimeMillis();
-		for(int i=0;i<10000;i++){
-			LocalPointQuery.twoHopNeighborQuery(0,1);
-		}
-//		LocalRangeQuery.twoHopNeighborQuery(0);
+
+		/**
+		 *  2-hop 单快照算法
+		 */
+//		for(int i=0;i<10000;i++){
+//			LocalPointQuery.twoHopNeighborQuery(0,1);
+//		}
+		/**
+		 *  2-hop 多快照算法
+		 */
+//		for (int i = 0; i < 10000; i++) {
+//			LocalRangeQuery.twoHopNeighborQuery(0);
+//		}
+
+
 //		GlobalRangeQuery.pageRank();
 //		GlobalPointQuery.pageRank(1);
+
+//		GlobalPointQuery.singleShortestPath(0,0);
+		GlobalRangeQuery.singleShortestPath(0);
 		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime));
 
 
 
 
-//		System.err.println(LocalPointQuery.twoHopNeighborQuery(0, 2));
-//		System.err.println(LocalRangeQuery.twoHopNeighborQuery(0));
 
 //		long[] longs = LocalRangeQuery.twoHopNeighborQuery(0);
 //		for (long aLong : longs) {

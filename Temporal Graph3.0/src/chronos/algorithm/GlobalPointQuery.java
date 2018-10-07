@@ -338,7 +338,7 @@ public class GlobalPointQuery {
 
     private static boolean checkActive(Collection<Long> col) {
         for (Long vertexId : col) {
-            if (ssspMap.get(vertexId).flag)
+            if (ssspMap.get(vertexId)!=null&&ssspMap.get(vertexId).flag)
                 return true;
         }
         return false;
@@ -424,10 +424,15 @@ public class GlobalPointQuery {
                     System.out.println(name + "----" + iterations);
 
                     //路障同步
-                    barrier.await();
-                    if (!checkActive(map.keySet())) {
+                    try {
+                        barrier.await(500,TimeUnit.MILLISECONDS);
+                        if (!checkActive(map.keySet())) {
+                            break;
+                        }
+                    }catch (Exception e){
                         break;
                     }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -496,7 +501,7 @@ public class GlobalPointQuery {
                 while (true) {
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
-                        if (bean.flag) {
+                        if (bean!=null&&bean.flag) {
                             List<Long> vsEdges = map.get(vertexId).getOutGoingList();
                             for (Long l : vsEdges) {
                                 long newPathLength = bean.pathLength + 1;
@@ -513,7 +518,7 @@ public class GlobalPointQuery {
                     System.out.println(name + "----" + iterations);
 
                     //路障同步
-                    barrier.await();
+                    barrier.await(500,TimeUnit.MILLISECONDS);
                     if (!checkActive(map.keySet())) {
                         break;
                     }

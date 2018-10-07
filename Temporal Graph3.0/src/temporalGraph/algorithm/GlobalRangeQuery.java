@@ -409,10 +409,10 @@ public class GlobalRangeQuery {
             e.printStackTrace();
         }
 
-        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
-            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
-            System.out.println();
-        });
+//        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
+//            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
+//            System.out.println();
+//        });
     }
 
     static class SSSPRunner implements Runnable {
@@ -469,9 +469,13 @@ public class GlobalRangeQuery {
                         iterations++;
                         System.out.println(name + "----" + iterations);
                     //路障同步
-                    barrier.await(500,TimeUnit.MILLISECONDS);
-                    if(!checkActive(map.keySet()))
+                    try {
+                        barrier.await(500,TimeUnit.MILLISECONDS);
+                        if(!checkActive(map.keySet()))
+                            break;
+                    }catch (Exception e){
                         break;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

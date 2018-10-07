@@ -44,8 +44,11 @@ public class LocalPointQuery {
         for (String s : set) {
             if (s.charAt(0) == 'A') {
                 String[] split = s.substring(2).split(" ");
-                long currentVertexId = Long.parseLong(split[0]);
-                addMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
+                try {
+                    long currentVertexId = Long.parseLong(split[0]);
+                    addMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
+                }catch (Exception e){
+                }
             }else{
                 String[] split = s.substring(2).split(" ");
                 long currentVertexId = Long.parseLong(split[0]);
@@ -74,9 +77,12 @@ public class LocalPointQuery {
         for(String s:set){
             if(s.charAt(0)=='A'){
                 String[] split = s.substring(2).split(" ");
-                long currentVertexId = Long.parseLong(split[0]);
-                if (sourceVertex == currentVertexId)
-                    res++;
+                try {
+                    long currentVertexId = Long.parseLong(split[0]);
+                    if (sourceVertex == currentVertexId)
+                        res++;
+                }catch (Exception e){
+                }
             }else {
                 String[] split = s.substring(2).split(" ");
                 long currentVertexId = Long.parseLong(split[0]);
