@@ -16,10 +16,12 @@ public class Preprocess {
     private static List<Set<String>> delLog;
     private static List<Set<String>> modLog;
     private static List<Set<String>> deltaLog;
+    private static String persistenceDir="Persistence2";
+    private static String inputFileName="web-NotreDame";
 
 
     public static void loadPath() {
-        filePath = "DataSets/test.txt";
+        filePath = "DataSets/"+inputFileName+".txt";
         logList = new ArrayList();
         for (int i = 1; i < TGraph.timeRange; i++) {
             logList.add("DataSets/day" + i + ".txt");
@@ -149,7 +151,7 @@ public class Preprocess {
         FileOutputStream out = null;
         BufferedOutputStream bos = null;
         try {
-            out = new FileOutputStream(new File("Persistence/VS.txt"));
+            out = new FileOutputStream(new File(persistenceDir+"/VS.txt"));
             bos = new BufferedOutputStream(out);
             for (Map.Entry<Long, Map<Long, long[]>> en : map.entrySet()) {
                 for (Map.Entry<Long, long[]> innerEn : en.getValue().entrySet()) {
@@ -220,7 +222,7 @@ public class Preprocess {
         BufferedOutputStream bos = null;
         try {
             for (int i = 0; i < mapList.size(); i++) {
-                out = new FileOutputStream(new File("Persistence/delta"+i+".txt"));
+                out = new FileOutputStream(new File(persistenceDir+"/delta"+i+".txt"));
                 bos = new BufferedOutputStream(out);
                 for (Map.Entry<Long, Map<Long, Long>> en : mapList.get(i).entrySet()) {
                     for (Map.Entry<Long,Long> innerEn : en.getValue().entrySet()) {

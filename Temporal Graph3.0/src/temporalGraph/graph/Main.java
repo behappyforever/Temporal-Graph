@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		TGraph.start();//构建时序图存储结构
-
+		System.out.println("数据加载完成");
 		startTime=System.currentTimeMillis();
 
 		/**
@@ -29,11 +29,11 @@ public class Main {
 //		}
 
 
+		GlobalPointQuery.pageRank(1);
 //		GlobalRangeQuery.pageRank();
-//		GlobalPointQuery.pageRank(1);
 
 //		GlobalPointQuery.singleShortestPath(0,0);
-		GlobalRangeQuery.singleShortestPath(0);
+//		GlobalRangeQuery.singleShortestPath(0);
 		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime));
 
 
