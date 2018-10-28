@@ -538,7 +538,7 @@ public class GlobalRangeQuery {
 
                 ssspMapArr[time] = new ConcurrentHashMap<>();
 
-                //拷贝一份pr值
+                //拷贝一份SSSP值
                 for (Map.Entry<Long, SSSPBean> en : ssspMap.entrySet()) {
                     ssspMapArr[time].put(en.getKey(), new SSSPBean(en.getValue().pathLength, Integer.MAX_VALUE, false));
                 }

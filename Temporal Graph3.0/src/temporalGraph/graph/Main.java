@@ -29,10 +29,10 @@ public class Main {
 //		}
 
 
-		GlobalPointQuery.pageRank(1);
+//		GlobalPointQuery.pageRank(1);
 //		GlobalRangeQuery.pageRank();
 
-//		GlobalPointQuery.singleShortestPath(0,0);
+		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);
 		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime));
 

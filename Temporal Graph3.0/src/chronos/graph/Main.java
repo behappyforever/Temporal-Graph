@@ -29,8 +29,8 @@ public class Main {
 //		}
 //		GlobalPointQuery.pageRank(0);
 //		GlobalRangeQuery.pageRank();
-//		GlobalPointQuery.singleShortestPath(0,0);
-		GlobalRangeQuery.singleShortestPath(0);
+		GlobalPointQuery.singleShortestPath(0,0);
+//		GlobalRangeQuery.singleShortestPath(0);
 		long time1= System.currentTimeMillis() - startTime;
 		System.out.println("运行耗时= "+time1+" 毫秒");
 //

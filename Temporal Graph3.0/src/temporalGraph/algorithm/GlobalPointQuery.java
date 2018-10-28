@@ -2,10 +2,7 @@ package temporalGraph.algorithm;
 
 import temporalGraph.graph.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class GlobalPointQuery {
@@ -594,59 +591,70 @@ public class GlobalPointQuery {
         @Override
         public void run() {
             try {
-                GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
-                Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
+                Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
 
-                //将增量顶点加入ssspMap
-                for (Long vertexId : set) {
-                    if (!ssspMap.containsKey(vertexId)) {
-                        ssspMap.put(vertexId, new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+                Queue<EdgeBean> q=new LinkedList<>();
+                for (Long vertex : set) {
+                    List<Edge> edges = refMap.get(vertex);
+                    for (Edge edge : edges) {
+                        q.offer(new EdgeBean(vertex,edge.getDesId()));
                     }
-                    for (Edge edge : refMap.get(vertexId)) {
-                        if (!ssspMap.containsKey(edge.getDesId())) {
-                            ssspMap.put(edge.getDesId(), new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+                }
+                while (!q.isEmpty()){//处理四类增量边
+                    EdgeBean bean = q.poll();
+                    if(map.containsKey(bean.source)&&map.containsKey(bean.des)){
+                        SSSPBean ssspBean = ssspMap.get(bean.source);
+                        long newPathLength = ssspBean.pathLength + 1;
+                        if(newPathLength<ssspMap.get(bean.des).pathLength){
+                            ssspBean.pathLength=newPathLength;
+                            ssspBean.flag=true;
                         }
+                    }else if(map.containsKey(bean.source)&&!map.containsKey(bean.des)){
+                        ssspMap.put(bean.des,new SSSPBean(ssspMap.get(bean.source).pathLength+1,0,false));
+                    }else if(!map.containsKey(bean.source)&&map.containsKey(bean.des)){
+                        ssspMap.put(bean.source,new SSSPBean(Integer.MAX_VALUE,0,false));
+                    }else{
+                        q.offer(bean);
                     }
                 }
 
-                //遍历增量的每个源顶点,“转移”pr值
-                for (Long vertexId : set) {
-                    if (list.contains(vertexId)) {//属于关联边
-                        //源顶点的增量边集合
-                        List<Edge> edges = refMap.get(vertexId);
-
-                        //对增量边中的顶点进行松弛操作
-                        for (Edge edge : edges) {
-                            long newPathLength = ssspMap.get(vertexId).pathLength + edge.getWeight();
-                            if(ssspMap.get(edge.getDesId()).pathLength>newPathLength){
-                                ssspMap.get(edge.getDesId()).pathLength=newPathLength;
-                                ssspMap.get(edge.getDesId()).flag=true;
-                            }
-                        }
-
-                    }
-                }
+//                //将增量顶点加入ssspMap
+//                for (Long vertexId : set) {
+//                    if (!ssspMap.containsKey(vertexId)) {
+//                        ssspMap.put(vertexId, new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+//                    }
+//                    for (Edge edge : refMap.get(vertexId)) {
+//                        if (!ssspMap.containsKey(edge.getDesId())) {
+//                            ssspMap.put(edge.getDesId(), new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+//                        }
+//                    }
+//                }
+//
+//                //遍历增量的每个源顶点
+//                for (Long vertexId : set) {
+//                    if (list.contains(vertexId)) {//属于关联边
+//                        //源顶点的增量边集合
+//                        List<Edge> edges = refMap.get(vertexId);
+//
+//                        //对增量边中的顶点进行松弛操作
+//                        for (Edge edge : edges) {
+//                            long newPathLength = ssspMap.get(vertexId).pathLength + edge.getWeight();
+//                            if(ssspMap.get(edge.getDesId()).pathLength>newPathLength){
+//                                ssspMap.get(edge.getDesId()).pathLength=newPathLength;
+//                                ssspMap.get(edge.getDesId()).flag=true;
+//                            }
+//                        }
+//
+//                    }
+//                }
                 barrier.await();
                 System.out.println(System.currentTimeMillis()-Main.startTime);
 
                 //开启bsp过程,全量迭代
 
-                Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
-
                 int iterations = 0;
 
                 while (true) {
-//                    if(iterations>0){//本地计算
-//                        for(Long vertexId:list){
-//                            SSSPBean bean = ssspMap.get(vertexId);
-//                            if(bean.message<bean.pathLength){
-//                                bean.pathLength=bean.message;
-//                                bean.flag=true;
-//                            }
-//                        }
-//
-//                    }
-
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
                         if (bean.flag) {
@@ -680,6 +688,14 @@ public class GlobalPointQuery {
             }
             System.out.println(name + "完成");
             latch.countDown();
+        }
+    }
+    static class EdgeBean{
+        long source;
+        long des;
+        public EdgeBean(long source, long des) {
+            this.source = source;
+            this.des = des;
         }
     }
 }
