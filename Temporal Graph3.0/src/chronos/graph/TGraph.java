@@ -9,20 +9,16 @@ import java.util.Map;
 
 public class TGraph {
 	public static final int timeRange=10;
-	public static String fileName;//初始图文件路径
+	public static String fileName="DataSets/";//初始图文件路径
 	public static List<String> logList;//原始日志路径
 	//时序图所有组件    1个组的
 	public static GraphSnapshot graphSnapshot;//全图快照
 	public static List<HashSet<String>> logArr;
 
-
-	public static GraphSnapshot[] deltaGraphSnapshotArr;//增量快照 与上面日志对应
-//	public static Map<Long,List[]> timeLocalityDeltaSnapshot;//增量快照的时间局部性布局
-
-
 	private static void loadDataSetsPath() {
 		// 加载数据集路径
-		TGraph.fileName = "DataSets/test.txt";
+		TGraph.fileName+="test";
+		TGraph.fileName+=".txt";
 		TGraph.logList = new ArrayList();
 		for (int i = 1; i < timeRange; i++) {
 			TGraph.logList.add("DataSets/day" +i+ ".txt");

@@ -2,14 +2,7 @@ package chronos.graph;
 
 
 import chronos.algorithm.GlobalPointQuery;
-import chronos.algorithm.GlobalRangeQuery;
-import chronos.algorithm.LocalPointQuery;
-import chronos.algorithm.LocalRangeQuery;
 
-//"DataSets/p2p-Gnutella09.txt";
-//"DataSets/p2p-Gnutella08.txt";
-//"DataSets/facebook_combined.txt";
-//"DataSets/test.txt";
 public class Main {
 	
 	public static long startTime;

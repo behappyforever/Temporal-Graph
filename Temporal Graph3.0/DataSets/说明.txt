@@ -1,30 +1,33 @@
-# 1..............
+# Persistence
 # Directed graph (each unordered pair of nodes is saved once): p2p-Gnutella09.txt
 # Directed Gnutella P2P network from August 9 2002
 # Nodes: 8114 Edges: 26013
 # FromNodeId	ToNodeId
 
-#
-# Directed graph (each unordered pair of nodes is saved once): soc-Epinions1.txt
-# Directed Epinions social network
-# Nodes: 75879 Edges: 508837
+# Persistence1
+# 无向图           facebook.txt
+# Nodes: 4039     无向边: 88234   有向边:176468
 # FromNodeId	ToNodeId
 
-# 2..............
-# Directed graph (each unordered pair of nodes is saved once): Slashdot0902.txt
+# Persistence2
+# 无向图     Email-Enron.txt
+# 顶点：36692  无向边：183831   有向边：367662
+
+# Persistence3
+# 有向图     Epinions.txt
+# 顶点：75879  有向边：508837
+
+
+# Persistence4
+# 有向图         Slashdot.txt
 # Slashdot Zoo social network from February 0 2009
 # Nodes: 82168 Edges: 948464
 
-# 3..............
-# Directed graph (each unordered pair of nodes is saved once): web-NotreDame.txt
+# Persistence5
+# 有向图        NotreDame.txt
 # University of Notre Dame web graph from 1999 by Albert, Jeong and Barabasi
 # Nodes: 325729 Edges: 1497134
 # FromNodeId	ToNodeId
 
-# 4..............
-# Directed graph (each unordered pair of nodes is saved once): Email-Enron.txt
-# Enron email network (edge indicated that email was exchanged, undirected edges)
-# Nodes: 36692 Edges: 367662
-# FromNodeId	ToNodeId
 
 # 模拟变化 每天变化千分之一
