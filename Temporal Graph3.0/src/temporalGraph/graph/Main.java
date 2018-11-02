@@ -2,39 +2,39 @@ package temporalGraph.graph;
 
 import temporalGraph.algorithm.*;
 
-//"DataSets/p2p-Gnutella09.txt";
-//"DataSets/p2p-Gnutella08.txt";
-//"DataSets/facebook_combined.txt";
-//"DataSets/test.txt";
 public class Main {
 	
 	public static long startTime;
 	public static void main(String[] args) {
 		
-		TGraph.start();//构建时序图存储结构
+		TGraph.start("Persistence3 ");//构建时序图存储结构
 		System.out.println("数据加载完成");
+		long[] arr=new long[5000];
+		for (int i = 0; i < 5000; i++) {
+			arr[i]=i;
+		}
 		startTime=System.currentTimeMillis();
 
-		/**
-		 *  2-hop 单快照算法
-		 */
-//		for(int i=0;i<10000;i++){
-//			LocalPointQuery.twoHopNeighborQuery(0,1);
+//		for(int i=0;i<5000;i++){
+//			LocalPointQuery.oneHopNeighborQuery(i,1);
 //		}
-		/**
-		 *  2-hop 多快照算法
-		 */
-//		for (int i = 0; i < 10000; i++) {
-//			LocalRangeQuery.twoHopNeighborQuery(0);
+
+
+//		for(int i=0;i<5000;i++){
+//			LocalPointQuery.twoHopNeighborQuery(i,1);
+//		}
+		LocalRangeQuery.oneHopNeighborQuery(arr);
+//		for (int i = 0; i < 5000; i++) {
+//			LocalRangeQuery.twoHopNeighborQuery(i);
 //		}
 
 
 //		GlobalPointQuery.pageRank(1);
 //		GlobalRangeQuery.pageRank();
 
-		GlobalPointQuery.singleShortestPath(0,0);
+//		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);
-		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime));
+		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime)+"毫秒");
 
 
 

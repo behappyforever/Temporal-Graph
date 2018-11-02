@@ -2,6 +2,8 @@ package chronos.graph;
 
 
 import chronos.algorithm.GlobalPointQuery;
+import chronos.algorithm.LocalPointQuery;
+import chronos.algorithm.LocalRangeQuery;
 
 public class Main {
 	
@@ -9,20 +11,25 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		TGraph.start();//构建时序图存储结构
+		TGraph.start("DataSets1");//构建时序图存储结构
 
+		long[] arr=new long[5000];
+		for (int i = 0; i < 5000; i++) {
+			arr[i]=i;
+		}
 		startTime=System.currentTimeMillis();
 
 
-//		for(int i=0;i<10000;i++){
-//			LocalPointQuery.twoHopNeighborQuery(0,0);
-//		}
-//		for (int i = 0; i < 10000; i++) {
-//			LocalRangeQuery.twoHopNeighborQuery(0);
+//		LocalPointQuery.oneHopNeighborQuery(arr,1);
+//		LocalPointQuery.twoHopNeighborQuery(arr,1);
+
+		LocalRangeQuery.oneHopNeighborQuery(arr);
+//		for (int i = 0; i < 5000; i++) {
+//			LocalRangeQuery.twoHopNeighborQuery(i);
 //		}
 //		GlobalPointQuery.pageRank(0);
 //		GlobalRangeQuery.pageRank();
-		GlobalPointQuery.singleShortestPath(0,0);
+//		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);
 		long time1= System.currentTimeMillis() - startTime;
 		System.out.println("运行耗时= "+time1+" 毫秒");

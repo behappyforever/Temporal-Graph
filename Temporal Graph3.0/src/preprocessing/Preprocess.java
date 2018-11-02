@@ -16,15 +16,15 @@ public class Preprocess {
     private static List<Set<String>> delLog;
     private static List<Set<String>> modLog;
     private static List<Set<String>> deltaLog;
-    private static String persistenceDir="Persistence4";
-    private static String inputFileName="Slashdot";
+    private static String persistenceDir="Persistence5";
+    private static String inputDir="DataSets5";
 
 
     public static void loadPath() {
-        filePath = "DataSets/"+inputFileName+".txt";
+        filePath = inputDir+"/data.txt";
         logList = new ArrayList();
         for (int i = 1; i < TGraph.timeRange; i++) {
-            logList.add("DataSets/day" + i + ".txt");
+            logList.add(inputDir+"/day" + i + ".txt");
         }
     }
 

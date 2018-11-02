@@ -10,92 +10,135 @@ public class LocalPointQuery {
     /**
      * 供外部调用的接口
      *
-     * @param sourceVertex
+     * @param
      * @param time
      * @return
      */
-    public static long twoHopNeighborQuery(long sourceVertex, int time) {
+    public static long twoHopNeighborQuery(long[] arr, int time) {
         long res = 0;
 
-        res += twoHopNeighborVS(sourceVertex);//原始结果
-        res += deltaTwoHopNeighbor(sourceVertex, time);
+        res += twoHopNeighborVS(arr);//原始结果
+        res += deltaTwoHopNeighbor(arr, time);
         return res;
     }
 
     //2跳邻居原始结果计算(VS)
-    public static long twoHopNeighborVS(long sourceVertex) {
+    public static long twoHopNeighborVS(long[] arr) {
         long res = 0;
-        List<Long> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
-
-        for (Long e : tmpRef) {
-            res += TGraph.graphSnapshot.getNeighborNum(e);
+        for (int i = 0; i < arr.length; i++) {
+            List<Long> tmpRef = TGraph.graphSnapshot.getNeighborList(arr[i]);//取到源点的1跳邻居集合
+            if (tmpRef != null) {
+                for (Long e : tmpRef) {
+                    res += TGraph.graphSnapshot.getNeighborNum(e);
+                }
+            }
         }
         return res;
     }
 
     //2跳邻居增量结果计算
-    public static long deltaTwoHopNeighbor(long sourceVertex, int time) {
+    public static long deltaTwoHopNeighbor(long[] arr, int time) {
         long res = 0;
-        List<Long> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
+        List<XY> listA = new ArrayList<>();
+        List<XY> listD = new ArrayList<>();
         Set<String> set = TGraph.logArr.get(time);
-        Map<Long,Integer> addMap=new HashMap<>();
-        Map<Long,Integer>  delMap=new HashMap<>();
+        try {
+            for (String s : set) {
+                if (s.charAt(0) == 'A') {
+                    String[] split = s.substring(2).split("\t");
+                    listA.add(new XY(Long.parseLong(split[0]), Long.parseLong(split[1])));
 
-        for (String s : set) {
-            if (s.charAt(0) == 'A') {
-                String[] split = s.substring(2).split(" ");
-                try {
-                    long currentVertexId = Long.parseLong(split[0]);
-                    addMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
-                }catch (Exception e){
+                } else {
+                    String[] split = s.substring(2).split("\t");
+                    listD.add(new XY(Long.parseLong(split[0]), Long.parseLong(split[1])));
                 }
-            }else{
-                String[] split = s.substring(2).split(" ");
-                long currentVertexId = Long.parseLong(split[0]);
-                delMap.put(currentVertexId,addMap.getOrDefault(currentVertexId,0)+1);
             }
+        } catch (Exception e) {
         }
-
-        for (Long e : vsEdgeList) {
-            res+=addMap.getOrDefault(e,0);
-            res-=delMap.getOrDefault(e,0);
-//            for (String s : set) {
-//                if (s.charAt(0) == 'A') {
-//                    String[] split = s.substring(2).split(" ");
-//                    long currentVertexId = Long.parseLong(split[0]);
-//                    if (e == currentVertexId)
-//                        res++;
-//                } else {
-//                    String[] split = s.substring(2).split(" ");
-//                    long currentVertexId = Long.parseLong(split[0]);
-//                    if (e == currentVertexId)
-//                        res--;
-//                }
-//            }
-        }
-
-        for(String s:set){
-            if(s.charAt(0)=='A'){
-                String[] split = s.substring(2).split(" ");
-                try {
-                    long currentVertexId = Long.parseLong(split[0]);
-                    if (sourceVertex == currentVertexId)
-                        res++;
-                }catch (Exception e){
+        for (int i = 0; i < arr.length; i++) {
+            List<Long> vsEdgeList = TGraph.graphSnapshot.getNeighborList(arr[i]);//取到源点的1跳邻居集合
+            Map<Long, Integer> addMap = new HashMap<>();
+            Map<Long, Integer> delMap = new HashMap<>();
+            for (XY xy : listA) {
+                addMap.put(xy.source,addMap.getOrDefault(xy.source,0)+1);
+            }
+            for (XY xy : listD) {
+                delMap.put(xy.source, addMap.getOrDefault(xy.source, 0) + 1);
+            }
+            if (vsEdgeList != null) {
+                for (Long e : vsEdgeList) {
+                    res += addMap.getOrDefault(e, 0);
+                    res -= delMap.getOrDefault(e, 0);
                 }
-            }else {
-                String[] split = s.substring(2).split(" ");
-                long currentVertexId = Long.parseLong(split[0]);
-                if (sourceVertex == currentVertexId){
-                    long desId=Long.parseLong(split[1]);
-                    if(TGraph.graphSnapshot.getHashMap().containsKey(desId)){
-                        res-=TGraph.graphSnapshot.getNeighborList(desId).size();
-                    }
+            }
+
+            for (XY xy : listA) {
+                if(xy.source==arr[i])
+                    res++;
+            }
+            for (XY xy : listD) {
+                if (TGraph.graphSnapshot.getHashMap().containsKey(xy.des)) {
+                    res -= TGraph.graphSnapshot.getNeighborList(xy.des).size();
                 }
             }
         }
-
-
         return res;
+    }
+
+    public static long oneHopNeighborQuery(long[] arr, int time) {
+        long res = 0;
+
+        oneHopNeighborVS(arr);//原始结果
+        deltaOneHopNeighbor(arr, time);
+        return res;
+
+    }
+
+    public static void oneHopNeighborVS(long[] arr) {
+
+        for (int i = 0; i < arr.length; i++) {
+            TGraph.graphSnapshot.getNeighborNum(arr[i]);
+        }
+    }
+
+    public static long deltaOneHopNeighbor(long[] arr, int time) {
+        long res = 0;
+        Set<String> set = TGraph.logArr.get(time);
+        List<XY> listA = new ArrayList<>();
+        List<XY> listD = new ArrayList<>();
+        try {
+            for (String s : set) {
+                if (s.charAt(0) == 'A') {
+                    String[] split = s.substring(2).split("\t");
+                    listA.add(new XY(Long.parseLong(split[0]), Long.parseLong(split[1])));
+
+                } else {
+                    String[] split = s.substring(2).split("\t");
+                    listD.add(new XY(Long.parseLong(split[0]), Long.parseLong(split[1])));
+                }
+            }
+        } catch (Exception e) {
+        }
+        for (long vertex : arr) {
+            for (XY xy : listA) {
+                if (xy.source == vertex)
+                    res++;
+            }
+            for (XY xy : listD) {
+                if (xy.des == vertex)
+                    res--;
+            }
+        }
+        return res;
+    }
+
+    static class XY {
+        long source;
+        long des;
+
+        public XY(long source, long des) {
+            this.source = source;
+            this.des = des;
+        }
     }
 }

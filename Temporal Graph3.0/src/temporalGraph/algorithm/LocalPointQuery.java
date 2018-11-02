@@ -15,7 +15,10 @@ public class LocalPointQuery {
     public static long oneHopNeighborQuery(long sourceVertex, int time) {//1跳邻居个数查询
         long res = 0;
         res += TGraph.graphSnapshot.getNeighborNum(sourceVertex);//VS
-        res += TGraph.strucLocalityDeltaSnapshot[time].get(sourceVertex).size();
+        List<Edge> edges = TGraph.strucLocalityDeltaSnapshot[time].get(sourceVertex);
+        if(edges!=null){
+            res += edges.size();
+        }
         return res;
     }
 
@@ -27,8 +30,10 @@ public class LocalPointQuery {
         long res = 0;
         List<VSEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
-        for (VSEdge e : tmpRef) {
-            res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+        if(tmpRef!=null) {
+            for (VSEdge e : tmpRef) {
+                res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+            }
         }
 
         originalCostTime=System.currentTimeMillis()-startTime;
@@ -43,20 +48,23 @@ public class LocalPointQuery {
         long res = 0;
         List<VSEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
 
-        for (VSEdge e : vsEdgeList) {
-            List<Edge> edgeList = TGraph.strucLocalityDeltaSnapshot[time].get(e.getDesId());
-            if(edgeList!=null){//存在
-                res += edgeList.size();
+        if(vsEdgeList!=null) {
+            for (VSEdge e : vsEdgeList) {
+                List<Edge> edgeList = TGraph.strucLocalityDeltaSnapshot[time].get(e.getDesId());
+                if (edgeList != null) {//存在
+                    res += edgeList.size();
+                }
             }
         }
 
         List<Edge> edgeList = TGraph.strucLocalityDeltaSnapshot[time].get(sourceVertex);
-
-        for (Edge e : edgeList) {
-            res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
-            List<Edge> tmp = TGraph.strucLocalityDeltaSnapshot[time].get(e.getDesId());
-            if(tmp!=null){//存在
-                res += tmp.size();
+        if(edgeList!=null) {
+            for (Edge e : edgeList) {
+                res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+                List<Edge> tmp = TGraph.strucLocalityDeltaSnapshot[time].get(e.getDesId());
+                if (tmp != null) {//存在
+                    res += tmp.size();
+                }
             }
         }
 

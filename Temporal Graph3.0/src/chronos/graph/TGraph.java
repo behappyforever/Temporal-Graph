@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class TGraph {
 	public static final int timeRange=10;
-	public static String fileName="DataSets/";//初始图文件路径
+	public static String inputDir="";
+	public static String fileName="";//初始图文件路径
 	public static List<String> logList;//原始日志路径
 	//时序图所有组件    1个组的
 	public static GraphSnapshot graphSnapshot;//全图快照
@@ -17,15 +18,16 @@ public class TGraph {
 
 	private static void loadDataSetsPath() {
 		// 加载数据集路径
-		TGraph.fileName+="test";
-		TGraph.fileName+=".txt";
-		TGraph.logList = new ArrayList();
+		fileName+=inputDir;
+		fileName+="/data.txt";
+		logList = new ArrayList();
 		for (int i = 1; i < timeRange; i++) {
-			TGraph.logList.add("DataSets/day" +i+ ".txt");
+			logList.add(inputDir+"/day" +i+ ".txt");
 		}
 	}
 
-	public static void start() {
+	public static void start(String dir) {
+		inputDir+=dir;
 		loadDataSetsPath();
 		LoadTG.loadGraph();// 加载初始图快照
 		LoadTG.readRawLog();// 读取日志

@@ -82,10 +82,11 @@ public class GraphSnapshot {
 	}
 
 	public long getNeighborNum(long vertexId){
-		return vertexMap.get(vertexId).getOut_degree();
+		return vertexMap.get(vertexId)!=null?vertexMap.get(vertexId).getOut_degree():0;
 	}
 
 	public List<Long> getNeighborList(long vertexId){
-		return vertexMap.get(vertexId).getOutGoingList();
+		Vertex vertex = vertexMap.get(vertexId);
+		return vertex!=null?vertex.getOutGoingList():null;
 	}
 }

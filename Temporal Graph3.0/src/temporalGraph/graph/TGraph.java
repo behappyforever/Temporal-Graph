@@ -21,7 +21,7 @@ public class TGraph {
     //增量快照的时间局部性布局,key为顶点Id,value为一个长度为timeRange的数组，数组放入一个顶点的出边表(List<Edge>)
     public static Map<Long, List<Edge>[]> timeLocalityDeltaSnapshot;
 
-    private static String inputDir="Persistence1";
+    private static String inputDir="";
 
     public static void setPath() {
         // 加载数据集路径
@@ -32,7 +32,9 @@ public class TGraph {
         }
     }
 
-    public static void start() {
+    public static void start(String dir) {
+
+        inputDir+=dir;
         setPath();//设置文件路径
 
         loadVS();// 加载VS
