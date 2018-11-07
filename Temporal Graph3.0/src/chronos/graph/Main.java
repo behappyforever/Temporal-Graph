@@ -13,21 +13,19 @@ public class Main {
 		
 		TGraph.start("DataSets1");//构建时序图存储结构
 
-		long[] arr=new long[5000];
-		for (int i = 0; i < 5000; i++) {
-			arr[i]=i;
-		}
+//		long[] arr=new long[5000];
+//		for (int i = 0; i < 5000; i++) {
+//			arr[i]=i;
+//		}
 		startTime=System.currentTimeMillis();
 
 
 //		LocalPointQuery.oneHopNeighborQuery(arr,1);
 //		LocalPointQuery.twoHopNeighborQuery(arr,1);
 
-		LocalRangeQuery.oneHopNeighborQuery(arr);
-//		for (int i = 0; i < 5000; i++) {
-//			LocalRangeQuery.twoHopNeighborQuery(i);
-//		}
-//		GlobalPointQuery.pageRank(0);
+//		LocalRangeQuery.oneHopNeighborQuery(arr);
+//		LocalRangeQuery.twoHopNeighborQuery(arr);
+		GlobalPointQuery.pageRank(0);
 //		GlobalRangeQuery.pageRank();
 //		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);

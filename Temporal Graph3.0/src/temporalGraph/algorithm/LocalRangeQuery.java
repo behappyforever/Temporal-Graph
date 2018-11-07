@@ -11,12 +11,11 @@ import java.util.List;
 public class LocalRangeQuery {
 
 
-    public static long[] twoHopNeighborQuery(long sourceVertex){//默认算一组快照
-        long tmp = twoHopNeighborVS(sourceVertex);
+    public static long[] twoHopNeighborQuery(long[] arr){//默认算一组快照
+        long[] tmp = twoHopNeighborVS(arr);
         long[] res=new long[TGraph.timeRange];
-        Arrays.fill(res,tmp);
 
-        long[] tmpArr = deltaTwoHopNeighbor(sourceVertex);
+        long[] tmpArr = deltaTwoHopNeighbor(arr);
         for (int i = 0; i < TGraph.timeRange; i++) {
             res[i]+=tmpArr[i];
         }
@@ -24,26 +23,29 @@ public class LocalRangeQuery {
     }
 
     //2跳邻居原始结果计算(VS)
-    private static long twoHopNeighborVS(long sourceVertex) {
-        long res = 0;
-        List<VSEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
+    private static long[] twoHopNeighborVS(long[] arr) {
 
-        if(tmpRef!=null) {
-            for (VSEdge e : tmpRef) {
-                res += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+        long[] res = new long[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            List<VSEdge> tmpRef = TGraph.graphSnapshot.getNeighborList(arr[i]);//取到源点的1跳邻居集合
+
+            if(tmpRef!=null) {
+                for (VSEdge e : tmpRef) {
+                    res[i] += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+                }
             }
         }
         return res;
     }
 
-    private static long[] deltaTwoHopNeighbor(long sourceVertex) {
+    private static long[] deltaTwoHopNeighbor(long[] arr) {
 
         int n = TGraph.timeRange;
 
         long[] res = new long[n];
 
         for (int i = 0; i < n; i++) {
-            new Thread(new WorkThread(i, sourceVertex, res)).start();
+            new Thread(new WorkThread(i, arr, res)).start();
         }
 
         return res;
@@ -53,38 +55,40 @@ public class LocalRangeQuery {
     static class WorkThread implements Runnable {
 
         private int timePoint;
-        private long sourceVertex;
+        private long[] arr;
         private long[] res;
 
-        public WorkThread(int t, long s, long[] r) {
+        public WorkThread(int t, long[] s, long[] r) {
             timePoint = t;
-            sourceVertex = s;
+            arr = s;
             res = r;
         }
 
         @Override
         public void run() {
-            List<VSEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(sourceVertex);//取到源点的1跳邻居集合
-            if(vsEdgeList!=null) {
-                for (VSEdge e : vsEdgeList) {
-                    List<Edge>[] listArr = TGraph.timeLocalityDeltaSnapshot.get(e.getDesId());
-                    if (listArr != null) {
-                        if (listArr[timePoint] != null) {
-                            res[timePoint] += listArr[timePoint].size();
-                        }
-                    }
-                }
-            }
-            List<Edge>[] lists = TGraph.timeLocalityDeltaSnapshot.get(sourceVertex);
-            if(lists!=null) {
-                List<Edge> edgeList = lists[timePoint];
-                if (edgeList != null) {
-                    for (Edge e : edgeList) {
-                        res[timePoint] += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+            for (int i = 0; i < arr.length; i++) {
+                List<VSEdge> vsEdgeList = TGraph.graphSnapshot.getNeighborList(arr[i]);//取到源点的1跳邻居集合
+                if(vsEdgeList!=null) {
+                    for (VSEdge e : vsEdgeList) {
                         List<Edge>[] listArr = TGraph.timeLocalityDeltaSnapshot.get(e.getDesId());
                         if (listArr != null) {
                             if (listArr[timePoint] != null) {
                                 res[timePoint] += listArr[timePoint].size();
+                            }
+                        }
+                    }
+                }
+                List<Edge>[] lists = TGraph.timeLocalityDeltaSnapshot.get(arr[i]);
+                if(lists!=null) {
+                    List<Edge> edgeList = lists[timePoint];
+                    if (edgeList != null) {
+                        for (Edge e : edgeList) {
+                            res[timePoint] += TGraph.graphSnapshot.getNeighborNum(e.getDesId());
+                            List<Edge>[] listArr = TGraph.timeLocalityDeltaSnapshot.get(e.getDesId());
+                            if (listArr != null) {
+                                if (listArr[timePoint] != null) {
+                                    res[timePoint] += listArr[timePoint].size();
+                                }
                             }
                         }
                     }

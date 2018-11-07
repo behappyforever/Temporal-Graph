@@ -10,7 +10,7 @@ public class GlobalPointQuery {
     private static int threadNum = 6;
 
     //PageRank
-    private static final double threshold = 0.0000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
+    private static double threshold = 0.2;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
     private static final int maxStep = 10;
     private static final int maxDeltaStep = 5;
@@ -19,6 +19,8 @@ public class GlobalPointQuery {
     private static Set<Long>[] setArr;
     private static Map<Long, Double> messageMap;//key为顶点id，value为聚集值
     private static Map<Long, Double> prValueMap;//key为顶点id，value顶点pr值
+    private static Map<Long, Double> oldPrValueMap;//key为顶点id，value顶点pr值
+    private static double oldValue;
 
     /**
      * 供外部调用的接口
@@ -29,7 +31,7 @@ public class GlobalPointQuery {
         pageRankVS();
 
         System.out.println("PageRank原始迭代完成---------");
-        System.out.println(System.currentTimeMillis()-Main.startTime);
+        System.out.println("原始步时间" + (System.currentTimeMillis() - Main.startTime));
 
         pageRankDeltaSnapshot(time);
 
@@ -43,6 +45,10 @@ public class GlobalPointQuery {
 
         //存放顶点pr值,线程共用
         prValueMap = new ConcurrentHashMap();
+
+        oldPrValueMap = new ConcurrentHashMap<>();
+
+//        threshold=1.0/TGraph.graphSnapshot.getHashMap().size()/10;
 
         resetPr(TGraph.graphSnapshot, prValueMap);
 
@@ -91,12 +97,14 @@ public class GlobalPointQuery {
         private CountDownLatch latch;
         private String name;
         private List<Long> list;//虚拟快照分块
+        private boolean flag;
 
         public PageRankRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list) {
             this.barrier = barrier;
             this.latch = latch;
             this.name = name;
             this.list = list;
+            this.flag = false;
         }
 
         @Override
@@ -111,7 +119,16 @@ public class GlobalPointQuery {
                 int iterations = 1;
 
 
-                while (iterations <= maxStep) {
+                while (iterations<maxStep) {
+
+//                    if(name.equals("thread1")){
+//                        oldValue=0;
+//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
+//                            oldValue+=entry.getValue();
+//                        }
+//                    }
+//                    barrier.await();
+
                     if (iterations > 1) {//第一个超步不需要本地计算
                         for (Long vertexId : list) {
                             double total = messageMap.get(vertexId);
@@ -125,26 +142,36 @@ public class GlobalPointQuery {
                         messageMap.put(vertexId, 0.0);
                     }
 
+                    double totalValue = 0.0;//用来处理终止点
 
                     //发消息
                     for (Long vertexId : list) {
                         Vertex v = vertexMap.get(vertexId);
                         List<VSEdge> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + tmpValue);
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue += tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (VSEdge e : outGoingList) {
-                                messageMap.put(e.getDesId(), messageMap.getOrDefault(e.getDesId(),1.0/numOfVertex) + prValueMap.get(vertexId) / outGoingList.size());
+                                messageMap.put(e.getDesId(), messageMap.getOrDefault(e.getDesId(), 1.0 / numOfVertex) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
                     }
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(), en.getValue() + totalValue);
+                    }
                     iterations++;
-                    System.out.println(iterations);
+                    System.out.println("迭代次数为" + iterations);
                     //路障同步
                     barrier.await();
+//                    if(iterations>2&&name.equals("thread1")){
+//                        flag=judge(oldValue,prValueMap);
+//                    }
+//                    barrier.await();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -166,6 +193,29 @@ public class GlobalPointQuery {
         }
     }
 
+    private static boolean judge(Map<Long, Double> old, Map<Long, Double> cur) {
+        for (Map.Entry<Long, Double> entry : cur.entrySet()) {
+            long key = entry.getKey();
+            double value = entry.getValue();
+            if (old.containsKey(key)) {
+                double oldValue = old.get(key);
+                if (Math.abs(value - oldValue) > threshold)
+                    return false;//未收敛
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean judge(double old, Map<Long, Double> cur) {
+        double curValue = 0;
+        for (Map.Entry<Long, Double> entry : cur.entrySet()) {
+            curValue += entry.getValue();
+        }
+        System.out.println(Math.abs(old - curValue));
+        return Math.abs(old - curValue) < threshold;
+    }
+
 
     /**
      * 增量快照的PageRank计算
@@ -173,6 +223,7 @@ public class GlobalPointQuery {
      * @param time
      */
     private static void pageRankDeltaSnapshot(int time) {
+
 
         Map<Long, List<Edge>> refMap = TGraph.strucLocalityDeltaSnapshot[time];
 
@@ -218,6 +269,7 @@ public class GlobalPointQuery {
         private List<Long> list;//虚拟快照分块
         private Set<Long> set;//增量快照分块
         private Map<Long, List<Edge>> refMap;
+        private boolean flag;
 
         public PageRankDeltaRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list, Set<Long> set, Map<Long, List<Edge>> refMap) {
             this.barrier = barrier;
@@ -226,6 +278,7 @@ public class GlobalPointQuery {
             this.list = list;
             this.set = set;
             this.refMap = refMap;
+            this.flag = false;
         }
 
         @Override
@@ -235,59 +288,104 @@ public class GlobalPointQuery {
                 Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
                 int numOfVertex = graphSnapshot.getHashMap().size();
 
-                //进行bsp迭代之前，用一轮同步迭代重分配pr值
+                //增量步
+                Queue<EdgeBean> q = new LinkedList<>();
+                for (Long vertex : set) {
+                    List<Edge> edges = refMap.get(vertex);
+                    for (Edge edge : edges) {
+                        q.offer(new EdgeBean(vertex, edge.getDesId()));
+                    }
+                }
+                System.out.println("时间"+(System.currentTimeMillis()-Main.startTime));
+                while (!q.isEmpty()) {//处理四类增量边,详见论文
+                    EdgeBean bean = q.poll();
+                    if (vertexMap.containsKey(bean.source) && vertexMap.containsKey(bean.des)) {
+                        List<VSEdge> vsEdges = vertexMap.get(bean.source).getOutGoingList();
+                        double sourceVertexPr = prValueMap.get(bean.source);
+                        for (VSEdge vsEdge : vsEdges) {
+                            double newPrValue = prValueMap.get(vsEdge.getDesId()) - sourceVertexPr / vsEdges.size() * alpha + sourceVertexPr / (vsEdges.size() + 1) * alpha;
+                            prValueMap.put(vsEdge.getDesId(), newPrValue);
+                        }
+                        prValueMap.put(bean.des, prValueMap.get(bean.des) + sourceVertexPr / (vsEdges.size() + 1) * alpha);
+                    } else if (vertexMap.containsKey(bean.source) && !vertexMap.containsKey(bean.des)) {
+                        List<VSEdge> vsEdges = vertexMap.get(bean.source).getOutGoingList();
+                        double sourceVertexPr = prValueMap.get(bean.source);
+                        for (VSEdge vsEdge : vsEdges) {
+                            double newPrValue = prValueMap.get(vsEdge.getDesId()) - sourceVertexPr / vsEdges.size() * alpha + sourceVertexPr / (vsEdges.size() + 1) * alpha;
+                            prValueMap.put(vsEdge.getDesId(), newPrValue);
+                        }
+                        prValueMap.put(bean.des, (1 - alpha) / prValueMap.size() + alpha * sourceVertexPr / (vsEdges.size() + 1));
+                    } else if (!vertexMap.containsKey(bean.source) && vertexMap.containsKey(bean.des)) {
+                        prValueMap.put(bean.source, 1.0 / prValueMap.size());
+                        prValueMap.put(bean.des, prValueMap.get(bean.des) + prValueMap.get(bean.source) * alpha);
+                    } else {
+                        q.offer(bean);
+                    }
+                }
 
                 //将增量顶点加入prValueMap
-                for (Long vertexId : set) {
-                    if (!prValueMap.containsKey(vertexId)) {
-                        numOfVertex++;
-                        prValueMap.put(vertexId, 0.0);
-                    }
-                    for (Edge edge : refMap.get(vertexId)) {
-                        if (!prValueMap.containsKey(edge.getDesId())) {
-                            numOfVertex++;
-                            prValueMap.put(edge.getDesId(), 0.0);
-                        }
-                    }
-                }
+//                for (Long vertexId : set) {
+//                    if (!prValueMap.containsKey(vertexId)) {
+//                        numOfVertex++;
+//                        prValueMap.put(vertexId, 0.0);
+//                    }
+//                    for (Edge edge : refMap.get(vertexId)) {
+//                        if (!prValueMap.containsKey(edge.getDesId())) {
+//                            numOfVertex++;
+//                            prValueMap.put(edge.getDesId(), 0.0);
+//                        }
+//                    }
+//                }
 
                 //遍历增量的每个源顶点,“转移”pr值
-                for (Long vertexId : set) {
-                    if (list.contains(vertexId)) {//属于关联边
-                        //源顶点的增量边集合
-                        List<Edge> edges = refMap.get(vertexId);
-                        //源顶点的vs中边的集合
-                        List<VSEdge> vsList = vertexMap.get(vertexId).getOutGoingList();
-                        //源顶点的pr值
-                        double srcPr = prValueMap.get(vertexId);
-
-                        //重分配源顶点的pr值  1. vs  2. delta
-                        long oldOutDegree = vertexMap.get(vertexId).getOutGoingList().size();
-                        long newOutDegree = oldOutDegree + edges.size();
-                        //1.对于vs中的每个目的顶点，pr值减少 alpha*(srcPr/oldOutDegree-srcPr/newOutDegree)
-                        for (VSEdge vsEdge : vsList) {
-                            prValueMap.put(vsEdge.getDesId(), prValueMap.get(vsEdge.getDesId()) - alpha * (srcPr / oldOutDegree - srcPr / newOutDegree));
-                        }
-                        //2.对于delta中的每个目的顶点，分两种情况：(1) 目的顶点在vs中，也就是没有引入新的顶点 (2) 目的顶点不在vs中，也就是引入了新的顶点
-                        for (Edge edge : edges) {
-                            if (prValueMap.get(edge.getDesId()) == 0) {
-                                prValueMap.put(edge.getDesId(), 1.0 / numOfVertex + alpha * (srcPr / newOutDegree));
-                            } else {
-                                prValueMap.put(edge.getDesId(), prValueMap.get(edge.getDesId()) + alpha * (srcPr / newOutDegree));
-                            }
-                        }
-
-                    }
-                }
+//                for (Long vertexId : set) {
+//                    if (list.contains(vertexId)) {//属于关联边
+//                        //源顶点的增量边集合
+//                        List<Edge> edges = refMap.get(vertexId);
+//                        //源顶点的vs中边的集合
+//                        List<VSEdge> vsList = vertexMap.get(vertexId).getOutGoingList();
+//                        //源顶点的pr值
+//                        double srcPr = prValueMap.get(vertexId);
+//
+//                        //重分配源顶点的pr值  1. vs  2. delta
+//                        long oldOutDegree = vertexMap.get(vertexId).getOutGoingList().size();
+//                        long newOutDegree = oldOutDegree + edges.size();
+//                        //1.对于vs中的每个目的顶点，pr值减少 alpha*(srcPr/oldOutDegree-srcPr/newOutDegree)
+//                        for (VSEdge vsEdge : vsList) {
+//                            prValueMap.put(vsEdge.getDesId(), prValueMap.get(vsEdge.getDesId()) - alpha * (srcPr / oldOutDegree - srcPr / newOutDegree));
+//                        }
+//                        //2.对于delta中的每个目的顶点，分两种情况：(1) 目的顶点在vs中，也就是没有引入新的顶点 (2) 目的顶点不在vs中，也就是引入了新的顶点
+//                        for (Edge edge : edges) {
+//                            if (prValueMap.get(edge.getDesId()) == 0) {
+//                                prValueMap.put(edge.getDesId(), 1.0 / numOfVertex + alpha * (srcPr / newOutDegree));
+//                            } else {
+//                                prValueMap.put(edge.getDesId(), prValueMap.get(edge.getDesId()) + alpha * (srcPr / newOutDegree));
+//                            }
+//                        }
+//
+//                    }
+//                }
 
                 barrier.await();
-                System.out.println(System.currentTimeMillis()-Main.startTime);
+                System.out.println("增量步时间" + (System.currentTimeMillis() - Main.startTime));
 
                 //开启bsp过程,全量迭代
 
                 int iterations = 1;
-                while (iterations <= maxDeltaStep) {
-
+                while (iterations<maxDeltaStep) {
+//                    if(name.equals("thread1")){
+//                        oldPrValueMap.clear();
+//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
+//                            oldPrValueMap.put(entry.getKey(),entry.getValue());
+//                        }
+//                    }
+//                    if(name.equals("thread1")){
+//                        oldValue=0;
+//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
+//                            oldValue+=entry.getValue();
+//                        }
+//                    }
+//                    barrier.await();
                     if (iterations > 1) {//第一个超步不需要本地计算
                         for (Long vertexId : list) {
                             double total = messageMap.get(vertexId);
@@ -307,6 +405,7 @@ public class GlobalPointQuery {
                         }
                     }
 
+                    double totalValue=0.0;//用来combine终止点发出的消息，从而加速迭代
 
                     //发消息
                     for (Long vertexId : list) {
@@ -317,10 +416,12 @@ public class GlobalPointQuery {
                         }
 
                         if (outDegree == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + tmpValue);
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue+=tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (VSEdge vsEdge : outGoingList) {//发送给VS中的边
                                 messageMap.put(vsEdge.getDesId(), messageMap.get(vsEdge.getDesId()) + prValueMap.get(vertexId) / outDegree);
@@ -341,10 +442,12 @@ public class GlobalPointQuery {
                         }
 
                         if (outDegree == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + tmpValue);
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue+=tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             if (prValueMap.containsKey(vertexId)) {
                                 for (VSEdge vsEdge : vertexMap.get(vertexId).getOutGoingList()) {//发送给VS中的边
@@ -357,10 +460,21 @@ public class GlobalPointQuery {
                             }
                         }
                     }
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(), en.getValue() + totalValue);
+                    }
+
                     iterations++;
-                    System.out.println(iterations);
+                    System.out.println("增量迭代次数" + iterations);
                     //路障同步
                     barrier.await();
+//                    if(iterations>2) {
+//                        flag = judge(oldPrValueMap, prValueMap);
+//                    }
+//                    if(iterations>2&&name.equals("thread1")){
+//                        flag=judge(oldValue,prValueMap);
+//                    }
+//                    barrier.await();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -386,9 +500,9 @@ public class GlobalPointQuery {
         singleShortestPathVS(sourceId, time);
 
         System.out.println("最短路径原始迭代完成---------");
-        System.out.println(System.currentTimeMillis()-Main.startTime);
+        System.out.println(System.currentTimeMillis() - Main.startTime);
 
-        singleShortestPathDelta(sourceId,time);
+        singleShortestPathDelta(sourceId, time);
 
 
     }
@@ -510,24 +624,24 @@ public class GlobalPointQuery {
                             for (VSEdge vsEdge : vsEdges) {
                                 long newPathLength = bean.pathLength + vsEdge.getWeight(time);
 //                                ssspMap.get(vsEdge.getDesId()).message=Math.min(ssspMap.get(vsEdge.getDesId()).message,newPathLength);
-                                if(ssspMap.get(vsEdge.getDesId()).pathLength>newPathLength){
-                                    ssspMap.get(vsEdge.getDesId()).pathLength=newPathLength;
-                                    ssspMap.get(vsEdge.getDesId()).flag=true;
+                                if (ssspMap.get(vsEdge.getDesId()).pathLength > newPathLength) {
+                                    ssspMap.get(vsEdge.getDesId()).pathLength = newPathLength;
+                                    ssspMap.get(vsEdge.getDesId()).flag = true;
                                 }
                             }
-                            bean.flag=false;
+                            bean.flag = false;
                         }
                     }
                     iterations++;
-                    System.out.println(name+"----"+iterations);
+                    System.out.println(name + "----" + iterations);
 
                     //路障同步
                     try {
-                        barrier.await(500,TimeUnit.MILLISECONDS);
-                        if(!checkActive(map.keySet())) {
+                        barrier.await(500, TimeUnit.MILLISECONDS);
+                        if (!checkActive(map.keySet())) {
                             break;
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         break;
                     }
                 }
@@ -541,7 +655,7 @@ public class GlobalPointQuery {
     }
 
 
-    private static void singleShortestPathDelta(long sourceId,int time) {
+    private static void singleShortestPathDelta(long sourceId, int time) {
         Map<Long, List<Edge>> refMap = TGraph.strucLocalityDeltaSnapshot[time];
 
         setArr = Partition.partitionDeltaSnapshot(threadNum, listArr, refMap);
@@ -557,7 +671,7 @@ public class GlobalPointQuery {
 
         //创建线程
         for (int i = 1; i <= threadNum; i++) {
-            executor.submit(new Thread(new SSSPDeltaRunner(barrier, latch, "thread" + i, listArr[i - 1], setArr[i - 1], refMap,time)));
+            executor.submit(new Thread(new SSSPDeltaRunner(barrier, latch, "thread" + i, listArr[i - 1], setArr[i - 1], refMap, time)));
         }
 
         executor.shutdown();
@@ -569,7 +683,7 @@ public class GlobalPointQuery {
         }
     }
 
-    static class SSSPDeltaRunner implements Runnable{
+    static class SSSPDeltaRunner implements Runnable {
         private CyclicBarrier barrier;
         private CountDownLatch latch;
         private String name;
@@ -578,14 +692,14 @@ public class GlobalPointQuery {
         private Map<Long, List<Edge>> refMap;
         private int time;
 
-        public SSSPDeltaRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list, Set<Long> set, Map<Long, List<Edge>> refMap,int time) {
+        public SSSPDeltaRunner(CyclicBarrier barrier, CountDownLatch latch, String name, List<Long> list, Set<Long> set, Map<Long, List<Edge>> refMap, int time) {
             this.barrier = barrier;
             this.latch = latch;
             this.name = name;
             this.list = list;
             this.set = set;
             this.refMap = refMap;
-            this.time=time;
+            this.time = time;
         }
 
         @Override
@@ -593,27 +707,27 @@ public class GlobalPointQuery {
             try {
                 Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
 
-                Queue<EdgeBean> q=new LinkedList<>();
+                Queue<EdgeBean> q = new LinkedList<>();
                 for (Long vertex : set) {
                     List<Edge> edges = refMap.get(vertex);
                     for (Edge edge : edges) {
-                        q.offer(new EdgeBean(vertex,edge.getDesId()));
+                        q.offer(new EdgeBean(vertex, edge.getDesId()));
                     }
                 }
-                while (!q.isEmpty()){//处理四类增量边
+                while (!q.isEmpty()) {//处理四类增量边
                     EdgeBean bean = q.poll();
-                    if(map.containsKey(bean.source)&&map.containsKey(bean.des)){
+                    if (map.containsKey(bean.source) && map.containsKey(bean.des)) {
                         SSSPBean ssspBean = ssspMap.get(bean.source);
                         long newPathLength = ssspBean.pathLength + 1;
-                        if(newPathLength<ssspMap.get(bean.des).pathLength){
-                            ssspBean.pathLength=newPathLength;
-                            ssspBean.flag=true;
+                        if (newPathLength < ssspMap.get(bean.des).pathLength) {
+                            ssspBean.pathLength = newPathLength;
+                            ssspBean.flag = true;
                         }
-                    }else if(map.containsKey(bean.source)&&!map.containsKey(bean.des)){
-                        ssspMap.put(bean.des,new SSSPBean(ssspMap.get(bean.source).pathLength+1,0,false));
-                    }else if(!map.containsKey(bean.source)&&map.containsKey(bean.des)){
-                        ssspMap.put(bean.source,new SSSPBean(Integer.MAX_VALUE,0,false));
-                    }else{
+                    } else if (map.containsKey(bean.source) && !map.containsKey(bean.des)) {
+                        ssspMap.put(bean.des, new SSSPBean(ssspMap.get(bean.source).pathLength + 1, 0, false));
+                    } else if (!map.containsKey(bean.source) && map.containsKey(bean.des)) {
+                        ssspMap.put(bean.source, new SSSPBean(Integer.MAX_VALUE, 0, false));
+                    } else {
                         q.offer(bean);
                     }
                 }
@@ -648,7 +762,7 @@ public class GlobalPointQuery {
 //                    }
 //                }
                 barrier.await();
-                System.out.println(System.currentTimeMillis()-Main.startTime);
+                System.out.println(System.currentTimeMillis() - Main.startTime);
 
                 //开启bsp过程,全量迭代
 
@@ -661,26 +775,26 @@ public class GlobalPointQuery {
                             List<VSEdge> vsEdges = map.get(vertexId).getOutGoingList();
                             for (VSEdge vsEdge : vsEdges) {
                                 long newPathLength = bean.pathLength + vsEdge.getWeight(time);
-                                ssspMap.get(vsEdge.getDesId()).message=Math.min(ssspMap.get(vsEdge.getDesId()).message,newPathLength);
+                                ssspMap.get(vsEdge.getDesId()).message = Math.min(ssspMap.get(vsEdge.getDesId()).message, newPathLength);
                             }
                             if (refMap.containsKey(vertexId)) {
                                 for (Edge edge : refMap.get(vertexId)) {//发送给增量边
                                     long newPathLength = bean.pathLength + edge.getWeight();
-                                    if(newPathLength<ssspMap.get(edge.getDesId()).pathLength){
-                                        ssspMap.get(edge.getDesId()).pathLength=newPathLength;
-                                        ssspMap.get(edge.getDesId()).flag=true;
+                                    if (newPathLength < ssspMap.get(edge.getDesId()).pathLength) {
+                                        ssspMap.get(edge.getDesId()).pathLength = newPathLength;
+                                        ssspMap.get(edge.getDesId()).flag = true;
                                     }
                                 }
                             }
-                            bean.flag=false;
+                            bean.flag = false;
                         }
                     }
                     iterations++;
-                    System.out.println(name+"----"+iterations);
+                    System.out.println(name + "----" + iterations);
 
                     //路障同步
-                    barrier.await(500,TimeUnit.MILLISECONDS);
-                    if(!checkActive(map.keySet()))
+                    barrier.await(500, TimeUnit.MILLISECONDS);
+                    if (!checkActive(map.keySet()))
                         break;
                 }
             } catch (Exception e) {
@@ -690,9 +804,11 @@ public class GlobalPointQuery {
             latch.countDown();
         }
     }
-    static class EdgeBean{
+
+    static class EdgeBean {
         long source;
         long des;
+
         public EdgeBean(long source, long des) {
             this.source = source;
             this.des = des;

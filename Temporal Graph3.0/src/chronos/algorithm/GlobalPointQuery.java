@@ -17,7 +17,7 @@ public class GlobalPointQuery {
     private static int threadNum = 6;
 
     //PageRank
-    private static final double threshold = 0.0000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
+    private static final double threshold = 0.00001;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
     private static final int maxStep = 10;
     private static final int maxDeltaStep = 8;
@@ -129,24 +129,30 @@ public class GlobalPointQuery {
                         messageMap.put(vertexId, 0.0);
                     }
 
-
+                    double totalValue = 0.0;
                     //发消息
                     for (Long vertexId : list) {
                         Vertex v = vertexMap.get(vertexId);
                         List<Long> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue += tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (Long e : outGoingList) {
-                                messageMap.put(e, messageMap.getOrDefault(e,0.0) + prValueMap.get(vertexId) / outGoingList.size());
+                                messageMap.put(e, messageMap.getOrDefault(e, 0.0) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
                     }
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(), en.getValue() + totalValue);
+                    }
+
                     iterations++;
-                    System.out.println(iterations);
+                    System.out.println("原始迭代" + iterations);
                     //路障同步
                     barrier.await();
                 }
@@ -257,24 +263,31 @@ public class GlobalPointQuery {
                         messageMap.put(vertexId, 0.0);
                     }
 
+                    double totalValue = 0.0;
 
                     //发消息
                     for (Long vertexId : list) {
                         Vertex v = vertexMap.get(vertexId);
                         List<Long> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.getOrDefault(vertexId,1.0/numOfVertex) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.getOrDefault(vertexId,1.0/numOfVertex) / (numOfVertex - 1));
+                            double tmpValue = prValueMap.getOrDefault(vertexId, 1.0 / numOfVertex) / (numOfVertex - 1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + prValueMap.getOrDefault(vertexId,1.0/numOfVertex) / (numOfVertex - 1));
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue += tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (Long e : outGoingList) {
                                 messageMap.put(e, messageMap.get(e) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
                     }
+
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(),en.getValue()+totalValue);
+                    }
                     iterations++;
-                    System.out.println(iterations);
+                    System.out.println("合并迭代" + iterations);
                     //路障同步
                     barrier.await();
                 }
@@ -338,7 +351,7 @@ public class GlobalPointQuery {
 
     private static boolean checkActive(Collection<Long> col) {
         for (Long vertexId : col) {
-            if (ssspMap.get(vertexId)!=null&&ssspMap.get(vertexId).flag)
+            if (ssspMap.get(vertexId) != null && ssspMap.get(vertexId).flag)
                 return true;
         }
         return false;
@@ -425,11 +438,11 @@ public class GlobalPointQuery {
 
                     //路障同步
                     try {
-                        barrier.await(500,TimeUnit.MILLISECONDS);
+                        barrier.await(500, TimeUnit.MILLISECONDS);
                         if (!checkActive(map.keySet())) {
                             break;
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         break;
                     }
 
@@ -501,7 +514,7 @@ public class GlobalPointQuery {
                 while (true) {
                     for (Long vertexId : list) {//发消息
                         SSSPBean bean = ssspMap.get(vertexId);
-                        if (bean!=null&&bean.flag) {
+                        if (bean != null && bean.flag) {
                             List<Long> vsEdges = map.get(vertexId).getOutGoingList();
                             for (Long l : vsEdges) {
                                 long newPathLength = bean.pathLength + 1;
@@ -518,7 +531,7 @@ public class GlobalPointQuery {
                     System.out.println(name + "----" + iterations);
 
                     //路障同步
-                    barrier.await(500,TimeUnit.MILLISECONDS);
+                    barrier.await(500, TimeUnit.MILLISECONDS);
                     if (!checkActive(map.keySet())) {
                         break;
                     }

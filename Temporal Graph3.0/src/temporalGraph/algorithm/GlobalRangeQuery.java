@@ -11,7 +11,7 @@ public class GlobalRangeQuery {
     private static int threadNum = 10;//对应一组快照
 
     //PageRank
-    private static final double threshold = 0.0000000000000001;// 越小要求精度越高，迭代次数越大 10的-5
+    private static final double threshold = 0.000001;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
     private static final int maxStep = 10;
     private static final int maxDeltaStep = 5;
@@ -124,20 +124,27 @@ public class GlobalRangeQuery {
                         messageMap.put(vertexId, 0.0);
                     }
 
+                    double totalValue=0.0;
+
                     //发消息
                     for (Long vertexId : list) {
                         Vertex v = vertexMap.get(vertexId);
                         List<VSEdge> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue=prValueMap.get(vertexId)/(numOfVertex-1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue+=tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (VSEdge e : outGoingList) {
                                 messageMap.put(e.getDesId(), messageMap.getOrDefault(e.getDesId(),1.0/numOfVertex) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
+                    }
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(),en.getValue()+totalValue);
                     }
                     iterations++;
                     System.out.println(iterations);
@@ -278,20 +285,28 @@ public class GlobalRangeQuery {
                         messageMap.put(vertexId, 0.0);
                     }
 
+                    double totalValue=0.0;
+
                     //发消息
                     for (Long vertexId : list) {
                         Vertex v = vertexMap.get(vertexId);
                         List<VSEdge> outGoingList = v.getOutGoingList();
                         if (outGoingList.size() == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
-                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
-                            }
-                            messageMap.put(vertexId, messageMap.get(vertexId) - prValueMap.get(vertexId) / (numOfVertex - 1));
+                            double tmpValue=prValueMap.get(vertexId)/(numOfVertex-1);
+//                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+//                                messageMap.put(en.getKey(), en.getValue() + prValueMap.get(vertexId) / (numOfVertex - 1));
+//                            }
+                            messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
+                            totalValue+=tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
                             for (VSEdge e : outGoingList) {
                                 messageMap.put(e.getDesId(), messageMap.getOrDefault(e.getDesId(), 1.0 / numOfVertex) + prValueMap.get(vertexId) / outGoingList.size());
                             }
                         }
+                    }
+
+                    for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
+                        messageMap.put(en.getKey(),en.getValue()+totalValue);
                     }
                     iterations++;
                     System.out.println(iterations);

@@ -7,12 +7,12 @@ public class Main {
 	public static long startTime;
 	public static void main(String[] args) {
 		
-		TGraph.start("Persistence3 ");//构建时序图存储结构
+		TGraph.start("Persistence5");//构建时序图存储结构
 		System.out.println("数据加载完成");
-		long[] arr=new long[5000];
-		for (int i = 0; i < 5000; i++) {
-			arr[i]=i;
-		}
+//		long[] arr=new long[5000];
+//		for (int i = 0; i < 5000; i++) {
+//			arr[i]=i;
+//		}
 		startTime=System.currentTimeMillis();
 
 //		for(int i=0;i<5000;i++){
@@ -23,13 +23,13 @@ public class Main {
 //		for(int i=0;i<5000;i++){
 //			LocalPointQuery.twoHopNeighborQuery(i,1);
 //		}
-		LocalRangeQuery.oneHopNeighborQuery(arr);
-//		for (int i = 0; i < 5000; i++) {
-//			LocalRangeQuery.twoHopNeighborQuery(i);
+//		LocalRangeQuery.oneHopNeighborQuery(arr);
+//		for (int i = 0; i < 10; i++) {
+//			LocalRangeQuery.twoHopNeighborQuery(arr);
 //		}
 
 
-//		GlobalPointQuery.pageRank(1);
+		GlobalPointQuery.pageRank(1);
 //		GlobalRangeQuery.pageRank();
 
 //		GlobalPointQuery.singleShortestPath(0,0);
