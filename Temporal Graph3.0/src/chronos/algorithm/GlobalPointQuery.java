@@ -1,9 +1,6 @@
 package chronos.algorithm;
 
-import chronos.graph.Edge;
-import chronos.graph.GraphSnapshot;
-import chronos.graph.TGraph;
-import chronos.graph.Vertex;
+import chronos.graph.*;
 import chronos.utils.MergeLogIntoGraph;
 
 import java.util.Collection;
@@ -19,7 +16,7 @@ public class GlobalPointQuery {
     //PageRank
     private static final double threshold = 0.00001;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
-    private static final int maxStep = 10;
+    private static final int maxStep = 20;
     private static final int maxDeltaStep = 8;
 
     private static List<Long>[] listArr;
@@ -36,6 +33,7 @@ public class GlobalPointQuery {
         pageRankVS();
 
         System.out.println("PageRank原始迭代完成---------");
+        System.out.println("原始迭代时间"+(System.currentTimeMillis()- Main.startTime));
 
         pageRankDeltaSnapshot(time);
 

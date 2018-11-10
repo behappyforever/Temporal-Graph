@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		TGraph.start("DataSets1");//构建时序图存储结构
+		TGraph.start("DataSets4");//构建时序图存储结构
 
 //		long[] arr=new long[5000];
 //		for (int i = 0; i < 5000; i++) {

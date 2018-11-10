@@ -10,9 +10,9 @@ public class GlobalPointQuery {
     private static int threadNum = 6;
 
     //PageRank
-    private static double threshold = 0.2;// 越小要求精度越高，迭代次数越大
+    private static double threshold = 0.0001;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
-    private static final int maxStep = 10;
+    private static final int maxStep = 20;
     private static final int maxDeltaStep = 5;
 
     private static List<Long>[] listArr;
@@ -46,7 +46,7 @@ public class GlobalPointQuery {
         //存放顶点pr值,线程共用
         prValueMap = new ConcurrentHashMap();
 
-        oldPrValueMap = new ConcurrentHashMap<>();
+//        oldPrValueMap = new ConcurrentHashMap<>();
 
 //        threshold=1.0/TGraph.graphSnapshot.getHashMap().size()/10;
 
@@ -119,8 +119,15 @@ public class GlobalPointQuery {
                 int iterations = 1;
 
 
-                while (iterations<maxStep) {
-
+                while (iterations < maxStep) {
+//                while (!flag){
+//                    if(name.equals("thread1")){
+//                        oldPrValueMap.clear();
+//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
+//                            oldPrValueMap.put(entry.getKey(),entry.getValue());
+//                        }
+//                    }
+//                    barrier.await();
 //                    if(name.equals("thread1")){
 //                        oldValue=0;
 //                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
@@ -168,7 +175,11 @@ public class GlobalPointQuery {
                     System.out.println("迭代次数为" + iterations);
                     //路障同步
                     barrier.await();
-//                    if(iterations>2&&name.equals("thread1")){
+//                    if(iterations>2){
+//                        flag=judge(oldPrValueMap,prValueMap);
+//                    }
+//                    barrier.await();
+//                    if(iterations>2){
 //                        flag=judge(oldValue,prValueMap);
 //                    }
 //                    barrier.await();
@@ -212,7 +223,10 @@ public class GlobalPointQuery {
         for (Map.Entry<Long, Double> entry : cur.entrySet()) {
             curValue += entry.getValue();
         }
-        System.out.println(Math.abs(old - curValue));
+        System.out.println("change:" + (old - curValue));
+        System.out.println("old value:"+old);
+        System.out.println("new value:"+curValue);
+        System.out.println(cur.size());
         return Math.abs(old - curValue) < threshold;
     }
 
@@ -286,9 +300,7 @@ public class GlobalPointQuery {
             try {
                 GraphSnapshot graphSnapshot = TGraph.graphSnapshot;
                 Map<Long, Vertex> vertexMap = graphSnapshot.getHashMap();
-                int numOfVertex = graphSnapshot.getHashMap().size();
 
-                //增量步
                 Queue<EdgeBean> q = new LinkedList<>();
                 for (Long vertex : set) {
                     List<Edge> edges = refMap.get(vertex);
@@ -296,7 +308,9 @@ public class GlobalPointQuery {
                         q.offer(new EdgeBean(vertex, edge.getDesId()));
                     }
                 }
-                System.out.println("时间"+(System.currentTimeMillis()-Main.startTime));
+                System.out.println("增量步开始时间" + (System.currentTimeMillis() - Main.startTime));
+
+                //增量步
                 while (!q.isEmpty()) {//处理四类增量边,详见论文
                     EdgeBean bean = q.poll();
                     if (vertexMap.containsKey(bean.source) && vertexMap.containsKey(bean.des)) {
@@ -367,32 +381,37 @@ public class GlobalPointQuery {
 //                }
 
                 barrier.await();
-                System.out.println("增量步时间" + (System.currentTimeMillis() - Main.startTime));
+                System.out.println("增量步结束时间" + (System.currentTimeMillis() - Main.startTime));
 
                 //开启bsp过程,全量迭代
 
                 int iterations = 1;
                 while (iterations<maxDeltaStep) {
+//                while (!flag) {
 //                    if(name.equals("thread1")){
 //                        oldPrValueMap.clear();
 //                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
 //                            oldPrValueMap.put(entry.getKey(),entry.getValue());
 //                        }
 //                    }
-//                    if(name.equals("thread1")){
-//                        oldValue=0;
+//                    if (name.equals("thread1")) {
+//                        oldValue = 0;
 //                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
-//                            oldValue+=entry.getValue();
+//                            oldValue += entry.getValue();
 //                        }
 //                    }
 //                    barrier.await();
                     if (iterations > 1) {//第一个超步不需要本地计算
+                        double value = (1 - alpha) * (1.0f / prValueMap.size());
                         for (Long vertexId : list) {
                             double total = messageMap.get(vertexId);
-                            prValueMap.put(vertexId, (1 - alpha) * (1.0f / numOfVertex) + alpha * total);
+                            prValueMap.put(vertexId, value + alpha * total);
+                        }
+                        for (Long vertexId : set) {
+                            double total = messageMap.get(vertexId);
+                            prValueMap.put(vertexId, value + alpha * total);
                         }
                     }
-
 
                     //初始化或者清空消息缓冲
                     for (Long vertexId : list) {
@@ -405,7 +424,9 @@ public class GlobalPointQuery {
                         }
                     }
 
-                    double totalValue=0.0;//用来combine终止点发出的消息，从而加速迭代
+                    barrier.await();
+
+                    double totalValue = 0.0;//用来combine终止点发出的消息，从而加速迭代
 
                     //发消息
                     for (Long vertexId : list) {
@@ -416,19 +437,20 @@ public class GlobalPointQuery {
                         }
 
                         if (outDegree == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+                            double tmpValue = prValueMap.get(vertexId) / (prValueMap.size() - 1);
 //                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
 //                                messageMap.put(en.getKey(), en.getValue() + tmpValue);
 //                            }
                             messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
-                            totalValue+=tmpValue;
+                            totalValue += tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
+                            double value = prValueMap.get(vertexId) / outDegree;
                             for (VSEdge vsEdge : outGoingList) {//发送给VS中的边
-                                messageMap.put(vsEdge.getDesId(), messageMap.get(vsEdge.getDesId()) + prValueMap.get(vertexId) / outDegree);
+                                messageMap.put(vsEdge.getDesId(), messageMap.get(vsEdge.getDesId()) + value);
                             }
                             if (refMap.containsKey(vertexId)) {
                                 for (Edge edge : refMap.get(vertexId)) {//发送给增量边
-                                    messageMap.put(edge.getDesId(), messageMap.get(edge.getDesId()) + prValueMap.get(vertexId) / outDegree);
+                                    messageMap.put(edge.getDesId(), messageMap.get(edge.getDesId()) + value);
                                 }
                             }
                         }
@@ -442,21 +464,20 @@ public class GlobalPointQuery {
                         }
 
                         if (outDegree == 0) {// 如果该点出度为0，则将pr值平分给其他n-1个顶点
-                            double tmpValue = prValueMap.get(vertexId) / (numOfVertex - 1);
+                            double tmpValue = prValueMap.get(vertexId) / (prValueMap.size() - 1);
 //                            for (Map.Entry<Long, Double> en : messageMap.entrySet()) {
 //                                messageMap.put(en.getKey(), en.getValue() + tmpValue);
 //                            }
                             messageMap.put(vertexId, messageMap.get(vertexId) - tmpValue);
-                            totalValue+=tmpValue;
+                            totalValue += tmpValue;
                         } else {// 如果该点出度不为0，则将pr值平分给其出边顶点
-                            if (prValueMap.containsKey(vertexId)) {
-                                for (VSEdge vsEdge : vertexMap.get(vertexId).getOutGoingList()) {//发送给VS中的边
-                                    messageMap.put(vsEdge.getDesId(), messageMap.get(vsEdge.getDesId()) + prValueMap.get(vertexId) / outDegree);
-                                }
+                            double value = prValueMap.get(vertexId) / outDegree;
+                            for (VSEdge vsEdge : vertexMap.get(vertexId).getOutGoingList()) {//发送给VS中的边
+                                messageMap.put(vsEdge.getDesId(), messageMap.get(vsEdge.getDesId()) + value);
                             }
 
                             for (Edge edge : edgeList) {//发送给增量边
-                                messageMap.put(edge.getDesId(), messageMap.get(edge.getDesId()) + prValueMap.get(vertexId) / outDegree);
+                                messageMap.put(edge.getDesId(), messageMap.get(edge.getDesId()) + value);
                             }
                         }
                     }
@@ -471,8 +492,8 @@ public class GlobalPointQuery {
 //                    if(iterations>2) {
 //                        flag = judge(oldPrValueMap, prValueMap);
 //                    }
-//                    if(iterations>2&&name.equals("thread1")){
-//                        flag=judge(oldValue,prValueMap);
+//                    if (iterations > 2 ) {
+//                        flag = judge(oldValue, prValueMap);
 //                    }
 //                    barrier.await();
                 }
