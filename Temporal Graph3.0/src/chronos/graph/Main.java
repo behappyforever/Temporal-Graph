@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		TGraph.start("DataSets4");//构建时序图存储结构
+		TGraph.start("DataSets1");//构建时序图存储结构
 
 //		long[] arr=new long[5000];
 //		for (int i = 0; i < 5000; i++) {
@@ -25,9 +25,9 @@ public class Main {
 
 //		LocalRangeQuery.oneHopNeighborQuery(arr);
 //		LocalRangeQuery.twoHopNeighborQuery(arr);
-		GlobalPointQuery.pageRank(0);
+//		GlobalPointQuery.pageRank(0);
 //		GlobalRangeQuery.pageRank();
-//		GlobalPointQuery.singleShortestPath(0,0);
+		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);
 		long time1= System.currentTimeMillis() - startTime;
 		System.out.println("运行耗时= "+time1+" 毫秒");

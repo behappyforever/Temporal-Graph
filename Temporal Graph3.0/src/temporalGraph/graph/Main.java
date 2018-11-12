@@ -7,7 +7,7 @@ public class Main {
 	public static long startTime;
 	public static void main(String[] args) {
 		
-		TGraph.start("Persistence5");//构建时序图存储结构
+		TGraph.start("Persistence1");//构建时序图存储结构
 		System.out.println("数据加载完成");
 //		long[] arr=new long[5000];
 //		for (int i = 0; i < 5000; i++) {
@@ -29,10 +29,10 @@ public class Main {
 //		}
 
 
-		GlobalPointQuery.pageRank(1);
+//		GlobalPointQuery.pageRank(1);
 //		GlobalRangeQuery.pageRank();
 
-//		GlobalPointQuery.singleShortestPath(0,0);
+		GlobalPointQuery.singleShortestPath(0,0);
 //		GlobalRangeQuery.singleShortestPath(0);
 		System.out.println("总执行时间为:"+(System.currentTimeMillis()-startTime)+"毫秒");
 

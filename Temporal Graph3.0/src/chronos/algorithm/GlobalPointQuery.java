@@ -14,7 +14,7 @@ public class GlobalPointQuery {
     private static int threadNum = 6;
 
     //PageRank
-    private static final double threshold = 0.00001;// 越小要求精度越高，迭代次数越大
+    private static final double threshold = 0.01;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
     private static final int maxStep = 20;
     private static final int maxDeltaStep = 8;
@@ -385,10 +385,10 @@ public class GlobalPointQuery {
             e.printStackTrace();
         }
 
-        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
-            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
-            System.out.println();
-        });
+//        ssspMap.entrySet().forEach(longSSSPBeanEntry -> {
+//            System.out.print(longSSSPBeanEntry.getKey() + "  " + longSSSPBeanEntry.getValue().pathLength);
+//            System.out.println();
+//        });
     }
 
     static class SSSPRunner implements Runnable {
@@ -432,7 +432,7 @@ public class GlobalPointQuery {
                         }
                     }
                     iterations++;
-                    System.out.println(name + "----" + iterations);
+                    System.out.println("原始迭代" + iterations);
 
                     //路障同步
                     try {
@@ -448,7 +448,7 @@ public class GlobalPointQuery {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(name + "完成");
+//            System.out.println(name + "完成");
 
             latch.countDown();
         }
@@ -458,6 +458,7 @@ public class GlobalPointQuery {
     public static void singleShortestPathDelta(long sourceId, int time) {
 
         MergeLogIntoGraph.mergeLogIntoGraph(time);
+
         listArr = Partition.partitionVS(threadNum);
 
         //设置循环路障
@@ -526,7 +527,7 @@ public class GlobalPointQuery {
                         }
                     }
                     iterations++;
-                    System.out.println(name + "----" + iterations);
+                    System.out.println("增量迭代" + iterations);
 
                     //路障同步
                     barrier.await(500, TimeUnit.MILLISECONDS);
@@ -537,7 +538,7 @@ public class GlobalPointQuery {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println(name + "完成");
+//            System.out.println(name + "完成");
 
             latch.countDown();
         }

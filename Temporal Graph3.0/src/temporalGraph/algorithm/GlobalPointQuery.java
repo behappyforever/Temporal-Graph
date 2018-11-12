@@ -10,7 +10,7 @@ public class GlobalPointQuery {
     private static int threadNum = 6;
 
     //PageRank
-    private static double threshold = 0.0001;// 越小要求精度越高，迭代次数越大
+    private static double threshold = 0.01;// 越小要求精度越高，迭代次数越大
     private static final double alpha = 0.85f;
     private static final int maxStep = 20;
     private static final int maxDeltaStep = 5;
@@ -33,7 +33,7 @@ public class GlobalPointQuery {
         System.out.println("PageRank原始迭代完成---------");
         System.out.println("原始步时间" + (System.currentTimeMillis() - Main.startTime));
 
-        pageRankDeltaSnapshot(time);
+//        pageRankDeltaSnapshot(time);
 
 
     }
@@ -47,8 +47,6 @@ public class GlobalPointQuery {
         prValueMap = new ConcurrentHashMap();
 
 //        oldPrValueMap = new ConcurrentHashMap<>();
-
-//        threshold=1.0/TGraph.graphSnapshot.getHashMap().size()/10;
 
         resetPr(TGraph.graphSnapshot, prValueMap);
 
@@ -120,18 +118,11 @@ public class GlobalPointQuery {
 
 
                 while (iterations < maxStep) {
-//                while (!flag){
-//                    if(name.equals("thread1")){
+//                while (!flag) {
+//                    if (name.equals("thread1")) {
 //                        oldPrValueMap.clear();
 //                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
-//                            oldPrValueMap.put(entry.getKey(),entry.getValue());
-//                        }
-//                    }
-//                    barrier.await();
-//                    if(name.equals("thread1")){
-//                        oldValue=0;
-//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
-//                            oldValue+=entry.getValue();
+//                            oldPrValueMap.put(entry.getKey(), entry.getValue());
 //                        }
 //                    }
 //                    barrier.await();
@@ -175,12 +166,8 @@ public class GlobalPointQuery {
                     System.out.println("迭代次数为" + iterations);
                     //路障同步
                     barrier.await();
-//                    if(iterations>2){
-//                        flag=judge(oldPrValueMap,prValueMap);
-//                    }
-//                    barrier.await();
-//                    if(iterations>2){
-//                        flag=judge(oldValue,prValueMap);
+//                    if (iterations > 2) {
+//                        flag = judge(oldPrValueMap, prValueMap);
 //                    }
 //                    barrier.await();
                 }
@@ -205,31 +192,28 @@ public class GlobalPointQuery {
     }
 
     private static boolean judge(Map<Long, Double> old, Map<Long, Double> cur) {
+//        for (Map.Entry<Long, Double> entry : cur.entrySet()) {
+//            long key = entry.getKey();
+//            double value = entry.getValue();
+//            if (old.containsKey(key)) {
+//                double oldValue = old.get(key);
+//                if (Math.abs(value - oldValue) > threshold)
+//                    return false;//未收敛
+//            }
+//        }
+//
+//        return true;
+        double diff = 0.0;
         for (Map.Entry<Long, Double> entry : cur.entrySet()) {
             long key = entry.getKey();
             double value = entry.getValue();
             if (old.containsKey(key)) {
                 double oldValue = old.get(key);
-                if (Math.abs(value - oldValue) > threshold)
-                    return false;//未收敛
+                diff += Math.abs(oldValue - value);
             }
         }
-
-        return true;
+        return diff < threshold;
     }
-
-    private static boolean judge(double old, Map<Long, Double> cur) {
-        double curValue = 0;
-        for (Map.Entry<Long, Double> entry : cur.entrySet()) {
-            curValue += entry.getValue();
-        }
-        System.out.println("change:" + (old - curValue));
-        System.out.println("old value:"+old);
-        System.out.println("new value:"+curValue);
-        System.out.println(cur.size());
-        return Math.abs(old - curValue) < threshold;
-    }
-
 
     /**
      * 增量快照的PageRank计算
@@ -386,7 +370,7 @@ public class GlobalPointQuery {
                 //开启bsp过程,全量迭代
 
                 int iterations = 1;
-                while (iterations<maxDeltaStep) {
+                while (iterations < maxDeltaStep) {
 //                while (!flag) {
 //                    if(name.equals("thread1")){
 //                        oldPrValueMap.clear();
@@ -394,13 +378,6 @@ public class GlobalPointQuery {
 //                            oldPrValueMap.put(entry.getKey(),entry.getValue());
 //                        }
 //                    }
-//                    if (name.equals("thread1")) {
-//                        oldValue = 0;
-//                        for (Map.Entry<Long, Double> entry : prValueMap.entrySet()) {
-//                            oldValue += entry.getValue();
-//                        }
-//                    }
-//                    barrier.await();
                     if (iterations > 1) {//第一个超步不需要本地计算
                         double value = (1 - alpha) * (1.0f / prValueMap.size());
                         for (Long vertexId : list) {
@@ -492,10 +469,6 @@ public class GlobalPointQuery {
 //                    if(iterations>2) {
 //                        flag = judge(oldPrValueMap, prValueMap);
 //                    }
-//                    if (iterations > 2 ) {
-//                        flag = judge(oldValue, prValueMap);
-//                    }
-//                    barrier.await();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
