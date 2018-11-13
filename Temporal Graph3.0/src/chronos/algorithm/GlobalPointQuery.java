@@ -508,6 +508,14 @@ public class GlobalPointQuery {
             try {
                 Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
 
+                for (Long vertexId : list) {
+                    if(!ssspMap.containsKey(vertexId)){
+                        ssspMap.put(vertexId,new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+                    }
+                }
+
+                barrier.await();
+
                 int iterations = 0;
 
                 while (true) {

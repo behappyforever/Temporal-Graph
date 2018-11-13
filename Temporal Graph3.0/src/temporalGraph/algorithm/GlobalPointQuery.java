@@ -494,7 +494,7 @@ public class GlobalPointQuery {
         singleShortestPathVS(sourceId, time);
 
         System.out.println("最短路径原始迭代完成---------");
-        System.out.println(System.currentTimeMillis() - Main.startTime);
+        System.out.println("原始迭代时间"+(System.currentTimeMillis() - Main.startTime));
 
         singleShortestPathDelta(sourceId, time);
 
@@ -627,7 +627,7 @@ public class GlobalPointQuery {
                         }
                     }
                     iterations++;
-                    System.out.println(name + "----" + iterations);
+                    System.out.println("原始迭代"+ iterations);
 
                     //路障同步
                     try {
@@ -708,6 +708,7 @@ public class GlobalPointQuery {
                         q.offer(new EdgeBean(vertex, edge.getDesId()));
                     }
                 }
+                System.out.println("增量步开始时间" + (System.currentTimeMillis() - Main.startTime));
                 while (!q.isEmpty()) {//处理四类增量边
                     EdgeBean bean = q.poll();
                     if (map.containsKey(bean.source) && map.containsKey(bean.des)) {
@@ -755,8 +756,8 @@ public class GlobalPointQuery {
 //
 //                    }
 //                }
+                System.out.println("增量时间"+(System.currentTimeMillis() - Main.startTime));
                 barrier.await();
-                System.out.println(System.currentTimeMillis() - Main.startTime);
 
                 //开启bsp过程,全量迭代
 
@@ -784,7 +785,7 @@ public class GlobalPointQuery {
                         }
                     }
                     iterations++;
-                    System.out.println(name + "----" + iterations);
+                    System.out.println("增量迭代"+ iterations);
 
                     //路障同步
                     barrier.await(500, TimeUnit.MILLISECONDS);
