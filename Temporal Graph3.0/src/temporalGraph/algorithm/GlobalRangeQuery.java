@@ -350,6 +350,7 @@ public class GlobalRangeQuery {
         singleShortestPathVS(sourceId, 0);
 
         System.out.println("最短路径原始迭代完成---------");
+        System.out.println("原始时间"+(System.currentTimeMillis()-Main.startTime));
 
         singleShortestPathDelta(sourceId);
 
@@ -550,6 +551,7 @@ public class GlobalRangeQuery {
         @Override
         public void run() {
             try {
+                Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
 
                 ssspMapArr[time] = new ConcurrentHashMap<>();
 
@@ -558,39 +560,68 @@ public class GlobalRangeQuery {
                     ssspMapArr[time].put(en.getKey(), new SSSPBean(en.getValue().pathLength, Integer.MAX_VALUE, false));
                 }
 
-
-                //处理数据
-                for (Map.Entry<Long, List<Edge>[]> en : refMap.entrySet()) {
-                    long vertexId = en.getKey();//当前循环 当前线程需要处理的源点id
-                    List<Edge> edges = en.getValue()[time];//当前循环 当前线程需要处理的边表list
-
-                    //将增量顶点加入prValueMap
-                    if (!ssspMapArr[time].containsKey(vertexId)) {
-                        ssspMapArr[time].put(vertexId, new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
-                    }
-
-                    if (edges != null) {
+                Queue<EdgeBean> q = new LinkedList<>();
+                for (Map.Entry<Long, List<Edge>[]> entry : refMap.entrySet()) {
+                    List<Edge> edges = entry.getValue()[time];
+                    if(edges!=null) {
                         for (Edge edge : edges) {
-                            if (!ssspMapArr[time].containsKey(edge.getDesId())) {
-                                ssspMapArr[time].put(edge.getDesId(), new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
-                            }
-
-                            if (ssspMapArr[time].containsKey(vertexId) && ssspMapArr[time].containsKey(edge.getDesId())) {
-                                long newPathLength=ssspMapArr[time].get(vertexId).pathLength + edge.getWeight();
-                                if(ssspMapArr[time].get(edge.getDesId()).pathLength>newPathLength){
-                                    ssspMapArr[time].get(edge.getDesId()).pathLength=newPathLength;
-                                    ssspMapArr[time].get(edge.getDesId()).flag=true;
-                                }
-                            }
+                            q.offer(new EdgeBean(entry.getKey(), edge.getDesId()));
                         }
                     }
                 }
 
+                System.out.println("增量步开始时间" + (System.currentTimeMillis() - Main.startTime));
+
+                while (!q.isEmpty()) {//处理四类增量边
+                    EdgeBean bean = q.poll();
+                    if (map.containsKey(bean.source) && map.containsKey(bean.des)) {
+                        SSSPBean ssspBean = ssspMapArr[time].get(bean.source);
+                        long newPathLength = ssspBean.pathLength + 1;
+                        if (newPathLength < ssspMapArr[time].get(bean.des).pathLength) {
+                            ssspBean.pathLength = newPathLength;
+                            ssspBean.flag = true;
+                        }
+                    } else if (map.containsKey(bean.source) && !map.containsKey(bean.des)) {
+                        ssspMapArr[time].put(bean.des, new SSSPBean(ssspMapArr[time].get(bean.source).pathLength + 1, 0, false));
+                    } else if (!map.containsKey(bean.source) && map.containsKey(bean.des)) {
+                        ssspMapArr[time].put(bean.source, new SSSPBean(Integer.MAX_VALUE, 0, false));
+                    } else {
+                        q.offer(bean);
+                    }
+                }
+
+                //处理数据
+//                for (Map.Entry<Long, List<Edge>[]> en : refMap.entrySet()) {
+//                    long vertexId = en.getKey();//当前循环 当前线程需要处理的源点id
+//                    List<Edge> edges = en.getValue()[time];//当前循环 当前线程需要处理的边表list
+//
+//                    //将增量顶点加入prValueMap
+//                    if (!ssspMapArr[time].containsKey(vertexId)) {
+//                        ssspMapArr[time].put(vertexId, new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+//                    }
+//
+//                    if (edges != null) {
+//                        for (Edge edge : edges) {
+//                            if (!ssspMapArr[time].containsKey(edge.getDesId())) {
+//                                ssspMapArr[time].put(edge.getDesId(), new SSSPBean(Integer.MAX_VALUE, Integer.MAX_VALUE, false));
+//                            }
+//
+//                            if (ssspMapArr[time].containsKey(vertexId) && ssspMapArr[time].containsKey(edge.getDesId())) {
+//                                long newPathLength=ssspMapArr[time].get(vertexId).pathLength + edge.getWeight();
+//                                if(ssspMapArr[time].get(edge.getDesId()).pathLength>newPathLength){
+//                                    ssspMapArr[time].get(edge.getDesId()).pathLength=newPathLength;
+//                                    ssspMapArr[time].get(edge.getDesId()).flag=true;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+
+                System.out.println("增量时间"+(System.currentTimeMillis() - Main.startTime));
                 barrier.await();
 
                 //开启bsp过程,全量迭代
 
-                Map<Long, Vertex> map = TGraph.graphSnapshot.getHashMap();
 
                 int iterations = 0;
 
@@ -649,5 +680,15 @@ public class GlobalRangeQuery {
                 return true;
         }
         return false;
+    }
+
+    static class EdgeBean {
+        long source;
+        long des;
+
+        public EdgeBean(long source, long des) {
+            this.source = source;
+            this.des = des;
+        }
     }
 }

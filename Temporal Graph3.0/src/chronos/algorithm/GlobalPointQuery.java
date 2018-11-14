@@ -23,6 +23,7 @@ public class GlobalPointQuery {
     private static Set<Long>[] setArr;
     private static Map<Long, Double> messageMap;//key为顶点id，value为聚集值
     private static Map<Long, Double> prValueMap;//key为顶点id，value顶点pr值
+    private static Map<Long, Double> tmpPrValueMap;//key为顶点id，value顶点pr值
 
     /**
      * 供外部调用的接口
@@ -36,6 +37,7 @@ public class GlobalPointQuery {
         System.out.println("原始迭代时间"+(System.currentTimeMillis()- Main.startTime));
 
         pageRankDeltaSnapshot(time);
+        System.out.println("增量迭代时间"+(System.currentTimeMillis()-Main.startTime));
 
 
     }
@@ -84,7 +86,8 @@ public class GlobalPointQuery {
             total += aDouble;
         }
         System.out.println(total);
-        System.out.println(prValueMap.size());
+//        System.out.println(prValueMap.size());
+        System.out.println("原始迭代时间"+(System.currentTimeMillis()- Main.startTime));
     }
 
     /**
@@ -126,6 +129,7 @@ public class GlobalPointQuery {
                     for (Long vertexId : list) {
                         messageMap.put(vertexId, 0.0);
                     }
+                    barrier.await();
 
                     double totalValue = 0.0;
                     //发消息
@@ -186,6 +190,8 @@ public class GlobalPointQuery {
 
         listArr = Partition.partitionVS(threadNum);
 
+        tmpPrValueMap=new ConcurrentHashMap<>();
+
         //设置循环路障
         CyclicBarrier barrier = new CyclicBarrier(threadNum);
 
@@ -214,8 +220,8 @@ public class GlobalPointQuery {
             total += aDouble;
         }
         System.out.println(total);
-        System.out.println(prValueMap.size());
-
+//        System.out.println(prValueMap.size());
+        System.out.println("增量迭代时间"+(System.currentTimeMillis()- Main.startTime));
     }
 
     static class PageRankDeltaRunner implements Runnable {
@@ -256,10 +262,15 @@ public class GlobalPointQuery {
                     }
 
 
-                    //初始化或者清空消息缓冲
+                    //初始化或者清空消息缓冲&处理不存在的点
                     for (Long vertexId : list) {
                         messageMap.put(vertexId, 0.0);
+                        tmpPrValueMap.put(vertexId,prValueMap.getOrDefault(vertexId,1.0/vertexMap.size()));
                     }
+                    prValueMap=tmpPrValueMap;
+
+                    barrier.await();
+
 
                     double totalValue = 0.0;
 

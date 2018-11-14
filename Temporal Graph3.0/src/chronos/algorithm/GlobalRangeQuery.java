@@ -8,7 +8,7 @@ public class GlobalRangeQuery {
 
         GlobalPointQuery.pageRankVS();
 
-        for (int i = 0; i < TGraph.timeRange; i++) {
+        for (int i = 0; i < TGraph.timeRange-1; i++) {
             GlobalPointQuery.pageRankDeltaSnapshot(i);
         }
     }
@@ -17,7 +17,7 @@ public class GlobalRangeQuery {
 
         GlobalPointQuery.singleShortestPathVS(sourceId,0);
 
-        for (int i = 0; i < TGraph.timeRange; i++) {
+        for (int i = 0; i < TGraph.timeRange-1; i++) {
             GlobalPointQuery.singleShortestPathDelta(sourceId,i);
         }
     }

@@ -2,6 +2,7 @@ package chronos.graph;
 
 
 import chronos.algorithm.GlobalPointQuery;
+import chronos.algorithm.GlobalRangeQuery;
 import chronos.algorithm.LocalPointQuery;
 import chronos.algorithm.LocalRangeQuery;
 
@@ -27,8 +28,8 @@ public class Main {
 //		LocalRangeQuery.twoHopNeighborQuery(arr);
 //		GlobalPointQuery.pageRank(0);
 //		GlobalRangeQuery.pageRank();
-		GlobalPointQuery.singleShortestPath(0,0);
-//		GlobalRangeQuery.singleShortestPath(0);
+//		GlobalPointQuery.singleShortestPath(0,0);
+		GlobalRangeQuery.singleShortestPath(0);
 		long time1= System.currentTimeMillis() - startTime;
 		System.out.println("运行耗时= "+time1+" 毫秒");
 //

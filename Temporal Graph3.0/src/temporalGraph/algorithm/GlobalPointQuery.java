@@ -788,7 +788,11 @@ public class GlobalPointQuery {
                     System.out.println("增量迭代"+ iterations);
 
                     //路障同步
-                    barrier.await(500, TimeUnit.MILLISECONDS);
+                    try {
+                        barrier.await(500, TimeUnit.MILLISECONDS);
+                    }catch (Exception e){
+
+                    }
                     if (!checkActive(map.keySet()))
                         break;
                 }
